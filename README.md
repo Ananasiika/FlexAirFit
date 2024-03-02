@@ -37,14 +37,13 @@
 
 ## 7. Use-Case - диаграмма. 
 
-![usecase-guest](/home/larisa/FlexAirFit/ppo/usecase-guest.pdf)
+[usecase-guest.pdf](https://github.com/Ananasiika/bmstu-ppo/files/14468541/usecase-guest.pdf)
 
-![usecase-client](/home/larisa/FlexAirFit/ppo/usecase-client.pdf)
+[usecase-client.pdf](https://github.com/Ananasiika/bmstu-ppo/files/14468542/usecase-client.pdf)
 
-![usecase-admin](/home/larisa/FlexAirFit/ppo/usecase-admin.pdf)
+![usecase-admin](https://github.com/Ananasiika/bmstu-ppo/assets/93927009/76624a53-0cc0-44ac-ac99-954aff0d698f)
 
-![usecase-trainer](/home/larisa/FlexAirFit/ppo/usecase-trainer.pdf)
-
+[usecase-trainer.pdf](https://github.com/Ananasiika/bmstu-ppo/files/14468543/usecase-trainer.pdf)
 
 ## 8. ER-диаграмма сущностей.
 
