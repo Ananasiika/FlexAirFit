@@ -37,13 +37,13 @@
 
 ## 7. Use-Case - диаграмма. 
 
-[usecase-guest.pdf](https://github.com/Ananasiika/bmstu-ppo/files/14468541/usecase-guest.pdf)
+![usecase-guest](https://github.com/Ananasiika/bmstu-ppo/assets/93927009/c69afbd5-31b1-4e1e-9c5c-af77bcdbfa79)
 
-[usecase-client.pdf](https://github.com/Ananasiika/bmstu-ppo/files/14468542/usecase-client.pdf)
+![usecase-client](https://github.com/Ananasiika/bmstu-ppo/assets/93927009/f1fc0141-4b83-4086-8cea-ff64d1f863f2)
 
-![usecase-admin](https://github.com/Ananasiika/bmstu-ppo/assets/93927009/76624a53-0cc0-44ac-ac99-954aff0d698f)
+![usecase-admin](https://github.com/Ananasiika/bmstu-ppo/assets/93927009/48c32948-00d0-478b-9e48-939032426380)
 
-[usecase-trainer.pdf](https://github.com/Ananasiika/bmstu-ppo/files/14468543/usecase-trainer.pdf)
+![usecase-trainer](https://github.com/Ananasiika/bmstu-ppo/assets/93927009/eda1ef77-1fe1-46ab-ba3f-080eee328907)
 
 ## 8. ER-диаграмма сущностей.
 
