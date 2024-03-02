@@ -47,7 +47,7 @@
 
 ## 8. ER-диаграмма сущностей.
 
-
+![er](https://github.com/Ananasiika/bmstu-ppo/assets/93927009/602217ce-009a-4c70-b0ab-c3d86079470e)
 
 ## 9. Пользовательские сценарии.
     
