@@ -37,17 +37,31 @@
 
 ## 7. Use-Case - диаграмма. 
 
-![usecase-guest](https://github.com/Ananasiika/bmstu-ppo/assets/93927009/c69afbd5-31b1-4e1e-9c5c-af77bcdbfa79)
+![usecase-guest](./img/usecase-guest.png)
 
-![usecase-client](https://github.com/Ananasiika/bmstu-ppo/assets/93927009/f1fc0141-4b83-4086-8cea-ff64d1f863f2)
+![usecase-client](./img/usecase-client.png)
 
-![usecase-admin](https://github.com/Ananasiika/bmstu-ppo/assets/93927009/48c32948-00d0-478b-9e48-939032426380)
+![usecase-admin](./img/usecase-admin.png)
 
-![usecase-trainer](https://github.com/Ananasiika/bmstu-ppo/assets/93927009/eda1ef77-1fe1-46ab-ba3f-080eee328907)
+![usecase-trainer](./img/usecase-trainer.png)
+
+## Сложные use-case
+
+1. Аутентификация (?)
+
+2. Заморозка абонемента:
+
+   Проверка, что желаемая длительность заморозки не менее 7 дней, суммарная длительность заморозок не более 30 дней, а так же расчет даты окончания (если желаемая длительность заканчивается в следующий месяц, расчет корректный)
+
+3. Бонусная система:
+   
+   Списание бонусов - не более 50% стоимости
+
+   Накопление бонусов - с каждой покупки 10% от стоимости (без учета списанных бонусов) и по 100 бонусов с каждой персональной тренировки
 
 ## 8. ER-диаграмма сущностей.
 
-![er](https://github.com/Ananasiika/bmstu-ppo/assets/93927009/602217ce-009a-4c70-b0ab-c3d86079470e)
+![er](./img/er.png)
 
 ## 9. Пользовательские сценарии.
     
@@ -79,4 +93,5 @@
 
 ## 10. Формализация ключевых бизнес-процессов.
 
-![bpmn](https://github.com/Ananasiika/bmstu-ppo/assets/93927009/0b0e6335-72cc-4325-9cd1-77c3516dae58)
+![bpmn](./img/bpmn.png)
+
