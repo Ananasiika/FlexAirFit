@@ -79,3 +79,4 @@
 
 ## 10. Формализация ключевых бизнес-процессов.
 
+![bpmn](https://github.com/Ananasiika/bmstu-ppo/assets/93927009/0b0e6335-72cc-4325-9cd1-77c3516dae58)
