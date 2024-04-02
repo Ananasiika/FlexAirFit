@@ -3,7 +3,7 @@ using System.Linq;
 using FlexAirFit.Core.Models;
 using FlexAirFit.Database.Models;
 
-namespace FlexAirFit.Database.Models.Converters;
+namespace FlexAirFit.Database.Converters;
 
 public static class ClientConverter
 {
