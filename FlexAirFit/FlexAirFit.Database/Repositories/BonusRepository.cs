@@ -1,6 +1,82 @@
-﻿namespace FlexAirFit.Infrastructure.Repositories;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using FlexAirFit.Application.IRepositories;
+using FlexAirFit.Core.Models;
+using FlexAirFit.Core.Filters;
+using FlexAirFit.Database.Models.Converters;
+using FlexAirFit.Database.Models;
+using Microsoft.EntityFrameworkCore;
 
-public class BonusRepository
+namespace FlexAirFit.Database.Repositories
+
+public class BonusRepository : IBonusRepository
 {
-    
+    private readonly FlexAirFitDbContext _context;
+
+    public BonusRepository(FlexAirFitDbContext context)
+    {
+        _context = context;
+    }
+
+    public async Task AddBonusAsync(Bonus bonus)
+    {
+        await _context.Bonuses.AddAsync(BonusConverter.CoreToDbModel(bonus));
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task<Bonus> UpdateBonusAsync(Bonus bonus)
+    {
+        var bonusDbModel = await _context.Bonuses.FindAsync(bonus.Id);
+        bonusDbModel.Name = bonus.Name;
+        bonusDbModel.Description = bonus.Description;
+        bonusDbModel.Value = bonus.Value;
+
+        await _context.SaveChangesAsync();
+        return BonusConverter.DbToCoreModel(bonusDbModel);
+    }
+
+    public async Task DeleteBonusAsync(Guid id)
+    {
+        var bonusDbModel = await _context.Bonuses.FindAsync(id);
+        _context.Bonuses.Remove(bonusDbModel);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task<Bonus> GetBonusByIdAsync(Guid id)
+    {
+        var bonusDbModel = await _context.Bonuses.FindAsync(id);
+        return BonusConverter.DbToCoreModel(bonusDbModel);
+    }
+
+    public async Task<List<Bonus>> GetBonusesAsync(int? limit, int? offset)
+    {
+        var query = _context.Bonuses.AsQueryable();
+
+        if (offset.HasValue)
+        {
+            query = query.Skip(offset.Value);
+        }
+        if (limit.HasValue)
+        {
+            query = query.Take(limit.Value);
+        }
+
+        var bonusDbModels = await query.ToListAsync();
+        return bonusDbModels.Select(BonusConverter.DbToCoreModel).ToList();
+    }
+
+    public async Task<int> GetCountBonusByIdClientAsync(Guid id)
+    {
+        return await _context.Bonuses.CountAsync(b => b.ClientId == id);
+    }
+
+    public async Task UpdateCountBonusByIdClientAsync(Guid idClient, int newCount)
+    {
+        var bonuses = await _context.Bonuses.Where(b => b.ClientId == idClient).ToListAsync();
+        bonuses.ForEach(b => b.Count -= newCount);
+
+        await _context.SaveChangesAsync();
+    }
 }
