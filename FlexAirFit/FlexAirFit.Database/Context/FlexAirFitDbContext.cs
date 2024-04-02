@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using FlexAirFit.Database.Models;
 
+namespace FlexAirFit.Database.Context;
+
 public class FlexAirFitDbContext : DbContext
 {
     public DbSet<UserDbModel> Users { get; set; }
