@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+  </PropertyGroup>
+	
+	<ItemGroup>
+		<PackageReference Include="bogus" Version="35.5.0" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.0" />
+		<PackageReference Include="moq" Version="4.20.70" />
+		<PackageReference Include="xunit" Version="2.4.2" />
+		<PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="coverlet.collector" Version="6.0.0">
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+		</PackageReference>
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <ProjectReference Include="..\FlexAirFit.Aplication\FlexAirFit.Application.csproj" />
+	  <ProjectReference Include="..\FlexAirFit.Core\FlexAirFit.Core.csproj" />
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <Content Include="..\.dockerignore">
+	    <Link>.dockerignore</Link>
+	  </Content>
+	</ItemGroup>
+
+</Project>

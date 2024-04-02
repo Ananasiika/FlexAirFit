@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34714.143
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FlexAirFit", "FlexAirFit\FlexAirFit.csproj", "{A3C0AB41-54C9-4C0E-BA0A-4402C10D299C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FlexAirFit.Core", "FlexAirFit.Core\FlexAirFit.Core.csproj", "{7F4E03DC-0BDE-4BF7-88BA-80D188B52254}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FlexAirFit.Application", "FlexAirFit.Aplication\FlexAirFit.Application.csproj", "{C1C32556-558E-4C3E-945A-68A98A2C341C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FlexAirFit.Database", "FlexAirFit.Database\FlexAirFit.Database.csproj", "{8E0B1BF3-E9A2-4693-8915-3694F8780713}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FlezAirFit.Web", "FlezAirFit.Web\FlezAirFit.Web.csproj", "{641583FF-47C6-4415-B960-41174D252F74}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FlexAirFit.Tests", "FlexAirFit.tests\FlexAirFit.Tests.csproj", "{DF1C970A-FFAA-402B-A3F0-B38DC1772E5E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A3C0AB41-54C9-4C0E-BA0A-4402C10D299C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3C0AB41-54C9-4C0E-BA0A-4402C10D299C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3C0AB41-54C9-4C0E-BA0A-4402C10D299C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3C0AB41-54C9-4C0E-BA0A-4402C10D299C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F4E03DC-0BDE-4BF7-88BA-80D188B52254}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F4E03DC-0BDE-4BF7-88BA-80D188B52254}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F4E03DC-0BDE-4BF7-88BA-80D188B52254}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F4E03DC-0BDE-4BF7-88BA-80D188B52254}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C1C32556-558E-4C3E-945A-68A98A2C341C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1C32556-558E-4C3E-945A-68A98A2C341C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1C32556-558E-4C3E-945A-68A98A2C341C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1C32556-558E-4C3E-945A-68A98A2C341C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E0B1BF3-E9A2-4693-8915-3694F8780713}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E0B1BF3-E9A2-4693-8915-3694F8780713}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E0B1BF3-E9A2-4693-8915-3694F8780713}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E0B1BF3-E9A2-4693-8915-3694F8780713}.Release|Any CPU.Build.0 = Release|Any CPU
+		{641583FF-47C6-4415-B960-41174D252F74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{641583FF-47C6-4415-B960-41174D252F74}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{641583FF-47C6-4415-B960-41174D252F74}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{641583FF-47C6-4415-B960-41174D252F74}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF1C970A-FFAA-402B-A3F0-B38DC1772E5E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF1C970A-FFAA-402B-A3F0-B38DC1772E5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF1C970A-FFAA-402B-A3F0-B38DC1772E5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF1C970A-FFAA-402B-A3F0-B38DC1772E5E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4D233D7D-3DB3-448B-9ACB-181226FAA0A3}
+	EndGlobalSection
+EndGlobal
