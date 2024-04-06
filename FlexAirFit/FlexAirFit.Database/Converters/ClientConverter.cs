@@ -20,8 +20,7 @@ public static class ClientConverter
                 idMembership: model.IdMembership,
                 membershipEnd: model.MembershipEnd,
                 remainFreezing: model.RemainFreezing,
-                isFreezing: model.IsFreezing,
-                freezingIntervals: model.FreezingIntervals?.Select(fi => new Tuple<DateOnly, DateOnly>(fi.Item1, fi.Item2)).ToList())
+                freezingIntervals: null)
             : default;
     }
 
@@ -38,8 +37,7 @@ public static class ClientConverter
                 idMembership: model.IdMembership,
                 membershipEnd: model.MembershipEnd,
                 remainFreezing: model.RemainFreezing,
-                isFreezing: model.IsFreezing,
-                freezingIntervals: model.FreezingIntervals?.Select(fi => new Tuple<DateOnly, DateOnly>(fi.Item1, fi.Item2)).ToList())
+                isFreezing: model.IsFreezing)
             : default;
     }
 }

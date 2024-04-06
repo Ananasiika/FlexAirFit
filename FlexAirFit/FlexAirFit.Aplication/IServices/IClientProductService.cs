@@ -4,5 +4,5 @@ namespace FlexAirFit.Application.IServices;
 
 public interface IClientProductService
 {
-    Task<int> AddClientProductAndReturnCost(ClientProduct clientProduct, int writeOff);
+    Task<int> AddClientProductAndReturnCost(ClientProduct clientProduct, bool writeOff);
 }

@@ -10,8 +10,14 @@ public class Client
     public Guid IdMembership { get; set; }
     public DateOnly MembershipEnd { get; set; }
     public int? RemainFreezing { get; set; }
-    public bool IsFreezing { get; set; }
     public List<Tuple<DateOnly, DateOnly>> FreezingIntervals { get; set; }
+
+    public bool IsFreezing {
+        get { 
+            DateOnly today = DateOnly.FromDateTime(DateTime.Today);
+            return FreezingIntervals.Any(interval => interval.Item1 <= today && today <= interval.Item2);
+        }
+    }
 
     public Client(Guid id,
         Guid idUser,
@@ -21,7 +27,6 @@ public class Client
         Guid idMembership,
         DateOnly membershipEnd,
         int? remainFreezing,
-        bool isFreezing,
         List<Tuple<DateOnly, DateOnly>> freezingIntervals)
     {
         Id = id;
@@ -32,7 +37,6 @@ public class Client
         IdMembership = idMembership;
         MembershipEnd = membershipEnd;
         RemainFreezing = remainFreezing;
-        IsFreezing = isFreezing;
         FreezingIntervals = freezingIntervals;
     }
 }

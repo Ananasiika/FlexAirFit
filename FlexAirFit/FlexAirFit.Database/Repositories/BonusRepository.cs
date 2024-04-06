@@ -1,15 +1,15 @@
-﻿using System;
+﻿using FlexAirFit.Application.IRepositories;
+using FlexAirFit.Core.Models;
+using FlexAirFit.Database.Context;
+using FlexAirFit.Database.Converters;
+using FlexAirFit.Database.Models;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using FlexAirFit.Application.IRepositories;
-using FlexAirFit.Core.Models;
-using FlexAirFit.Core.Filters;
-using FlexAirFit.Database.Models.Converters;
-using FlexAirFit.Database.Models;
-using Microsoft.EntityFrameworkCore;
 
-namespace FlexAirFit.Database.Repositories
+namespace FlexAirFit.Database.Repositories;
 
 public class BonusRepository : IBonusRepository
 {
@@ -29,19 +29,23 @@ public class BonusRepository : IBonusRepository
     public async Task<Bonus> UpdateBonusAsync(Bonus bonus)
     {
         var bonusDbModel = await _context.Bonuses.FindAsync(bonus.Id);
-        bonusDbModel.Name = bonus.Name;
-        bonusDbModel.Description = bonus.Description;
-        bonusDbModel.Value = bonus.Value;
-
-        await _context.SaveChangesAsync();
-        return BonusConverter.DbToCoreModel(bonusDbModel);
+        if (bonusDbModel != null)
+        {
+            bonusDbModel.IdClient = bonus.IdClient;
+            bonusDbModel.Count = bonus.Count;
+            await _context.SaveChangesAsync();
+        }
+        return bonus;
     }
 
     public async Task DeleteBonusAsync(Guid id)
     {
         var bonusDbModel = await _context.Bonuses.FindAsync(id);
-        _context.Bonuses.Remove(bonusDbModel);
-        await _context.SaveChangesAsync();
+        if (bonusDbModel != null)
+        {
+            _context.Bonuses.Remove(bonusDbModel);
+            await _context.SaveChangesAsync();
+        }
     }
 
     public async Task<Bonus> GetBonusByIdAsync(Guid id)
@@ -69,13 +73,13 @@ public class BonusRepository : IBonusRepository
 
     public async Task<int> GetCountBonusByIdClientAsync(Guid id)
     {
-        return await _context.Bonuses.CountAsync(b => b.ClientId == id);
+        return await _context.Bonuses.CountAsync(b => b.IdClient == id);
     }
 
     public async Task UpdateCountBonusByIdClientAsync(Guid idClient, int newCount)
     {
-        var bonus = await _context.Bonuses.FirstOrDefaultAsync(b => b.ClientId == idClient);
-    
+        var bonus = await _context.Bonuses.FirstOrDefaultAsync(b => b.IdClient == idClient);
+
         if (bonus != null)
         {
             bonus.Count = newCount;

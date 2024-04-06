@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using FlexAirFit.Core.Enums;
 
 namespace FlexAirFit.Database.Models;
 public class ProductDbModel
@@ -11,7 +12,7 @@ public class ProductDbModel
 
     [Required]
     [Column("type", TypeName = "varchar(50)")]
-    public string Type { get; set; }
+    public ProductType Type { get; set; }
 
     [Required]
     [Column("name", TypeName = "varchar(50)")]
@@ -21,7 +22,7 @@ public class ProductDbModel
     [Column("price")]
     public int Price { get; set; }
 
-    public ProductDbModel(Guid id, string type, string name, int price)
+    public ProductDbModel(Guid id, ProductType type, string name, int price)
     {
         Id = id;
         Type = type;

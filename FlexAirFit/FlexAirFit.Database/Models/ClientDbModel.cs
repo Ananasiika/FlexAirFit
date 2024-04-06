@@ -41,10 +41,7 @@ public class ClientDbModel
     [Column("is_freezing")]
     public bool IsFreezing { get; set; }
 
-    [NotMapped]
-    public List<Tuple<DateOnly, DateOnly>> FreezingIntervals { get; set; }
-
-    public ClientDbModel(Guid id, Guid idUser, string name, string gender, DateOnly dateOfBirth, Guid idMembership, DateOnly membershipEnd, int? remainFreezing, bool isFreezing, List<Tuple<DateOnly, DateOnly>> freezingIntervals)
+    public ClientDbModel(Guid id, Guid idUser, string name, string gender, DateOnly dateOfBirth, Guid idMembership, DateOnly membershipEnd, int? remainFreezing, bool isFreezing)
     {
         Id = id;
         IdUser = idUser;
@@ -55,7 +52,6 @@ public class ClientDbModel
         MembershipEnd = membershipEnd;
         RemainFreezing = remainFreezing;
         IsFreezing = isFreezing;
-        FreezingIntervals = freezingIntervals;
     }
     
     public List<ProductDbModel> Products { get; } = [];

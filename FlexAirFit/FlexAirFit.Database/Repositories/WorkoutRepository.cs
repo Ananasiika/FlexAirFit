@@ -5,11 +5,12 @@ using System.Threading.Tasks;
 using FlexAirFit.Application.IRepositories;
 using FlexAirFit.Core.Models;
 using FlexAirFit.Core.Filters;
-using FlexAirFit.Database.Models.Converters;
+using FlexAirFit.Database.Converters;
+using FlexAirFit.Database.Context;
 using FlexAirFit.Database.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace FlexAirFit.Database.Repositories
+namespace FlexAirFit.Database.Repositories;
 
 public class WorkoutRepository : IWorkoutRepository
 {

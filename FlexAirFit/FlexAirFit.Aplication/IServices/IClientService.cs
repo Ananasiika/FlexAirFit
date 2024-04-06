@@ -11,5 +11,4 @@ public interface IClientService
     Task<List<Client>> GetClients(int? limit, int? offset);
     Task FreezeMembership(Guid idClient, DateOnly FreezingStart, int durationInDays);
     Task<DateOnly> GetMembershipEndDate(Guid idClient);
-    Task CheckAndSetFreezingStatus(Guid idClient);
 }

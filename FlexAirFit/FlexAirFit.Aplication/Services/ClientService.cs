@@ -2,13 +2,13 @@
 using FlexAirFit.Application.IRepositories;
 using FlexAirFit.Application.IServices;
 using FlexAirFit.Application.Exceptions.ServiceException;
+using Microsoft.Extensions.Configuration;
 
 namespace FlexAirFit.Application.Services;
 
 public class ClientService(IClientRepository clientRepository) : IClientService
 {
     private readonly IClientRepository _clientRepository = clientRepository;
-    private const int MinFreezing = 7;
 
     public async Task CreateClient(Client client)
     {
@@ -49,13 +49,18 @@ public class ClientService(IClientRepository clientRepository) : IClientService
     
     public async Task FreezeMembership(Guid idClient, DateOnly FreezingStart, int durationInDays)
     {
+        var configuration = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("config.json") 
+            .Build();
+        
         var client = await  _clientRepository.GetClientByIdAsync(idClient);
         if (client is null)
         {
             throw new ClientNotFoundException(idClient);
         }
 
-        if (durationInDays < MinFreezing)
+        if (durationInDays < int.Parse(configuration["MinFreezing"]))
         {
             throw new InvalidFreezingException("Duration should be at least 7 days.");
         }
@@ -90,21 +95,4 @@ public class ClientService(IClientRepository clientRepository) : IClientService
         return await _clientRepository.GetMembershipEndDateAsync(idClient);
     }
     
-    public async Task CheckAndSetFreezingStatus(Guid idClient)
-    {
-        var client = await _clientRepository.GetClientByIdAsync(idClient);
-        if (client is null)
-        {
-            throw new ClientNotFoundException(idClient);
-        }
-        
-        DateOnly today = DateOnly.FromDateTime(DateTime.Today);
-        bool isFrozenToday = client.FreezingIntervals.Any(interval => interval.Item1 <= today && today <= interval.Item2);
-        if (client.IsFreezing != isFrozenToday)
-        {
-            client.IsFreezing = isFrozenToday;
-            await _clientRepository.UpdateClientAsync(client);
-        }
-    }
-
 }

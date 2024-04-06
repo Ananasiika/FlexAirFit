@@ -9,6 +9,7 @@
 	
 	<ItemGroup>
 		<PackageReference Include="bogus" Version="35.5.0" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.3" />
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.0" />
 		<PackageReference Include="moq" Version="4.20.70" />
 		<PackageReference Include="xunit" Version="2.4.2" />
@@ -25,11 +26,12 @@
 	<ItemGroup>
 	  <ProjectReference Include="..\FlexAirFit.Aplication\FlexAirFit.Application.csproj" />
 	  <ProjectReference Include="..\FlexAirFit.Core\FlexAirFit.Core.csproj" />
+	  <ProjectReference Include="..\FlexAirFit.Database\FlexAirFit.Database.csproj" />
 	</ItemGroup>
 	
 	<ItemGroup>
 	  <Content Include="..\.dockerignore">
-	    <Link>.dockerignore</Link>
+	    <Link>ServiceUnitTests\.dockerignore</Link>
 	  </Content>
 	</ItemGroup>
 
