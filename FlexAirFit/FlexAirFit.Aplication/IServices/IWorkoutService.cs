@@ -12,4 +12,5 @@ public interface IWorkoutService
     Task<Workout> GetWorkoutById(Guid id);
     Task<List<Workout>> GetWorkouts(int? limit, int? offset);
     Task<string> GetWorkoutNameById(Guid id);
+    Task<bool> CheckIfWorkoutExists(Guid workoutId);
 }

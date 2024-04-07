@@ -10,4 +10,8 @@
     <None Include="config.json" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\FlexAirFit.Core\FlexAirFit.Core.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -10,7 +10,7 @@ public class Schedule
     public Schedule(Guid id,
         Guid idWorkout,
         DateTime dateAndTime,
-        Guid idClient)
+        Guid? idClient)
     {
         Id = id;
         IdWorkout = idWorkout;

@@ -15,6 +15,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FlezAirFit.Web", "FlezAirFi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FlexAirFit.Tests", "FlexAirFit.tests\FlexAirFit.Tests.csproj", "{DF1C970A-FFAA-402B-A3F0-B38DC1772E5E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TechUI", "TechUI\TechUI.csproj", "{AE4F8285-7491-4ACD-BF86-006F4D25997C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{DF1C970A-FFAA-402B-A3F0-B38DC1772E5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DF1C970A-FFAA-402B-A3F0-B38DC1772E5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DF1C970A-FFAA-402B-A3F0-B38DC1772E5E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE4F8285-7491-4ACD-BF86-006F4D25997C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE4F8285-7491-4ACD-BF86-006F4D25997C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE4F8285-7491-4ACD-BF86-006F4D25997C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE4F8285-7491-4ACD-BF86-006F4D25997C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

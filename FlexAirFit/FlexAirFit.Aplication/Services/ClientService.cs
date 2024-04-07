@@ -95,4 +95,13 @@ public class ClientService(IClientRepository clientRepository) : IClientService
         return await _clientRepository.GetMembershipEndDateAsync(idClient);
     }
     
+    public async Task<bool> CheckIfClientExists(Guid idClient)
+    {
+        if (await _clientRepository.GetClientByIdAsync(idClient) is null)
+        {
+            return false;
+        }
+        return true;
+    }
+    
 }
