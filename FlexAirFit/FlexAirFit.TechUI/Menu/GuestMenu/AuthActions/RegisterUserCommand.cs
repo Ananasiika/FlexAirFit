@@ -70,7 +70,7 @@ public class RegisterUserCommand : Command
                 else
                 {
                     isIncorrect = false;
-                    role = (UserRole)parsedNumber;
+                    role = (UserRole)(parsedNumber - 1);
                 }
             }
             else
