@@ -9,6 +9,7 @@ using FlexAirFit.Database.Converters;
 using FlexAirFit.Database.Context;
 using FlexAirFit.Database.Models;
 using Microsoft.EntityFrameworkCore;
+using NpgsqlTypes;
 
 namespace FlexAirFit.Database.Repositories;
 

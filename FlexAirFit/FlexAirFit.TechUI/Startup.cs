@@ -12,6 +12,9 @@ internal class Startup(IConfiguration config,
     private Context _context = context;
 
     private readonly Menu _guestMenu = menus[0];
+    private readonly Menu _clientMenu = menus[1];
+    private readonly Menu _adminMenu = menus[2];
+    private readonly Menu _trainerMenu = menus[3];
 
     public async Task Run()
     {

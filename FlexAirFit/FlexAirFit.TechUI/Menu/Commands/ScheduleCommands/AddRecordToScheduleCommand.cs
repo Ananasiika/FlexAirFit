@@ -38,6 +38,7 @@ public class AddRecordToScheduleCommand : Command
             Console.WriteLine("[!] Введенные дата и время должны быть не в прошлом...");
             return;
         }
+        DateTime utcDateTime = dateAndTime.ToUniversalTime();
 
         Console.Write("Введите id клиента (если тренировка групповая, нажмите Enter): ");
         string clientIdInput = Console.ReadLine();
@@ -50,7 +51,7 @@ public class AddRecordToScheduleCommand : Command
                 return;
             }
 
-            if (context.ClientService.CheckIfClientExists(tempClientId).Result)
+            if (!context.ClientService.CheckIfClientExists(tempClientId).Result)
             {
                 Console.WriteLine("[!] Клиента с таким id не существует");
                 return;
@@ -59,7 +60,7 @@ public class AddRecordToScheduleCommand : Command
             clientId = tempClientId;
         }
 
-        Schedule newScheduleItem = new Schedule(Guid.NewGuid(), workoutId, dateAndTime, clientId);
+        Schedule newScheduleItem = new Schedule(Guid.NewGuid(), workoutId, utcDateTime, clientId);
 
         await context.ScheduleService.CreateSchedule(newScheduleItem);
         Console.WriteLine("Запись успешно добавлена в расписание.");

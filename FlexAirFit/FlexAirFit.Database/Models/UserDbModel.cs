@@ -20,7 +20,7 @@ public class UserDbModel
     public string Email { get; set; }
 
     [Required]
-    [Column("password_hashed", TypeName = "varchar(100)")]
+    [Column("password", TypeName = "varchar(100)")]
     public string PasswordHashed { get; set; }
 
     public UserDbModel(Guid id, UserRole role, string email, string passwordHashed)

@@ -58,7 +58,7 @@ public class RegisterUserCommand : Command
         
         do
         {
-            Console.Write("Введите номер роли: 1 - клиент, 2 - админ, 3 - тренер ");
+            Console.Write("Введите номер роли (1 - клиент, 2 - админ, 3 - тренер): ");
             numRole = Console.ReadLine();
             if (int.TryParse(numRole, out int parsedNumber))
             {
@@ -84,10 +84,12 @@ public class RegisterUserCommand : Command
 
         try
         {
-            var user = new User(Guid.NewGuid(),
+            var userId = Guid.NewGuid();
+            var user = new User(userId,
                                 role,
                                 email,
                                 password);
+            await context.UserService.CreateUser(user, password, role);
             context.CurrentUser = user;
             Console.WriteLine("Регистрация прошла успешно");
         }

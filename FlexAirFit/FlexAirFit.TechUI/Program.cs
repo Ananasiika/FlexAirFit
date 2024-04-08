@@ -6,7 +6,10 @@ using Microsoft.EntityFrameworkCore;
 using FlexAirFit.Application.IRepositories;
 using FlexAirFit.Database.Repositories;
 using FlexAirFit.Application.Services;
+using FlexAirFit.TechUI.AdminMenu;
 using FlexAirFit.TechUI.BaseMenu;
+using FlexAirFit.TechUI.ClientMenu;
+using FlexAirFit.TechUI.TrainerMenu;
 using FlexAitFit.TechUI.GuestMenu;
 
 namespace FlexAirFit.TechUI;
@@ -27,7 +30,10 @@ internal static class Program
 
             var menus = new List<Menu>
             {
-                new GuestMenuBuilder().BuildMenu()
+                new GuestMenuBuilder().BuildMenu(),
+                new ClientMenuBuilder().BuildMenu(),
+                new AdminMenuBuilder().BuildMenu(),
+                new TrainerMenuBuilder().BuildMenu()
             };
 
             services.AddSingleton(config);
@@ -64,8 +70,7 @@ internal static class Program
         await using var context = host.Services.GetRequiredService<FlexAirFitDbContext>();
 
         await context.Database.MigrateAsync();
-
-
+        
         using (var serviceScope = host.Services.CreateAsyncScope())
         {
             var services = serviceScope.ServiceProvider;

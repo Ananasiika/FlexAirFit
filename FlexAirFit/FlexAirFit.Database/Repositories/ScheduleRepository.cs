@@ -23,8 +23,16 @@ public class ScheduleRepository : IScheduleRepository
 
     public async Task AddScheduleAsync(Schedule schedule)
     {
-        await _context.Schedules.AddAsync(ScheduleConverter.CoreToDbModel(schedule));
-        await _context.SaveChangesAsync();
+        try
+        {
+            await _context.Schedules.AddAsync(ScheduleConverter.CoreToDbModel(schedule));
+            await _context.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Exception: " + ex.Message);
+            Console.WriteLine("Inner Exception: " + ex.InnerException.Message);
+        }
     }
 
     public async Task<Schedule> UpdateScheduleAsync(Schedule schedule)
