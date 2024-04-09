@@ -6,7 +6,7 @@ namespace FlexAirFit.Application.IRepositories;
 public interface IWorkoutRepository
 {
     Task AddWorkoutAsync(Workout workout);
-    Task<Workout> UpdateWorkoutAsync(string? name, string? description, Guid? idTrainer, TimeSpan? duration, int? level);
+    Task<Workout> UpdateWorkoutAsync(Guid idWorkout, string? name, string? description, Guid? idTrainer, TimeSpan? duration, int? level);
     Task DeleteWorkoutAsync(Guid id);
     Task<List<Workout>> GetWorkoutByFilterAsync(FilterWorkout filter);
     Task<Workout> GetWorkoutByIdAsync(Guid id);
