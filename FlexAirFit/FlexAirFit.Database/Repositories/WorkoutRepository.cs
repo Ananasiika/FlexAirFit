@@ -28,9 +28,9 @@ public class WorkoutRepository : IWorkoutRepository
         await _context.SaveChangesAsync();
     }
 
-    public async Task<Workout> UpdateWorkoutAsync(string? name, string? description, Guid? idTrainer, TimeSpan? duration, int? level)
+    public async Task<Workout> UpdateWorkoutAsync(Guid idWorkout, string? name, string? description, Guid? idTrainer, TimeSpan? duration, int? level)
     {
-        var workoutDbModel = await _context.Workouts.FindAsync(workout.Id);
+        var workoutDbModel = await _context.Workouts.FindAsync(idWorkout);
         workoutDbModel.Name = (name is null) ? workoutDbModel.Name : name;
         workoutDbModel.Description = (description is null) ? workoutDbModel.Description : description;
         workoutDbModel.IdTrainer = (idTrainer == Guid.Empty) ? workoutDbModel.IdTrainer : idTrainer;
