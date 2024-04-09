@@ -10,4 +10,5 @@ public interface IBonusService
     Task<Bonus> GetBonusById(Guid id);
     Task<List<Bonus>> GetBonuses(int? limit, int? offset);
     Task<int> GetCountBonusByIdClient(Guid id);
+    Task UpdateCountBonusByIdClient(Guid idClient, int newCount);
 }

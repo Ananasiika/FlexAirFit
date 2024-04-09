@@ -25,6 +25,7 @@ public class TrainerRepository : ITrainerRepository
     {
         await _context.Trainers.AddAsync(TrainerConverter.CoreToDbModel(trainer));
         await _context.SaveChangesAsync();
+        
     }
 
     public async Task<Trainer> UpdateTrainerAsync(Trainer trainer)

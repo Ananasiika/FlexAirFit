@@ -34,7 +34,6 @@ public class ClientRepository : IClientRepository
         clientDbModel.DateOfBirth = client.DateOfBirth;
         clientDbModel.MembershipEnd = client.MembershipEnd;
         clientDbModel.RemainFreezing = client.RemainFreezing;
-        clientDbModel.IsFreezing = client.IsFreezing;
 
         await _context.SaveChangesAsync();
         return ClientConverter.DbToCoreModel(clientDbModel);

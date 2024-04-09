@@ -9,4 +9,5 @@ public interface IMembershipService
     Task DeleteMembership(Guid id);
     Task<Membership> GetMembershipById(Guid id);
     Task<List<Membership>> GetMemberships(int? limit, int? offset);
+    Task<bool> CheckIfMembershipExists(Guid membershipId);
 }

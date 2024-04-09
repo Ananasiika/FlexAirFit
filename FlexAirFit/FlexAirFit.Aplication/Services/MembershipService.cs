@@ -45,4 +45,13 @@ public class MembershipService(IMembershipRepository membershipRepository) : IMe
     {
         return await _membershipRepository.GetMembershipsAsync(limit, offset);
     }
+    
+    public async Task<bool> CheckIfMembershipExists(Guid idMembership)
+    {
+        if (await _membershipRepository.GetMembershipByIdAsync(idMembership) is null)
+        {
+            return false;
+        }
+        return true;
+    }
 }

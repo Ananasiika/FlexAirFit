@@ -36,8 +36,7 @@ public static class ClientConverter
                 dateOfBirth: model.DateOfBirth,
                 idMembership: model.IdMembership,
                 membershipEnd: model.MembershipEnd,
-                remainFreezing: model.RemainFreezing,
-                isFreezing: model.IsFreezing)
+                remainFreezing: model.RemainFreezing)
             : default;
     }
 }

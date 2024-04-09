@@ -37,6 +37,15 @@ public class TrainerService(ITrainerRepository trainerRepository) : ITrainerServ
         await _trainerRepository.DeleteTrainerAsync(idTrainer);
     }
     
+    public async Task<bool> CheckIfTrainerExists(Guid idTrainer)
+    {
+        if (await _trainerRepository.GetTrainerByIdAsync(idTrainer) is null)
+        {
+            return false;
+        }
+        return true;
+    }
+    
     public async Task<Trainer> GetTrainerById(Guid idTrainer)
     {
         return await _trainerRepository.GetTrainerByIdAsync(idTrainer) ?? throw new TrainerNotFoundException(idTrainer);

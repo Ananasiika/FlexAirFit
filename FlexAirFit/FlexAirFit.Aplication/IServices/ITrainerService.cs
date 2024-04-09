@@ -12,4 +12,5 @@ public interface ITrainerService
     Task<List<Trainer>> GetTrainers(int? limit, int? offset);
     Task<List<Trainer>> GetTrainerByFilter(FilterTrainer filter);
     Task<string> GetTrainerNameById(Guid id);
+    Task<bool> CheckIfTrainerExists(Guid trainerId);
 }

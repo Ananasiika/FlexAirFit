@@ -38,10 +38,10 @@ public class ClientDbModel
     public int? RemainFreezing { get; set; }
 
     [Required]
-    [Column("is_freezing")]
-    public bool IsFreezing { get; set; }
+    [Column("is_membership_active")]
+    public bool IsMembershipActive { get; }
 
-    public ClientDbModel(Guid id, Guid idUser, string name, string gender, DateOnly dateOfBirth, Guid idMembership, DateOnly membershipEnd, int? remainFreezing, bool isFreezing)
+    public ClientDbModel(Guid id, Guid idUser, string name, string gender, DateOnly dateOfBirth, Guid idMembership, DateOnly membershipEnd, int? remainFreezing)
     {
         Id = id;
         IdUser = idUser;
@@ -51,7 +51,6 @@ public class ClientDbModel
         IdMembership = idMembership;
         MembershipEnd = membershipEnd;
         RemainFreezing = remainFreezing;
-        IsFreezing = isFreezing;
     }
     
     public List<ProductDbModel> Products { get; } = [];

@@ -29,17 +29,17 @@ internal class Startup(IConfiguration config,
             }
             else if (_context.CurrentUser.Role == UserRole.Client)
             {
-                Console.WriteLine($"Статус пользователя: Авторизованный Client");
+                Console.WriteLine($"Статус пользователя: Авторизованный клиент");
                 choice = await _clientMenu.Execute(_context);
             }
             else if (_context.CurrentUser.Role == UserRole.Admin)
             {
-                Console.WriteLine($"Статус пользователя: Авторизованный Admin");
+                Console.WriteLine($"Статус пользователя: Авторизованный администратор");
                 choice = await _adminMenu.Execute(_context);
             }
             else 
             {
-                Console.WriteLine($"Статус пользователя: Авторизованный Trainer");
+                Console.WriteLine($"Статус пользователя: Авторизованный тренер");
                 choice = await _trainerMenu.Execute(_context);
             }
         } while (choice != 0);

@@ -22,12 +22,27 @@ public class RegisterUserCommand : Command
 
         do
         {
+            Console.Write("Введите адрес электронной почты: ");
+            email = Console.ReadLine();
+            if (email is null || !email.Contains('@') || !email.Contains('.'))
+            {
+                isIncorrect = true;
+                Console.WriteLine("Ошибка: Введенный адрес имеет некорректный формат");
+            }
+            else
+            {
+                isIncorrect = false;
+            }
+        } while (isIncorrect);
+        
+        do
+        {
             Console.Write("Введите пароль: ");
             password = Console.ReadLine();
             if (password is null || password.Length < 3)
             {
                 isIncorrect = true;
-                Console.WriteLine("[!] Пароль должен содержать 8 символов и более");
+                Console.WriteLine("Ошибка: Пароль должен содержать 8 символов и более");
             }
             else
             {
@@ -40,21 +55,6 @@ public class RegisterUserCommand : Command
             Console.Write("-> Подтвердите пароль: ");
             passwordVerify = Console.ReadLine();
         } while (password != passwordVerify);
-
-        do
-        {
-            Console.Write("Введите адрес электронной почты: ");
-            email = Console.ReadLine();
-            if (email is null || !email.Contains('@') || !email.Contains('.'))
-            {
-                isIncorrect = true;
-                Console.WriteLine("[!] Введенный адрес имеет некорректный формат");
-            }
-            else
-            {
-                isIncorrect = false;
-            }
-        } while (isIncorrect);
         
         do
         {
@@ -65,7 +65,7 @@ public class RegisterUserCommand : Command
                 if (parsedNumber < 1 || parsedNumber > 3)
                 {
                     isIncorrect = true;
-                    Console.WriteLine("[!] Введенное значение не 1, 2 или 3");
+                    Console.WriteLine("Ошибка: Введенное значение не 1, 2 или 3");
                 }
                 else
                 {
@@ -76,28 +76,171 @@ public class RegisterUserCommand : Command
             else
             {
                 isIncorrect = true;
-                Console.WriteLine("[!] Введено не число");
+                Console.WriteLine("Ошибка: Введено не число");
             }
         } while (isIncorrect);
+        
+        var userId = Guid.NewGuid();
+        var user = new User(userId,
+            role,
+            email,
+            password);
 
-        bool makeUser = context.CurrentUser is not null;
+        if (role == UserRole.Client)
+        {
+            Console.WriteLine("Введите ваше имя:");
+            string name = Console.ReadLine();
 
-        try
-        {
-            var userId = Guid.NewGuid();
-            var user = new User(userId,
-                                role,
-                                email,
-                                password);
-            await context.UserService.CreateUser(user, password, role);
-            context.CurrentUser = user;
-            Console.WriteLine("Регистрация прошла успешно");
+            Console.WriteLine("Выберите ваш пол (male, female3):");
+            string gender = Console.ReadLine();
+            
+            DateOnly dateOfBirth;
+            do
+            {
+                Console.WriteLine("Введите вашу дату рождения в формате YYYY-MM-DD:");
+                if (!DateOnly.TryParse(Console.ReadLine(), out dateOfBirth))
+                {
+                    isIncorrect = true;
+                    Console.WriteLine("Ошибка: Неверный формат даты рождения");
+                }
+                else
+                {
+                    isIncorrect = false;
+                }
+            } while (isIncorrect);
+
+            Guid idMembership;
+            do
+            {
+                Console.WriteLine("Введите ID абонемента:");
+                if (!Guid.TryParse(Console.ReadLine(), out idMembership))
+                {
+                    Console.WriteLine("Ошибка: Неверный формат ID абонемента.");
+                    isIncorrect = true;
+                }
+                else if (!context.MembershipService.CheckIfMembershipExists(idMembership).Result)
+                {
+                    isIncorrect = true;
+                    Console.WriteLine("Ошибка: Абонемента с таким id не существует");
+                }
+                else
+                {
+                    isIncorrect = false;
+                }
+            } while (isIncorrect);
+
+            Membership membership = context.MembershipService.GetMembershipById(idMembership).Result;
+            Guid idClient = Guid.NewGuid();
+            Client client = new(idClient, userId, name, gender, dateOfBirth, idMembership, DateOnly.FromDateTime(DateTime.Today.Add(membership.Duration)), membership.Freezing, new List<Tuple<DateOnly, DateOnly>>());
+            Bonus bonus = new(Guid.NewGuid(), idClient, 0);
+            try
+            {
+                await context.UserService.CreateUser(user, password, role);
+                await context.ClientService.CreateClient(client);
+                await context.BonusService.CreateBonus(bonus);
+                context.CurrentUser = user;
+                Console.WriteLine("Регистрация прошла успешно");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"\nОшибка: {ex.Message}\n");
+                Console.WriteLine("Inner Exception: " + ex.InnerException.Message);
+                return;
+            }
         }
-        catch (Exception ex)
+        else if (role == UserRole.Trainer)
         {
-            Console.WriteLine($"\n[!] {ex.Message}\n");
-            return;
+            Console.WriteLine("Введите ваше имя:");
+            string name = Console.ReadLine();
+
+            Console.WriteLine("Выберите ваш пол (male, female):");
+            string gender = Console.ReadLine();
+            
+            Console.WriteLine("Введите вашу специализацию:");
+            string specialization = Console.ReadLine();
+
+            int experience;
+            do
+            {
+                Console.WriteLine("Введите ваш опыт:");
+                if (!int.TryParse(Console.ReadLine(), out experience))
+                {
+                    isIncorrect = true;
+                    Console.WriteLine("Ошибка: Неверный формат количества лет опыта");
+                }
+                else
+                {
+                    isIncorrect = false;
+                }
+            } while (isIncorrect);
+            
+            int rating;
+            do
+            {
+                Console.WriteLine("Введите ваш рейтинг (от 1 до 5):");
+                if (!int.TryParse(Console.ReadLine(), out rating) || rating < 1 || rating > 5)
+                {
+                    isIncorrect = true;
+                    Console.WriteLine("Ошибка: Неверный формат рейтинга");
+                }
+                else
+                {
+                    isIncorrect = false;
+                }
+            } while (isIncorrect);
+
+            Trainer trainer = new(Guid.NewGuid(), userId, name, gender, specialization, experience, rating);
+            try
+            {
+                await context.UserService.CreateUser(user, password, role);
+                await context.TrainerService.CreateTrainer(trainer);
+                context.CurrentUser = user;
+                Console.WriteLine("Регистрация прошла успешно");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"\nОшибка: {ex.Message}\n");
+                return;
+            }
         }
+        else
+        {
+            Console.WriteLine("Введите ваше имя:");
+            string name = Console.ReadLine();
+            
+            DateTime dateOfBirth;
+            do
+            {
+                Console.WriteLine("Введите вашу дату рождения в формате YYYY-MM-DD:");
+                if (!DateTime.TryParse(Console.ReadLine(), out dateOfBirth))
+                {
+                    isIncorrect = true;
+                    Console.WriteLine("Ошибка: Неверный формат даты рождения");
+                }
+                else
+                {
+                    isIncorrect = false;
+                }
+            } while (isIncorrect);
+            
+            Console.WriteLine("Выберите ваш пол (male, female):");
+            string gender = Console.ReadLine();
+
+            Admin admin = new(Guid.NewGuid(), userId, name, dateOfBirth.ToUniversalTime(), gender);
+            try
+            {
+                await context.UserService.CreateUser(user, password, role);
+                await context.AdminService.CreateAdmin(admin);
+                context.CurrentUser = user;
+                Console.WriteLine("Регистрация прошла успешно");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"\nОшибка: {ex.Message}\n");
+                return;
+            }
+        }
+
     }
 }
 

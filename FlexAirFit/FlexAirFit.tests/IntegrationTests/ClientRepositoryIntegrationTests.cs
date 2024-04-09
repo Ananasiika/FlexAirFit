@@ -53,7 +53,7 @@ namespace FlexAirFit.Database.Repositories.Tests
             Assert.Equal(client.IdMembership, clientDbModel.IdMembership);
             Assert.Equal(client.MembershipEnd, clientDbModel.MembershipEnd);
             Assert.Null(clientDbModel.RemainFreezing);
-            Assert.False(clientDbModel.IsFreezing);
+            Assert.False(clientDbModel.IsMembershipActive);
         }
 
         [Fact]

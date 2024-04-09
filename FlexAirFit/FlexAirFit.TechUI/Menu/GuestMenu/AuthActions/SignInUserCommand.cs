@@ -21,7 +21,7 @@ public class SignInUserCommand : Command
 
         if (email is null && password is null)
         {
-            Console.WriteLine("[!] Неверный ввод\n");
+            Console.WriteLine("Ошибка: Неверный ввод\n");
             return;
         }
 
@@ -33,7 +33,7 @@ public class SignInUserCommand : Command
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"\n[!] {ex.Message}\n");
+            Console.WriteLine($"\nОшибка: {ex.Message}\n");
         }
     }
 }

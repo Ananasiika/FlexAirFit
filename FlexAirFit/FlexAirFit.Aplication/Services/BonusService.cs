@@ -50,4 +50,9 @@ public class BonusService(IBonusRepository bonusRepository) : IBonusService
     {
         return await _bonusRepository.GetCountBonusByIdClientAsync(id);
     }
+    
+    public async Task UpdateCountBonusByIdClient(Guid idClient, int newCount)
+    {
+        await _bonusRepository.UpdateCountBonusByIdClientAsync(idClient, newCount);
+    }
 }

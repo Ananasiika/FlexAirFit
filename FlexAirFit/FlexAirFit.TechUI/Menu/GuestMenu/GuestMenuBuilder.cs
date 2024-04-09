@@ -1,4 +1,5 @@
 using FlexAirFit.TechUI.BaseMenu;
+using FlexAirFit.TechUI.Commands.ScheduleCommands;
 using FlexAirFit.TechUI.GuestMenu.AuthActions;
 
 namespace FlexAitFit.TechUI.GuestMenu;
@@ -15,6 +16,11 @@ public class GuestMenuBuilder : MenuBuilder
         menu.AddLabel(new("Авторизоваться",
         [
             new SignInUserCommand()
+        ]));
+        menu.AddLabel(new("Действия с расписанием",
+        [
+            new ViewScheduleCommand(),
+            new ViewScheduleWithFilterCommand()
         ]));
         return menu;
     }

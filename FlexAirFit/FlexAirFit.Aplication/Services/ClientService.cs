@@ -69,6 +69,11 @@ public class ClientService(IClientRepository clientRepository) : IClientService
         {
             throw new InvalidFreezingException("Duration exceeds remaining freezing days.");
         }
+        
+        if (DateOnly.FromDateTime(DateTime.Today) > FreezingStart)
+        {
+            throw new InvalidFreezingException("The start date of freezing must be no earlier than today.");
+        }
 
         var dateToCheck = new Tuple<DateOnly, DateOnly>(FreezingStart, FreezingStart.AddDays(durationInDays));
         if (client.FreezingIntervals.Any(interval => CheckOverlap(interval, dateToCheck)))
