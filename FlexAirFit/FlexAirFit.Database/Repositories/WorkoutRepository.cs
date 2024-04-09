@@ -28,14 +28,14 @@ public class WorkoutRepository : IWorkoutRepository
         await _context.SaveChangesAsync();
     }
 
-    public async Task<Workout> UpdateWorkoutAsync(Workout workout)
+    public async Task<Workout> UpdateWorkoutAsync(string? name, string? description, Guid? idTrainer, TimeSpan? duration, int? level)
     {
         var workoutDbModel = await _context.Workouts.FindAsync(workout.Id);
-        workoutDbModel!.Name = workout.Name;
-        workoutDbModel!.Description = workout.Description;
-        workoutDbModel!.IdTrainer = workout.IdTrainer;
-        workoutDbModel!.Duration = workout.Duration;
-        workoutDbModel!.Level = workout.Level;
+        workoutDbModel.Name = (name is null) ? workoutDbModel.Name : name;
+        workoutDbModel.Description = (description is null) ? workoutDbModel.Description : description;
+        workoutDbModel.IdTrainer = (idTrainer == Guid.Empty) ? workoutDbModel.IdTrainer : idTrainer;
+        workoutDbModel.Duration = (duration == TimeSpan.Zero) ? workoutDbModel.Duration : duration;
+        workoutDbModel.Level = (level == 0) ? workoutDbModel.Level : level;
 
         await _context.SaveChangesAsync();
         return WorkoutConverter.DbToCoreModel(workoutDbModel)!;
