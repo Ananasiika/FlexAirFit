@@ -26,14 +26,16 @@ public class ClientRepository : IClientRepository
         await _context.SaveChangesAsync();
     }
 
-    public async Task<Client> UpdateClientAsync(Client client)
+    public async Task<Client> UpdateClientAsync(Guid idClient, string? name, string? gender, DateOnly? dateOfBirth, Guid? idMembership, DateOnly? membershipEnd, int? remainFreezing, List<Tuple<DateOnly, DateOnly>>? freezingIntervals);
     {
-        var clientDbModel = await _context.Clients.FindAsync(client.Id);
-        clientDbModel.Name = client.Name;
-        clientDbModel.Gender = client.Gender;
-        clientDbModel.DateOfBirth = client.DateOfBirth;
-        clientDbModel.MembershipEnd = client.MembershipEnd;
-        clientDbModel.RemainFreezing = client.RemainFreezing;
+        var clientDbModel = await _context.Clients.FindAsync(idClient);
+        clientDbModel.Name = (name is null) ? clientDbModel.Name : name;
+        clientDbModel.Gender = (gender is null) ? clientDbModel.Gender : gender;
+        clientDbModel.DateOfBirth = (dateOfBirth == null) ? clientDbModel.DateOfBirth : dateOfBirth;
+        clientDbModel.IdMembership = (idMembership == Guid.Empty) ? clientDbModel.IdMembership : idMembership;
+        clientDbModel.MembershipEnd = (membershipEnd == null) ? clientDbModel.MembershipEnd : membershipEnd;
+        clientDbModel.RemainFreezing = (remainFreezing == 0) ? clientDbModel.RemainFreezing : remainFreezing;
+        clientDbModel.FreezingIntervals = (freezingIntervals is null) ? clientDbModel.FreezingIntervals : freezingIntervals;
 
         await _context.SaveChangesAsync();
         return ClientConverter.DbToCoreModel(clientDbModel);
