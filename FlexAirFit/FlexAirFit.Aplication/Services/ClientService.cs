@@ -19,13 +19,13 @@ public class ClientService(IClientRepository clientRepository) : IClientService
         await _clientRepository.AddClientAsync(client);
     }
 
-    public async Task<Client> UpdateClient(Client client)
+    public async Task<Client> UpdateClient(Guid idClient, string? name, string? gender, DateOnly? dateOfBirth, Guid? idMembership, DateOnly? membershipEnd, int? remainFreezing, List<Tuple<DateOnly, DateOnly>>? freezingIntervals);
     {
-        if (await _clientRepository.GetClientByIdAsync(client.Id) is null)
+        if (await _clientRepository.GetClientByIdAsync(idClient) is null)
         {
-            throw new ClientNotFoundException(client.Id);
+            throw new ClientNotFoundException(idClient);
         }
-        return await _clientRepository.UpdateClientAsync(client);
+        return await _clientRepository.UpdateClientAsync(idClient, name, gender, dateOfBirth, idMembership, membershipEnd, remainFreezing, freezingIntervals);
     }
 
     public async Task DeleteClient(Guid idClient)
