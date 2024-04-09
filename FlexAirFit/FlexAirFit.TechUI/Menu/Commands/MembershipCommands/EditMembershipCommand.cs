@@ -63,15 +63,8 @@ public class EditMembershipCommand : Command
                 return;
             }
         }
-
-        Membership membership = await context.MembershipService.GetMembershipById(membershipId);
-
-        membership.Duration = (duration == TimeSpan.Zero) ? membership.Duration : duration;
-        membership.Name = name;
-        membership.Freezing = (freezing == 0) ? membership.Freezing : freezing;
-        membership.Price = (price == 0) ? membership.Price : price;
         
-        await context.MembershipService.UpdateMembership(membership);
+        await context.MembershipService.UpdateMembership(membershipId, name, duration, freezing, price);
         Console.WriteLine("Абонемент успешно изменен.");
     }
 }
