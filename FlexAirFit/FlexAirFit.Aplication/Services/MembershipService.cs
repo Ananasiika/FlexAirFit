@@ -18,13 +18,13 @@ public class MembershipService(IMembershipRepository membershipRepository) : IMe
         await _membershipRepository.AddMembershipAsync(membership);
     }
 
-    public async Task<Membership> UpdateMembership(Membership membership)
+    public async Task<Membership> UpdateMembership(Guid membershipId, string? name, TimeSpan? duration, int? price, int? freezing)
     {
-        if (await _membershipRepository.GetMembershipByIdAsync(membership.Id) is null)
+        if (await _membershipRepository.GetMembershipByIdAsync(membershipId) is null)
         {
-            throw new MembershipNotFoundException(membership.Id);
+            throw new MembershipNotFoundException(membershipId);
         }
-        return await _membershipRepository.UpdateMembershipAsync(membership);
+        return await _membershipRepository.UpdateMembershipAsync(membershipId, name, duration, price, freezing);
     }
 
     public async Task DeleteMembership(Guid idMembership)
