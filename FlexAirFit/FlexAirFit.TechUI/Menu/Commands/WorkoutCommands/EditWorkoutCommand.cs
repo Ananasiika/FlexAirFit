@@ -67,7 +67,7 @@ public class EditWorkoutCommand : Command
             }
         }        
         
-        await context.WorkoutService.UpdateWorkout(name, description, idTrainer, duration, level);
+        await context.WorkoutService.UpdateWorkout(workoutId, name, description, idTrainer, duration, level);
         Console.WriteLine("Тренировка успешно обновлена.");
     }
 }
