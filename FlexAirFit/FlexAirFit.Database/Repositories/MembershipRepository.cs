@@ -26,13 +26,13 @@ public class MembershipRepository : IMembershipRepository
         await _context.SaveChangesAsync();
     }
 
-    public async Task<Membership> UpdateMembershipAsync(Membership membership)
+    public async Task<Membership> UpdateMembershipAsync(Guid membershipId, string? name, TimeSpan? duration, int? price, int? freezing)
     {
-        var membershipDbModel = await _context.Memberships.FindAsync(membership.Id);
-        membershipDbModel.Name = membership.Name;
-        membershipDbModel.Duration = membership.Duration;
-        membershipDbModel.Price = membership.Price;
-        membershipDbModel.Freezing = membership.Freezing;
+        var membershipDbModel = await _context.Memberships.FindAsync(membershipId);
+        membershipDbModel.Name = (name is null) ? membershipDbModel.Name : name;
+        membershipDbModel.Duration = (duration == TimeSpan.Zero) ? membershipDbModel.Duration : duration;
+        membershipDbModel.Price = (price == 0) ? membershipDbModel.Price : price;
+        membershipDbModel.Freezing = (freezing == 0) ? membershipDbModel.Freezing : freezing;
 
         await _context.SaveChangesAsync();
         return MembershipConverter.DbToCoreModel(membershipDbModel);
