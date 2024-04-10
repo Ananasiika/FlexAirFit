@@ -5,9 +5,10 @@ namespace FlexAirFit.Application.IServices;
 public interface IClientService
 {
     Task CreateClient(Client client);
-    Task<Client> UpdateClient(Guid idClient, string? name, string? gender, DateOnly? dateOfBirth, Guid? idMembership, DateOnly? membershipEnd, int? remainFreezing, List<Tuple<DateOnly, DateOnly>>? freezingIntervals);
+    Task<Client> UpdateClient(Client client);
     Task DeleteClient(Guid id);
     Task<Client> GetClientById(Guid id);
+    Task<Client> GetClientByIdUser(Guid id);
     Task<List<Client>> GetClients(int? limit, int? offset);
     Task FreezeMembership(Guid idClient, DateOnly FreezingStart, int durationInDays);
     Task<DateOnly> GetMembershipEndDate(Guid idClient);

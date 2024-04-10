@@ -3,6 +3,9 @@ using FlexAirFit.TechUI.BaseMenu;
 using FlexAirFit.TechUI.Commands.ScheduleCommands;
 using FlexAirFit.TechUI.Commands.WorkoutCommands;
 using FlexAirFit.TechUI.Commands.BonusCommands;
+using FlexAirFit.TechUI.Commands.ClientCommands;
+using FlexAirFit.TechUI.Commands.ClientProductCommands;
+using FlexAirFit.TechUI.Commands.FreezingCommands;
 
 namespace FlexAirFit.TechUI.ClientMenu;
 
@@ -25,6 +28,18 @@ public class ClientMenuBuilder : MenuBuilder
         menu.AddLabel(new("Посмотреть количество своих бонусов",
         [
             new ViewClientBonusesCommand()
+        ]));
+        menu.AddLabel(new("Посмотреть информацию об абонементе",
+        [
+            new ViewInformationAboutClientMembershipCommand()
+        ]));
+        menu.AddLabel(new("Заморозить абонемент",
+        [
+            new FreezeMembershipCommand()
+        ]));
+        menu.AddLabel(new("Купить товар",
+        [
+            new BuyClientProductCommand()
         ]));
         menu.AddLabel(new("Выйти из аккаунта",
         [

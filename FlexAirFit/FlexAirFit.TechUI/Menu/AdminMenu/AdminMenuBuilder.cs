@@ -3,6 +3,8 @@ using FlexAirFit.TechUI.BaseMenu;
 using FlexAirFit.TechUI.Commands.ScheduleCommands;
 using FlexAirFit.TechUI.Commands.WorkoutCommands;
 using FlexAirFit.TechUI.Commands.BonusCommands;
+using FlexAirFit.TechUI.Commands.FreezingCommands;
+using FlexAirFit.TechUI.Commands.ProductCommands;
 
 namespace FlexAirFit.TechUI.AdminMenu;
 
@@ -28,6 +30,14 @@ public class AdminMenuBuilder : MenuBuilder
         [
             new EditClientBonusesCommand(),
             new ViewClientBonusesCommand()
+        ]));
+        menu.AddLabel(new("Заморозить абонемент клиента",
+        [
+            new FreezeMembershipByAdminCommand()
+        ]));
+        menu.AddLabel(new("Добавить новый товар",
+        [
+            new AddProductCommand()
         ]));
         menu.AddLabel(new("Выйти из аккаунта",
         [

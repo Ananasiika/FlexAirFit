@@ -19,13 +19,13 @@ public class ClientService(IClientRepository clientRepository) : IClientService
         await _clientRepository.AddClientAsync(client);
     }
 
-    public async Task<Client> UpdateClient(Guid idClient, string? name, string? gender, DateOnly? dateOfBirth, Guid? idMembership, DateOnly? membershipEnd, int? remainFreezing, List<Tuple<DateOnly, DateOnly>>? freezingIntervals);
+    public async Task<Client> UpdateClient(Client client)
     {
-        if (await _clientRepository.GetClientByIdAsync(idClient) is null)
+        if (await _clientRepository.GetClientByIdAsync(client.Id) is null)
         {
-            throw new ClientNotFoundException(idClient);
+            throw new ClientNotFoundException(client.Id);
         }
-        return await _clientRepository.UpdateClientAsync(idClient, name, gender, dateOfBirth, idMembership, membershipEnd, remainFreezing, freezingIntervals);
+        return await _clientRepository.UpdateClientAsync(client);
     }
 
     public async Task DeleteClient(Guid idClient)
@@ -35,6 +35,11 @@ public class ClientService(IClientRepository clientRepository) : IClientService
             throw new ClientNotFoundException(idClient);
         }
         await _clientRepository.DeleteClientAsync(idClient);
+    }
+
+    public async Task<Client> GetClientByIdUser(Guid id)
+    {
+        return await _clientRepository.GetClientByIdUserAsync(id) ?? throw new ClientUserNotFoundException(id);
     }
     
     public async Task<Client> GetClientById(Guid idClient)
@@ -74,22 +79,29 @@ public class ClientService(IClientRepository clientRepository) : IClientService
         {
             throw new InvalidFreezingException("The start date of freezing must be no earlier than today.");
         }
-
+        
         var dateToCheck = new Tuple<DateOnly, DateOnly>(FreezingStart, FreezingStart.AddDays(durationInDays));
-        if (client.FreezingIntervals.Any(interval => CheckOverlap(interval, dateToCheck)))
+        if (client.FreezingIntervals != null)
         {
-            throw new InvalidFreezingException("Requested freezing period overlaps with existing intervals.");
+            if (client.FreezingIntervals.Any(interval => CheckOverlap(interval, dateToCheck)))
+            {
+                throw new InvalidFreezingException("Requested freezing period overlaps with existing intervals.");
+            } 
         }
-
+        
         client.RemainFreezing -= durationInDays;
-        client.FreezingIntervals.Add(dateToCheck);
+        if (client.FreezingIntervals == null)
+        {
+            client.FreezingIntervals = new List<Tuple<DateOnly, DateOnly>>();
+        }
         client.MembershipEnd = client.MembershipEnd.AddDays(durationInDays);
-
         await _clientRepository.UpdateClientAsync(client);
     }
 
     private bool CheckOverlap(Tuple<DateOnly, DateOnly> existingInterval, Tuple<DateOnly, DateOnly> newInterval)
     {
+        if (existingInterval == null)
+            return false;
         return (existingInterval.Item1 <= newInterval.Item1 && newInterval.Item1 <= existingInterval.Item2) ||
                (existingInterval.Item1 <= newInterval.Item2 && newInterval.Item2 <= existingInterval.Item2) ||
                (newInterval.Item1 <= existingInterval.Item1 && existingInterval.Item2 <= newInterval.Item2);

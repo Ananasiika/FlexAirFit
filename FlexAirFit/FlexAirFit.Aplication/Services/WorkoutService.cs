@@ -20,13 +20,13 @@ public class WorkoutService(IWorkoutRepository workoutRepository,
         await _workoutRepository.AddWorkoutAsync(workout);
     }
 
-    public async Task<Workout> UpdateWorkout(Guid idWorkout, string? name, string? description, Guid? idTrainer, TimeSpan? duration, int? level);
+    public async Task<Workout> UpdateWorkout(Workout workout)
     {
-        if (await _workoutRepository.GetWorkoutByIdAsync(idWorkout) is null)
+        if (await _workoutRepository.GetWorkoutByIdAsync(workout.Id) is null)
         {
-            throw new WorkoutNotFoundException(idWorkout);
+            throw new WorkoutNotFoundException(workout.Id);
         }
-        return await _workoutRepository.UpdateWorkoutAsync(idWorkout, name, description, idTrainer, duration, level);
+        return await _workoutRepository.UpdateWorkoutAsync(workout);
     }
 
     public async Task DeleteWorkout(Guid idWorkout)

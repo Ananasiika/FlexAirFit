@@ -1,4 +1,5 @@
-﻿using FlexAirFit.TechUI.BaseMenu;
+﻿using FlexAirFit.Core.Models;
+using FlexAirFit.TechUI.BaseMenu;
 
 namespace FlexAirFit.TechUI.Commands.FreezingCommands;
 
@@ -18,14 +19,29 @@ public class FreezeMembershipCommand : Command
             Console.WriteLine("Ошибка: Неверный формат количества дней для заморозки.");
             return;
         }
-        DateOnly dateStartFreezing;
+        
         Console.WriteLine("Введите дату начала заморозки YYYY-MM-DD:");
-        if (!DateOnly.TryParse(Console.ReadLine(), out dateStartFreezing))
+        if (!DateOnly.TryParse(Console.ReadLine(), out DateOnly dateStartFreezing))
         {
             Console.WriteLine("Ошибка: Неверный формат даты начала заморозки");
             return;
         }
-
-        await context.ClientService.FreezeMembership(context.CurrentUser.Id, dateStartFreezing, days);
+        
+        Client client = await context.ClientService.GetClientByIdUser(context.CurrentUser.Id);
+        try
+        {
+            await context.ClientService.FreezeMembership(client.Id, dateStartFreezing, days);
+        }
+        catch (Exception ex)
+        {
+            if (ex.InnerException != null)
+            {
+                Console.WriteLine("Inner Exception: " + ex.InnerException.Message);
+            }
+            else
+            {
+                Console.WriteLine("Exception: " + ex.Message);
+            }
+        }
     }
 }

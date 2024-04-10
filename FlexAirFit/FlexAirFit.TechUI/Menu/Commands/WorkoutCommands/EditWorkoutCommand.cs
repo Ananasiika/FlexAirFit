@@ -65,9 +65,17 @@ public class EditWorkoutCommand : Command
                 Console.WriteLine("Ошибка: Неверный формат уровня тренировки.");
                 return;
             }
-        }        
+        }
+
+        Workout workout = await context.WorkoutService.GetWorkoutById(workoutId);
+        workout.Description = description;
+        workout.Name = name;
+        workout.Level = (level == 0) ? workout.Level : level;
+        workout.Duration = (duration == TimeSpan.Zero) ? workout.Duration : duration;
+        workout.IdTrainer = (idTrainer == Guid.Empty) ? workout.IdTrainer : idTrainer;
         
-        await context.WorkoutService.UpdateWorkout(workoutId, name, description, idTrainer, duration, level);
+        
+        await context.WorkoutService.UpdateWorkout(workout);
         Console.WriteLine("Тренировка успешно обновлена.");
     }
 }
