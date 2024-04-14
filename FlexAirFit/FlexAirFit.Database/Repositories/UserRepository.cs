@@ -35,7 +35,7 @@ public class UserRepository : IUserRepository
         userDbModel.PasswordHashed = user.PasswordHashed;
 
         await _context.SaveChangesAsync();
-        return user;
+        return UserConverter.DbToCoreModel(userDbModel);
     }
 
     public async Task<User> GetUserByIdAsync(Guid id)

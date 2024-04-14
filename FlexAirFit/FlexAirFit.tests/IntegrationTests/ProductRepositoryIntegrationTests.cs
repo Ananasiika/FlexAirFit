@@ -3,29 +3,26 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using FlexAirFit.Application.IRepositories;
+using FlexAirFit.Application.IServices;
 using FlexAirFit.Core.Enums;
 using FlexAirFit.Core.Models;
-using FlexAirFit.Database.Converters;
-using FlexAirFit.Database.Context;
-using FlexAirFit.Database.Models;
+using FlexAirFit.Database.Repositories;
 using IntegrationTests.DbFixtures;
-using Microsoft.EntityFrameworkCore;
 
-namespace FlexAirFit.Database.Repositories.Tests
+namespace FlexAirFit.Application.Services.Tests
 {
-    public class ProductRepositoryTests : IDisposable
+    public class ProductServiceTests : IDisposable
     {
         private readonly InMemoryDbFixture _dbContextFixture = new InMemoryDbFixture();
-        private readonly IProductRepository _productRepository;
+        private readonly IProductService _productService;
 
-        public ProductRepositoryTests()
+        public ProductServiceTests()
         {
-            _productRepository = new ProductRepository(_dbContextFixture.Context);
+            _productService = new ProductService(new ProductRepository(_dbContextFixture.Context));
         }
 
         [Fact]
-        public async Task AddProductAsync_Should_Add_Product_To_Database()
+        public async Task CreateProduct_Should_Add_Product_To_Database()
         {
             // Arrange
             var id = Guid.NewGuid();
@@ -36,7 +33,7 @@ namespace FlexAirFit.Database.Repositories.Tests
             var product = new Product(id, type, name, price);
 
             // Act
-            await _productRepository.AddProductAsync(product);
+            await _productService.CreateProduct(product);
 
             // Assert
             var productDbModel = await _dbContextFixture.Context.Products.FindAsync(product.Id);
@@ -47,7 +44,7 @@ namespace FlexAirFit.Database.Repositories.Tests
         }
 
         [Fact]
-        public async Task UpdateProductAsync_Should_Update_Product_In_Database()
+        public async Task UpdateProduct_Should_Update_Product_In_Database()
         {
             // Arrange
             var id = Guid.NewGuid();
@@ -57,15 +54,14 @@ namespace FlexAirFit.Database.Repositories.Tests
 
             var product = new Product(id, type, name, price);
 
-            await _dbContextFixture.Context.Products.AddAsync(ProductConverter.CoreToDbModel(product));
-            await _dbContextFixture.Context.SaveChangesAsync();
+            await _productService.CreateProduct(product);
 
             var newType = ProductType.Cloth;
             var newName = "New Product Name";
             var newPrice = 200;
 
             // Act
-            await _productRepository.UpdateProductAsync(new Product(id, newType, newName, newPrice));
+            await _productService.UpdateProduct(new Product(id, newType, newName, newPrice));
 
             // Assert
             var updatedProductDbModel = await _dbContextFixture.Context.Products.FindAsync(product.Id);
@@ -76,7 +72,7 @@ namespace FlexAirFit.Database.Repositories.Tests
         }
 
         [Fact]
-        public async Task DeleteProductAsync_Should_Delete_Product_From_Database()
+        public async Task DeleteProduct_Should_Delete_Product_From_Database()
         {
             // Arrange
             var id = Guid.NewGuid();
@@ -86,11 +82,10 @@ namespace FlexAirFit.Database.Repositories.Tests
 
             var product = new Product(id, type, name, price);
 
-            await _dbContextFixture.Context.Products.AddAsync(ProductConverter.CoreToDbModel(product));
-            await _dbContextFixture.Context.SaveChangesAsync();
+            await _productService.CreateProduct(product);
 
             // Act
-            await _productRepository.DeleteProductAsync(product.Id);
+            await _productService.DeleteProduct(product.Id);
 
             // Assert
             var productDbModel = await _dbContextFixture.Context.Products.FindAsync(product.Id);
@@ -98,28 +93,53 @@ namespace FlexAirFit.Database.Repositories.Tests
         }
 
         [Fact]
-        public async Task GetProductByIdAsync_Should_Return_Product_From_Database()
+        public async Task GetProductById_Should_Return_Product_From_Database()
         {
             // Arrange
             var id = Guid.NewGuid();
-
-            var type = ProductType.FoodProduct;
+            var type = ProductType.Solarium;
             var name = "Product Name";
+
             var price = 100;
 
             var product = new Product(id, type, name, price);
 
-            await _dbContextFixture.Context.Products.AddAsync(ProductConverter.CoreToDbModel(product));
-            await _dbContextFixture.Context.SaveChangesAsync();
+            await _productService.CreateProduct(product);
 
             // Act
-            var result = await _productRepository.GetProductByIdAsync(product.Id);
+            var result = await _productService.GetProductById(id);
 
             // Assert
             Assert.NotNull(result);
             Assert.Equal(product.Type, result.Type);
             Assert.Equal(product.Name, result.Name);
             Assert.Equal(product.Price, result.Price);
+        }
+
+        [Fact]
+        public async Task GetProducts_Should_Return_List_Of_Products_From_Database()
+        {
+            // Arrange
+            var products = new List<Product>
+            {
+                new Product(Guid.NewGuid(), ProductType.Solarium, "Product 1", 200),
+                new Product(Guid.NewGuid(), ProductType.Accessories, "Product 2", 150)
+            };
+
+            await _productService.CreateProduct(products[0]);
+            await _productService.CreateProduct(products[1]);
+
+            // Act
+            var result = await _productService.GetProducts(null, null);
+
+            // Assert
+            Assert.Equal(products.Count, result.Count);
+            for (int i = 0; i < products.Count; i++)
+            {
+                Assert.Equal(products[i].Type, result[i].Type);
+                Assert.Equal(products[i].Name, result[i].Name);
+                Assert.Equal(products[i].Price, result[i].Price);
+            }
         }
 
         public void Dispose()

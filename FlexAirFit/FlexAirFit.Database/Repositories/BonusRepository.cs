@@ -29,13 +29,11 @@ public class BonusRepository : IBonusRepository
     public async Task<Bonus> UpdateBonusAsync(Bonus bonus)
     {
         var bonusDbModel = await _context.Bonuses.FindAsync(bonus.Id);
-        if (bonusDbModel != null)
-        {
-            bonusDbModel.IdClient = bonus.IdClient;
-            bonusDbModel.Count = bonus.Count;
-            await _context.SaveChangesAsync();
-        }
-        return bonus;
+        bonusDbModel.IdClient = bonus.IdClient;
+        bonusDbModel.Count = bonus.Count;
+        
+        await _context.SaveChangesAsync();
+        return BonusConverter.DbToCoreModel(bonusDbModel);
     }
 
     public async Task DeleteBonusAsync(Guid id)

@@ -1,35 +1,34 @@
-﻿using FlexAirFit.Application.IRepositories;
-using FlexAirFit.Core.Models;
-using FlexAirFit.Database.Context;
-using FlexAirFit.Database.Converters;
-using Microsoft.EntityFrameworkCore;
+﻿using Xunit;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FlexAirFit.Application.IServices;
+using FlexAirFit.Core.Models;
+using FlexAirFit.Database.Repositories;
 using IntegrationTests.DbFixtures;
-using Xunit;
+using Microsoft.EntityFrameworkCore;
 
-namespace FlexAirFit.Database.Repositories.Tests
+namespace FlexAirFit.Application.Services.Tests
 {
-    public class MembershipRepositoryTests : IDisposable
+    public class MembershipServiceTests : IDisposable
     {
         private readonly InMemoryDbFixture _dbContextFixture = new InMemoryDbFixture();
-        private readonly IMembershipRepository _membershipRepository;
+        private readonly IMembershipService _membershipService;
 
-        public MembershipRepositoryTests()
+        public MembershipServiceTests()
         {
-            _membershipRepository = new MembershipRepository(_dbContextFixture.Context);
+            _membershipService = new MembershipService(new MembershipRepository(_dbContextFixture.Context));
         }
 
         [Fact]
-        public async Task AddMembershipAsync_Should_Add_Membership_To_Database()
+        public async Task CreateMembership_Should_Add_Membership_To_Database()
         {
             // Arrange
             var membership = new Membership(Guid.NewGuid(), "Gold", TimeSpan.FromDays(30), 200, 0);
 
             // Act
-            await _membershipRepository.AddMembershipAsync(membership);
+            await _membershipService.CreateMembership(membership);
 
             // Assert
             var membershipDbModel = await _dbContextFixture.Context.Memberships.FirstOrDefaultAsync(m => m.Id == membership.Id);
@@ -41,12 +40,11 @@ namespace FlexAirFit.Database.Repositories.Tests
         }
 
         [Fact]
-        public async Task UpdateMembershipAsync_Should_Update_Membership_In_Database()
+        public async Task UpdateMembership_Should_Update_Membership_In_Database()
         {
             // Arrange
             var membership = new Membership(Guid.NewGuid(), "Gold", TimeSpan.FromDays(30), 200, 0);
-            await _dbContextFixture.Context.Memberships.AddAsync(MembershipConverter.CoreToDbModel(membership));
-            await _dbContextFixture.Context.SaveChangesAsync();
+            await _membershipService.CreateMembership(membership);
 
             membership.Name = "Platinum";
             membership.Duration = TimeSpan.FromDays(60);
@@ -54,7 +52,7 @@ namespace FlexAirFit.Database.Repositories.Tests
             membership.Freezing = 7;
 
             // Act
-            await _membershipRepository.UpdateMembershipAsync(membership);
+            await _membershipService.UpdateMembership(membership);
 
             // Assert
             var membershipDbModel = await _dbContextFixture.Context.Memberships.FirstOrDefaultAsync(m => m.Id == membership.Id);
@@ -65,15 +63,14 @@ namespace FlexAirFit.Database.Repositories.Tests
         }
 
         [Fact]
-        public async Task DeleteMembershipAsync_Should_Delete_Membership_From_Database()
+        public async Task DeleteMembership_Should_Delete_Membership_From_Database()
         {
             // Arrange
             var membership = new Membership(Guid.NewGuid(), "Gold", TimeSpan.FromDays(30), 200, 0);
-            await _dbContextFixture.Context.Memberships.AddAsync(MembershipConverter.CoreToDbModel(membership));
-            await _dbContextFixture.Context.SaveChangesAsync();
+            await _membershipService.CreateMembership(membership);
 
             // Act
-            await _membershipRepository.DeleteMembershipAsync(membership.Id);
+            await _membershipService.DeleteMembership(membership.Id);
 
             // Assert
             var membershipDbModel = await _dbContextFixture.Context.Memberships.FirstOrDefaultAsync(m => m.Id == membership.Id);
@@ -81,16 +78,15 @@ namespace FlexAirFit.Database.Repositories.Tests
         }
 
         [Fact]
-        public async Task GetMembershipByIdAsync_Should_Return_Membership_From_Database()
+        public async Task GetMembershipById_Should_Return_Membership_From_Database()
         {
             // Arrange
-
             var membership = new Membership(Guid.NewGuid(), "Gold", TimeSpan.FromDays(30), 200, 0);
-            await _dbContextFixture.Context.Memberships.AddAsync(MembershipConverter.CoreToDbModel(membership));
-            await _dbContextFixture.Context.SaveChangesAsync();
+
+            await _membershipService.CreateMembership(membership);
 
             // Act
-            var result = await _membershipRepository.GetMembershipByIdAsync(membership.Id);
+            var result = await _membershipService.GetMembershipById(membership.Id);
 
             // Assert
             Assert.NotNull(result);
@@ -101,20 +97,20 @@ namespace FlexAirFit.Database.Repositories.Tests
         }
 
         [Fact]
-        public async Task GetMembershipsAsync_Should_Return_List_Of_Memberships_From_Database()
+        public async Task GetMemberships_Should_Return_List_Of_Memberships_From_Database()
         {
             // Arrange
             var memberships = new List<Membership>
             {
                 new Membership(Guid.NewGuid(), "Gold", TimeSpan.FromDays(30), 200, 0),
-                new Membership(Guid.NewGuid(), "Silver", TimeSpan.FromDays(60), 150, 7)
+                new Membership(Guid.NewGuid(), "Platinum", TimeSpan.FromDays(60), 300, 7)
             };
 
-            await _dbContextFixture.Context.Memberships.AddRangeAsync(memberships.Select(MembershipConverter.CoreToDbModel));
-            await _dbContextFixture.Context.SaveChangesAsync();
+            await _membershipService.CreateMembership(memberships[0]);
+            await _membershipService.CreateMembership(memberships[1]);
 
             // Act
-            var result = await _membershipRepository.GetMembershipsAsync(null, null);
+            var result = await _membershipService.GetMemberships(null, null);
 
             // Assert
             Assert.Equal(memberships.Count, result.Count);

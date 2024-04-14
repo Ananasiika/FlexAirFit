@@ -23,16 +23,8 @@ public class ScheduleRepository : IScheduleRepository
 
     public async Task AddScheduleAsync(Schedule schedule)
     {
-        try
-        {
-            await _context.Schedules.AddAsync(ScheduleConverter.CoreToDbModel(schedule));
-            await _context.SaveChangesAsync();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine("Exception: " + ex.Message);
-            Console.WriteLine("Inner Exception: " + ex.InnerException.Message);
-        }
+        await _context.Schedules.AddAsync(ScheduleConverter.CoreToDbModel(schedule));
+        await _context.SaveChangesAsync();
     }
 
     public async Task<Schedule> UpdateScheduleAsync(Schedule schedule)
@@ -81,20 +73,13 @@ public class ScheduleRepository : IScheduleRepository
 
     public async Task<Schedule> GetScheduleByIdAsync(Guid id)
     {
-        var scheduleDbModel = await _context.Schedules
-            .Include(s => s.Workout)
-            .Include(s => s.Client)
-            .FirstOrDefaultAsync(s => s.Id == id);
-
+        var scheduleDbModel = await _context.Schedules.FindAsync(id);
         return ScheduleConverter.DbToCoreModel(scheduleDbModel);
     }
 
     public async Task<List<Schedule>> GetSchedulesAsync(int? limit, int? offset = null )
     {
-        var query = _context.Schedules
-            .Include(s => s.Workout)
-            .Include(s => s.Client)
-            .AsQueryable();
+        var query = _context.Schedules.AsQueryable();
 
         if (offset.HasValue)
         {

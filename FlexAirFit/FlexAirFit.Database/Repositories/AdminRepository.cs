@@ -29,9 +29,13 @@ public class AdminRepository : IAdminRepository
 
     public async Task<Admin> UpdateAdminAsync(Admin admin)
     {
-        _context.Entry(admin).State = EntityState.Modified;
+        var adminDbModel = await _context.Admins.FindAsync(admin.Id);
+        adminDbModel.Name = admin.Name;
+        adminDbModel.Gender = admin.Gender;
+        adminDbModel.DateOfBirth = admin.DateOfBirth;
+        
         await _context.SaveChangesAsync();
-        return admin;
+        return AdminConverter.DbToCoreModel(adminDbModel);
     }
 
     public async Task DeleteAdminAsync(Guid id)
