@@ -70,9 +70,23 @@ public class ClientProductService : IClientProductService
         {
             throw new ProductNotFoundException(clientProduct.IdProduct);
         }
-
-        await _clientProductRepository.AddClientProductAsync(clientProduct);
-        int totalCost = await CalcCostClientProduct(clientProduct, writeOff);
+        
+        int totalCost;
+        using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+        {
+            try
+            {
+                await _clientProductRepository.AddClientProductAsync(clientProduct);
+                totalCost = await CalcCostClientProduct(clientProduct, writeOff);
+                scope.Complete();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                scope.Dispose();
+                throw; 
+            }
+        }
         
         return totalCost;
     }

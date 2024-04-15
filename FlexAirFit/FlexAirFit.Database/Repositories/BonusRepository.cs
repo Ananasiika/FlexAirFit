@@ -79,47 +79,5 @@ public class BonusRepository : IBonusRepository
     {
         await _context.SaveChangesAsync();
         BonusDbModel bonus = await _context.Bonuses.FirstOrDefaultAsync(b => b.IdClient == idClient);
-        
-        /*try
-        {
-            bonus = await _context.Bonuses.FirstOrDefaultAsync(b => b.IdClient == idClient);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine("12");
-            if (ex.InnerException != null)
-            {
-                Console.WriteLine("Inner Exception: " + ex.InnerException.Message);
-            }
-            else
-            {
-                Console.WriteLine("Exception: " + ex.Message);
-            }
-            throw;
-        }
-        
-
-        if (bonus != null)
-        {
-            bonus.Count = newCount;
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("56");
-                if (ex.InnerException != null)
-                {
-                    Console.WriteLine("Inner Exception: " + ex.InnerException.Message);
-                }
-                else
-                {
-                    Console.WriteLine("Exception: " + ex.Message);
-                }
-                throw;
-            }
-           
-        }*/
     }
 }
