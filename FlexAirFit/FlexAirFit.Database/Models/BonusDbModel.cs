@@ -18,9 +18,9 @@ public class BonusDbModel
     
     [Required]
     [Column("count")]
-    public int? Count { get; set; }
+    public int Count { get; set; }
     
-    public BonusDbModel(Guid id, Guid idClient, int? count)
+    public BonusDbModel(Guid id, Guid idClient, int count)
     {
         Id = id;
         IdClient = idClient;

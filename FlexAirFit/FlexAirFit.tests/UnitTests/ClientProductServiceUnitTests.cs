@@ -13,13 +13,15 @@ public class ClientProductServiceUnitTests
     private readonly Mock<IProductRepository> _mockProductRepository;
     private readonly Mock<IBonusRepository> _mockBonusRepository;
     private readonly IClientProductService _clientProductService;
+    private readonly Mock<IClientRepository> _mockClientRepository;
 
     public ClientProductServiceUnitTests()
     {
         _mockClientProductRepository = new Mock<IClientProductRepository>();
         _mockProductRepository = new Mock<IProductRepository>();
         _mockBonusRepository = new Mock<IBonusRepository>();
-        _clientProductService = new ClientProductService(_mockClientProductRepository.Object, _mockProductRepository.Object, _mockBonusRepository.Object);
+        _mockClientRepository = new Mock<IClientRepository>();
+        _clientProductService = new ClientProductService(_mockClientProductRepository.Object, _mockProductRepository.Object, _mockBonusRepository.Object, _mockClientRepository.Object);
     }
 
     [Fact]

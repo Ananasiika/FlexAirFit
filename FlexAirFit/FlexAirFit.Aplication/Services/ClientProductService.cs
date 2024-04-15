@@ -1,4 +1,5 @@
-﻿using System.Transactions;
+﻿using System.Data;
+using System.Transactions;
 using FlexAirFit.Core.Models;
 using FlexAirFit.Core.Enums;
 using FlexAirFit.Application.IRepositories;
@@ -6,39 +7,45 @@ using FlexAirFit.Application.IServices;
 using FlexAirFit.Application.Exceptions.ServiceException;
 using Microsoft.Extensions.Configuration;
 using FlexAirFit.Application.Utils;
+using Npgsql;
 
 namespace FlexAirFit.Application.Services;
+
 public class ClientProductService : IClientProductService
 {
     private readonly IClientProductRepository _clientProductRepository;
     private readonly IProductRepository _productRepository;
     private readonly IBonusRepository _bonusRepository;
+    private readonly IClientRepository _clientRepository;
 
     public ClientProductService(IClientProductRepository clientProductRepository,
-                               IProductRepository productRepository,
-                               IBonusRepository bonusRepository)
+        IProductRepository productRepository,
+        IBonusRepository bonusRepository,
+        IClientRepository clientRepository)
     {
+        _clientRepository = clientRepository;
         _clientProductRepository = clientProductRepository;
         _productRepository = productRepository;
         _bonusRepository = bonusRepository;
     }
-    
+
     private async Task<int> CalcCostClientProduct(ClientProduct clientProduct, bool writeOff)
     {
         var configuration = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("config.json") 
+            .AddJsonFile("config.json")
             .Build();
-        
         var product = await _productRepository.GetProductByIdAsync(clientProduct.IdProduct);
         var totalCost = product.Price;
         int availableBonusCount = await _bonusRepository.GetCountBonusByIdClientAsync(clientProduct.IdClient); // количество бонусов у клиента
 
         if (writeOff)
         {
-            int maxBonusCount = (int)(totalCost * int.Parse(configuration["BonusRedemptionLimitPercentage"]) * 0.01); // максимальное количество бонусов, которые можно списать
+            int maxBonusCount =
+                (int)(totalCost * int.Parse(configuration["BonusRedemptionLimitPercentage"]) *
+                      0.01); // максимальное количество бонусов, которые можно списать
             int bonusPayment = Math.Min(availableBonusCount, maxBonusCount);
-    
+
             totalCost -= bonusPayment;
             availableBonusCount -= bonusPayment;
         }
@@ -52,27 +59,21 @@ public class ClientProductService : IClientProductService
         return totalCost;
     }
 
-    public async Task<int> AddClientProductAndReturnCost(ClientProduct clientProduct, bool writeOff)
+    public async Task<int> AddClientProductAndReturnCost(ClientProduct clientProduct, bool writeOff) // 4a5686e4-9afd-4cc0-856a-cdb4505d594f
     {
-        using (var clientProductTransaction = new TransactionScope())
+        if (await _clientRepository.GetClientByIdAsync(clientProduct.IdClient) is null)
         {
-            try
-            {
-                await _clientProductRepository.AddClientProductAsync(clientProduct);
-                int totalCost = await CalcCostClientProduct(clientProduct, writeOff);
-
-                clientProductTransaction.Complete();
-
-                return totalCost;
-            }
-            catch (Exception ex)
-            {
-                // Если произошла ошибка, откатываем транзакцию
-                clientProductTransaction.Dispose();
-                throw new ClientProductException("Error while processing ClientProduct", ex);
-            }
+            throw new ClientNotFoundException(clientProduct.IdClient);
         }
-        
-    }
 
+        if (await _productRepository.GetProductByIdAsync(clientProduct.IdProduct) is null)
+        {
+            throw new ProductNotFoundException(clientProduct.IdProduct);
+        }
+
+        await _clientProductRepository.AddClientProductAsync(clientProduct);
+        int totalCost = await CalcCostClientProduct(clientProduct, writeOff);
+        
+        return totalCost;
+    }
 }

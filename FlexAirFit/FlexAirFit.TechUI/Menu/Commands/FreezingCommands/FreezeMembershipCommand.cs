@@ -19,11 +19,21 @@ public class FreezeMembershipCommand : Command
             Console.WriteLine("Ошибка: Неверный формат количества дней для заморозки.");
             return;
         }
+        if (days < 7)
+        {
+            Console.WriteLine("Ошибка: Нельзя заморозить абонемент менее, чем на 7 дней.");
+            return;
+        }
         
         Console.WriteLine("Введите дату начала заморозки YYYY-MM-DD:");
         if (!DateOnly.TryParse(Console.ReadLine(), out DateOnly dateStartFreezing))
         {
             Console.WriteLine("Ошибка: Неверный формат даты начала заморозки");
+            return;
+        }
+        if (dateStartFreezing <= DateOnly.FromDateTime(DateTime.Today))
+        {
+            Console.WriteLine("Ошибка: Дата начала заморозки не может быть ранее, чем сегодня.");
             return;
         }
         

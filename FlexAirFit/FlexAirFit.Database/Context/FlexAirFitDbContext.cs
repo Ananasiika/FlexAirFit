@@ -21,12 +21,18 @@ public class FlexAirFitDbContext : DbContext
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<ClientDbModel>()
-            .HasMany(c => c.Products)
-            .WithMany(p => p.Clients)
-            .UsingEntity<ClientProductDbModel>(
-                p => p.HasOne(e => e.Product).WithMany(e => e.ClientsProducts),
-                c => c.HasOne(e => e.Client).WithMany(e => e.ClientsProducts));
+        modelBuilder.Entity<ClientProductDbModel>()
+            .HasKey(cp => new { cp.IdClient, cp.IdProduct });
+
+        modelBuilder.Entity<ClientProductDbModel>()
+            .HasOne(cp => cp.Client)
+            .WithMany(c => c.ClientsProducts)
+            .HasForeignKey(cp => cp.IdClient); 
+
+        modelBuilder.Entity<ClientProductDbModel>()
+            .HasOne(cp => cp.Product)
+            .WithMany(p => p.ClientsProducts)
+            .HasForeignKey(cp => cp.IdProduct);
 
         base.OnModelCreating(modelBuilder);
     }

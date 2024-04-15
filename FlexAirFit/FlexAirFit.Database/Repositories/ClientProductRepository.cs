@@ -17,7 +17,7 @@ namespace FlexAirFit.Database.Repositories
         }
         
         public async Task AddClientProductAsync(ClientProduct clientProduct)
-        {
+        { 
             await _context.ClientProducts.AddAsync(ClientProductConverter.CoreToDbModel(clientProduct));
             await _context.SaveChangesAsync();
         }
