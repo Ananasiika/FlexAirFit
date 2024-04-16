@@ -11,4 +11,5 @@ public interface IScheduleService
     Task<List<Schedule>> GetScheduleByFilter(FilterSchedule filter);
     Task<Schedule> GetScheduleById(Guid id);
     Task<List<Schedule>> GetSchedules(int? limit, int? offset);
+    Task<bool> CheckIfScheduleExists(Guid idSchedule);
 }

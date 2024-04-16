@@ -1,6 +1,8 @@
 ﻿using FlexAirFit.TechnicalUI.GuestMenu.AuthActions;
 using FlexAirFit.TechUI.BaseMenu;
+using FlexAirFit.TechUI.Commands.ClientCommands;
 using FlexAirFit.TechUI.Commands.ScheduleCommands;
+using FlexAirFit.TechUI.Commands.TrainerCommands;
 using FlexAirFit.TechUI.Commands.WorkoutCommands;
 using FlexAirFit.TechUI.GuestMenu.AuthActions;
 
@@ -15,7 +17,8 @@ public class TrainerMenuBuilder : MenuBuilder
         [
             new AddRecordToScheduleCommand(),
             new ViewScheduleCommand(),
-            new ViewScheduleWithFilterCommand()
+            new ViewScheduleWithFilterCommand(),
+            new ViewOwnScheduleCommand()
         ]));
         menu.AddLabel(new("Действия с тренировками",
         [
@@ -23,6 +26,14 @@ public class TrainerMenuBuilder : MenuBuilder
             new EditWorkoutCommand(),
             new ViewWorkoutCommand(),
             new ViewWorkoutWithFilterCommand()
+        ]));
+        menu.AddLabel(new("Просмотр информации о клиентах",
+        [
+            new ViewClientCommand()
+        ]));
+        menu.AddLabel(new("Изменение личной информации",
+        [
+            new EditTrainerCommand()
         ]));
         menu.AddLabel(new("Выйти из аккаунта",
         [

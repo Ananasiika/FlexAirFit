@@ -9,6 +9,7 @@ public interface ITrainerRepository
     Task<Trainer> UpdateTrainerAsync(Trainer trainer);
     Task DeleteTrainerAsync(Guid id);
     Task<Trainer> GetTrainerByIdAsync(Guid id);
+    Task<Trainer> GetTrainerByIdUserAsync(Guid id);
     Task<List<Trainer>> GetTrainersAsync(int? limit, int? offset);
     Task<List<Trainer>> GetTrainerByFilterAsync(FilterTrainer filter);
     Task<string> GetTrainerNameByIdAsync(Guid id);

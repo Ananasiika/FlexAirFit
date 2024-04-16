@@ -9,4 +9,5 @@ public interface IProductService
     Task DeleteProduct(Guid id);
     Task<Product> GetProductById(Guid id);
     Task<List<Product>> GetProducts(int? limit, int? offset);
+    Task<bool> CheckIfProductExists(Guid idProduct);
 }

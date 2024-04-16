@@ -51,6 +51,11 @@ public class TrainerService(ITrainerRepository trainerRepository) : ITrainerServ
         return await _trainerRepository.GetTrainerByIdAsync(idTrainer) ?? throw new TrainerNotFoundException(idTrainer);
     }
     
+    public async Task<Trainer> GetTrainerByIdUser(Guid id)
+    {
+        return await _trainerRepository.GetTrainerByIdUserAsync(id) ?? throw new TrainerUserNotFoundException(id);
+    }
+    
     public async Task<List<Trainer>> GetTrainers(int? limit, int? offset)
     {
         return await _trainerRepository.GetTrainersAsync(limit, offset);

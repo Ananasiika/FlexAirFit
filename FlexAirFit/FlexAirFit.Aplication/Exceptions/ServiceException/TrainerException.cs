@@ -22,3 +22,15 @@ public class TrainerNotFoundException : BaseException
         ErrorCode = errorCode;
     }
 }
+
+public class TrainerUserNotFoundException : BaseException 
+{
+    public TrainerUserNotFoundException() : base() { }
+    public TrainerUserNotFoundException(Guid id) : base($"Trainer with UserID = {id} not found") { }
+    public TrainerUserNotFoundException(string message) : base(message) { }
+    public TrainerUserNotFoundException(string message, Exception innerException) : base(message, innerException) { }
+    public TrainerUserNotFoundException(string message, int errorCode) : base(message)
+    {
+        ErrorCode = errorCode;
+    }
+}

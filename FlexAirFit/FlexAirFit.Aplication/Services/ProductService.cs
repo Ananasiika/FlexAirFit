@@ -45,4 +45,13 @@ public class ProductService(IProductRepository productRepository) : IProductServ
     {
         return await _productRepository.GetProductsAsync(limit, offset);
     }
+    
+    public async Task<bool> CheckIfProductExists(Guid idProduct)
+    {
+        if (await _productRepository.GetProductByIdAsync(idProduct) is null)
+        {
+            return false;
+        }
+        return true;
+    }
 }

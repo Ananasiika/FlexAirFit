@@ -47,7 +47,7 @@ public class ViewScheduleWithFilterCommand : Command
                 return;
             }
         }
-        FilterSchedule filterSchedule = new(nameWorkout, minDateAndTime, maxDateAndTime);
+        FilterSchedule filterSchedule = new(nameWorkout, minDateAndTime, maxDateAndTime, null, null);
 
         var schedules = await context.ScheduleService.GetScheduleByFilter(filterSchedule);
         

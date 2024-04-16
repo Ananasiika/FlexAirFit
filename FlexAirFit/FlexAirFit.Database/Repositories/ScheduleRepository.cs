@@ -66,7 +66,15 @@ public class ScheduleRepository : IScheduleRepository
         {
             query = query.Where(s => s.DateAndTime <= filter.MaxDateAndTime);
         }
-
+        if (filter?.ClientId != null)
+        {
+            query = query.Where(s => s.IdClient == filter.ClientId);
+        }
+        if (filter?.TrainerId != null)
+        {
+            query = query.Where(s => s.Workout.IdTrainer == filter.TrainerId);
+        }
+        
         var scheduleDbModels = await query.ToListAsync();
         return scheduleDbModels.Select(ScheduleConverter.DbToCoreModel).ToList();
     }

@@ -77,7 +77,9 @@ public class BonusRepository : IBonusRepository
 
     public async Task UpdateCountBonusByIdClientAsync(Guid idClient, int newCount)
     {
-        await _context.SaveChangesAsync();
         BonusDbModel bonus = await _context.Bonuses.FirstOrDefaultAsync(b => b.IdClient == idClient);
+        bonus.Count = newCount;
+        
+        await _context.SaveChangesAsync();
     }
 }

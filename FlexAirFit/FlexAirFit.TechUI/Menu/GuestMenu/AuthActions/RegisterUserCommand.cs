@@ -91,7 +91,7 @@ public class RegisterUserCommand : Command
             Console.WriteLine("Введите ваше имя:");
             string name = Console.ReadLine();
 
-            Console.WriteLine("Выберите ваш пол (male, female3):");
+            Console.WriteLine("Выберите ваш пол (male, female):");
             string gender = Console.ReadLine();
             
             DateOnly dateOfBirth;

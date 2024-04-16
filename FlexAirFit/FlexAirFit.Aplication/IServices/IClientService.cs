@@ -13,4 +13,5 @@ public interface IClientService
     Task FreezeMembership(Guid idClient, DateOnly FreezingStart, int durationInDays);
     Task<DateOnly> GetMembershipEndDate(Guid idClient);
     Task<bool> CheckIfClientExists(Guid idClient);
+    Task AddMembership(Guid idClient, Guid idMembership);
 }

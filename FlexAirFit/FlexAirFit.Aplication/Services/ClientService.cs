@@ -6,9 +6,11 @@ using Microsoft.Extensions.Configuration;
 
 namespace FlexAirFit.Application.Services;
 
-public class ClientService(IClientRepository clientRepository) : IClientService
+public class ClientService(IClientRepository clientRepository,
+                           IMembershipRepository membershipRepository) : IClientService
 {
     private readonly IClientRepository _clientRepository = clientRepository;
+    private readonly IMembershipRepository _membershipRepository = membershipRepository;
 
     public async Task CreateClient(Client client)
     {
@@ -120,5 +122,26 @@ public class ClientService(IClientRepository clientRepository) : IClientService
         }
         return true;
     }
-    
+
+
+    public async Task AddMembership(Guid idClient, Guid idMembership)
+    {
+        var client = await  _clientRepository.GetClientByIdAsync(idClient);
+        if (client is null)
+        {
+            throw new ClientNotFoundException(idClient);
+        }
+        
+        var membership = await  _membershipRepository.GetMembershipByIdAsync(idMembership);
+        if (client is null)
+        {
+            throw new MembershipNotFoundException(idMembership);
+        }
+
+        client.MembershipEnd.AddDays(membership.Duration.Days);
+        client.IdMembership = idMembership;
+        client.RemainFreezing += membership.Freezing;
+
+        await _clientRepository.UpdateClientAsync(client);
+    }
 }

@@ -52,4 +52,13 @@ public class ScheduleService(IScheduleRepository scheduleRepository,
     {
         return await _scheduleRepository.GetSchedulesAsync(limit, offset);
     }
+    
+    public async Task<bool> CheckIfScheduleExists(Guid idSchedule)
+    {
+        if (await _scheduleRepository.GetScheduleByIdAsync(idSchedule) is null)
+        {
+            return false;
+        }
+        return true;
+    }
 }

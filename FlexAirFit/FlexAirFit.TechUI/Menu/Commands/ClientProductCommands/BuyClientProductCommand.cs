@@ -18,12 +18,18 @@ public class BuyClientProductCommand : Command
             Console.WriteLine("Ошибка: Введенное значение имеет некорректный формат для id товара");
             return;
         }
+        Console.WriteLine("Хотите списывать бонусы? (true/false)");
+        if (!bool.TryParse(Console.ReadLine(), out bool writeOff))
+        {
+            Console.WriteLine("Ошибка: Введенное значение не true или false");
+            return;
+        }
         Client client = await context.ClientService.GetClientByIdUser(context.CurrentUser.Id);
         ClientProduct clientProduct = new(client.Id, productId);
         int cost;
         try
         {
-            cost = await context.ClientProductService.AddClientProductAndReturnCost(clientProduct, false);
+            cost = await context.ClientProductService.AddClientProductAndReturnCost(clientProduct, writeOff);
         }
         catch (Exception e)
         {

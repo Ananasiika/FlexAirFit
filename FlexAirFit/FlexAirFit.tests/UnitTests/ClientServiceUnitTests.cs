@@ -14,12 +14,13 @@ namespace FlexAirFit.Tests;
 public class ClientServiceUnitTests
 {
     private readonly Mock<IClientRepository> _mockClientRepository;
+    private readonly Mock<IMembershipRepository> _mockMembershipRepository;
     private readonly IClientService _clientService;
 
     public ClientServiceUnitTests()
     {
         _mockClientRepository = new Mock<IClientRepository>();
-        _clientService = new ClientService(_mockClientRepository.Object);
+        _clientService = new ClientService(_mockClientRepository.Object, _mockMembershipRepository.Object);
     }
 
     [Fact]

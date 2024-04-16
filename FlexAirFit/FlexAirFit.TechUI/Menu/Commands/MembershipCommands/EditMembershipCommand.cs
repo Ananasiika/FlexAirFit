@@ -40,7 +40,7 @@ public class EditMembershipCommand : Command
             }
         }
 
-        Console.Write("Введите новую цену: ");
+        Console.Write("Введите новую цену (или нажмите Enter, чтобы пропустить): ");
         int price = 0;
         string priceInput = Console.ReadLine();
         if (!string.IsNullOrEmpty(priceInput))
@@ -52,7 +52,7 @@ public class EditMembershipCommand : Command
             }
         }
 
-        Console.Write("Введите количество дней заморозки: ");
+        Console.Write("Введите количество дней заморозки (или нажмите Enter, чтобы пропустить): ");
         int freezing = 0;
         string freezingInput = Console.ReadLine();
         if (!string.IsNullOrEmpty(freezingInput))
@@ -67,7 +67,7 @@ public class EditMembershipCommand : Command
         Membership membership = await context.MembershipService.GetMembershipById(membershipId);
 
         membership.Duration = (duration == TimeSpan.Zero) ? membership.Duration : duration;
-        membership.Name = name;
+        membership.Name = (string.IsNullOrEmpty(name)) ? membership.Name : name;
         membership.Freezing = (freezing == 0) ? membership.Freezing : freezing;
         membership.Price = (price == 0) ? membership.Price : price;
         

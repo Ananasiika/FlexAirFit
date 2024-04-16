@@ -51,6 +51,7 @@ public class ClientProductService : IClientProductService
         }
 
         availableBonusCount += (int)(totalCost * int.Parse(configuration["EarnedBonusPercentage"]) * 0.01);
+        
         if (product.Type == ProductType.PersonalWorkout)
             availableBonusCount += int.Parse(configuration["CountBonusesPersonal"]);
 

@@ -18,7 +18,8 @@ namespace FlexAirFit.Application.Services.Tests
 
         public ClientServiceTests()
         {
-            _clientService = new ClientService(new ClientRepository(_dbContextFixture.Context));
+            _clientService = new ClientService(new ClientRepository(_dbContextFixture.Context),
+                                               new MembershipRepository(_dbContextFixture.Context));
         }
 
         [Fact]
