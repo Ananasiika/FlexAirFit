@@ -7,7 +7,6 @@ using FlexAirFit.Application.IServices;
 using FlexAirFit.Application.Exceptions.ServiceException;
 using Microsoft.Extensions.Configuration;
 using FlexAirFit.Application.Utils;
-using Npgsql;
 
 namespace FlexAirFit.Application.Services;
 
