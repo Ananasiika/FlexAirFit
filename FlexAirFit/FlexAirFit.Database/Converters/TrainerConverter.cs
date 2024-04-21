@@ -12,7 +12,6 @@ public static class TrainerConverter
         return model is not null
             ? new Trainer(
                 id: model.Id,
-                idUser: model.IdUser,
                 name: model.Name,
                 gender: model.Gender,
                 specialization: model.Specialization,
@@ -27,7 +26,6 @@ public static class TrainerConverter
         return model is not null
             ? new TrainerDbModel(
                 id: model.Id,
-                idUser: model.IdUser,
                 name: model.Name,
                 gender: model.Gender,
                 specialization: model.Specialization,

@@ -12,8 +12,7 @@ public class ViewClientBonusesCommand : Command
 
     public override async Task Execute(Context context)
     {
-        Client client = await context.ClientService.GetClientByIdUser(context.CurrentUser.Id);
-        int bonuses = await context.BonusService.GetCountBonusByIdClient(client.Id);
+        int bonuses = await context.BonusService.GetCountBonusByIdClient(context.CurrentUser.Id);
         Console.WriteLine($"Бонусов у текущего клиента: {bonuses}");
     }
 }

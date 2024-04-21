@@ -112,14 +112,13 @@ public class InMemoryDbFixture() : IDisposable
     {
         var clients = new List<Client>
         {
-            new Client(Guid.NewGuid(), Guid.NewGuid(), "John Doe", "Male", new DateOnly(1990, 1, 1),
+            new Client(Guid.NewGuid(), "John Doe", "Male", new DateOnly(1990, 1, 1),
                 Guid.NewGuid(), new DateOnly(2023, 12, 31), 2, null),
         
-            // Добавьте остальные клиенты в том же формате
-            new Client(Guid.NewGuid(), Guid.NewGuid(), "Jane Smith", "Female", new DateOnly(1995, 5, 10),
+            new Client(Guid.NewGuid(), "Jane Smith", "Female", new DateOnly(1995, 5, 10),
                 Guid.NewGuid(), new DateOnly(2022, 8, 31), null, null),
         
-            new Client(Guid.NewGuid(), Guid.NewGuid(), "Mike Johnson", "Male", new DateOnly(1985, 7, 20),
+            new Client(Guid.NewGuid(), "Mike Johnson", "Male", new DateOnly(1985, 7, 20),
                 Guid.NewGuid(), new DateOnly(2022, 12, 31), 0, null)
         };
 
@@ -144,9 +143,9 @@ public class InMemoryDbFixture() : IDisposable
     {
         return new List<Trainer>
         {
-            new Trainer(Guid.NewGuid(), Guid.NewGuid(), "Trainer 1", "Male", "Fitness", 5, 4),
-            new Trainer(Guid.NewGuid(), Guid.NewGuid(), "Trainer 2", "Female", "Yoga", 3, 5),
-            new Trainer(Guid.NewGuid(), Guid.NewGuid(), "Trainer 3", "Male", "CrossFit", 8, 3)
+            new Trainer(Guid.NewGuid(), "Trainer 1", "Male", "Fitness", 5, 4),
+            new Trainer(Guid.NewGuid(), "Trainer 2", "Female", "Yoga", 3, 5),
+            new Trainer(Guid.NewGuid(), "Trainer 3", "Male", "CrossFit", 8, 3)
         };
     }
 

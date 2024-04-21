@@ -30,7 +30,7 @@ public class EditClientCommand : Command
             }
         }
         
-        Client client = await context.ClientService.GetClientByIdUser(context.CurrentUser.Id);
+        Client client = await context.ClientService.GetClientById(context.CurrentUser.Id);
 
         client.DateOfBirth = (dateOfBirth == DateOnly.MinValue) ? client.DateOfBirth : dateOfBirth;
         client.Gender = (string.IsNullOrEmpty(gender)) ? client.Gender : gender;

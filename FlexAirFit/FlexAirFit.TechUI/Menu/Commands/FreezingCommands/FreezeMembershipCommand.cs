@@ -37,10 +37,9 @@ public class FreezeMembershipCommand : Command
             return;
         }
         
-        Client client = await context.ClientService.GetClientByIdUser(context.CurrentUser.Id);
         try
         {
-            await context.ClientService.FreezeMembership(client.Id, dateStartFreezing, days);
+            await context.ClientService.FreezeMembership(context.CurrentUser.Id, dateStartFreezing, days);
         }
         catch (Exception ex)
         {

@@ -59,7 +59,7 @@ public class ClientProductService : IClientProductService
         return totalCost;
     }
 
-    public async Task<int> AddClientProductAndReturnCost(ClientProduct clientProduct, bool writeOff) // 4a5686e4-9afd-4cc0-856a-cdb4505d594f
+    public async Task<int> AddClientProductAndReturnCost(ClientProduct clientProduct, bool writeOff)
     {
         if (await _clientRepository.GetClientByIdAsync(clientProduct.IdClient) is null)
         {
@@ -82,7 +82,7 @@ public class ClientProductService : IClientProductService
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                throw new ClientProductException("Error while processing ClientProduct", ex);
                 scope.Dispose();
                 throw; 
             }

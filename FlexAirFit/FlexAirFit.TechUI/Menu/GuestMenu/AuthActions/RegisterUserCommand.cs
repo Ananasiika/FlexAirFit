@@ -130,9 +130,8 @@ public class RegisterUserCommand : Command
             } while (isIncorrect);
 
             Membership membership = context.MembershipService.GetMembershipById(idMembership).Result;
-            Guid idClient = Guid.NewGuid();
-            Client client = new(idClient, userId, name, gender, dateOfBirth, idMembership, DateOnly.FromDateTime(DateTime.Today.Add(membership.Duration)), membership.Freezing, new List<Tuple<DateOnly, DateOnly>>());
-            Bonus bonus = new(Guid.NewGuid(), idClient, 0);
+            Client client = new(userId, name, gender, dateOfBirth, idMembership, DateOnly.FromDateTime(DateTime.Today.Add(membership.Duration)), membership.Freezing, new List<Tuple<DateOnly, DateOnly>>());
+            Bonus bonus = new(Guid.NewGuid(), userId, 0);
             try
             {
                 await context.UserService.CreateUser(user, password, role);
@@ -189,12 +188,13 @@ public class RegisterUserCommand : Command
                 }
             } while (isIncorrect);
 
-            Trainer trainer = new(Guid.NewGuid(), userId, name, gender, specialization, experience, rating);
+            Trainer trainer = new(userId, name, gender, specialization, experience, rating);
             try
             {
                 await context.UserService.CreateUser(user, password, role);
                 await context.TrainerService.CreateTrainer(trainer);
                 context.CurrentUser = user;
+                
                 Console.WriteLine("Регистрация прошла успешно");
             }
             catch (Exception ex)
@@ -226,7 +226,7 @@ public class RegisterUserCommand : Command
             Console.WriteLine("Выберите ваш пол (male, female):");
             string gender = Console.ReadLine();
 
-            Admin admin = new(Guid.NewGuid(), userId, name, dateOfBirth.ToUniversalTime(), gender);
+            Admin admin = new(userId, name, dateOfBirth.ToUniversalTime(), gender);
             try
             {
                 await context.UserService.CreateUser(user, password, role);

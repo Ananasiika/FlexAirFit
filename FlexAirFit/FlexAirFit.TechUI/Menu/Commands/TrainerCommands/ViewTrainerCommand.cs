@@ -24,7 +24,6 @@ public class ViewTrainerCommand : Command
             foreach (var trainer in trainers)
             {
                 Console.WriteLine($"ID: {trainer.Id}");
-                Console.WriteLine($"ID пользователя: {trainer.IdUser}");
                 Console.WriteLine($"Имя: {trainer.Name}");
                 Console.WriteLine($"Пол: {trainer.Gender}");
                 Console.WriteLine($"Специализация: {trainer.Specialization}");

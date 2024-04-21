@@ -26,7 +26,7 @@ public class AdminService(IAdminRepository adminRepository) : IAdminService
         }
         return await _adminRepository.UpdateAdminAsync(admin);
     }
-
+    
     public async Task DeleteAdmin(Guid idAdmin)
     {
         if (await _adminRepository.GetAdminByIdAsync(idAdmin) is null)

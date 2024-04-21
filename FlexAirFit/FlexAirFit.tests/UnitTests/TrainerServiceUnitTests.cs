@@ -26,7 +26,7 @@ public class TrainerServiceUnitTests
     [Fact]
     public async Task CreateTrainer_ShouldCallAddTrainerAsync_WhenTrainerDoesNotExist()
     {
-        var trainer = new Trainer(Guid.NewGuid(), Guid.NewGuid(), "Sample Trainer", "Sample Gender", "Sample Specialization", 2, 4);
+        var trainer = new Trainer(Guid.NewGuid(), "Sample Trainer", "Sample Gender", "Sample Specialization", 2, 4);
 
         _mockTrainerRepository.Setup(r => r.GetTrainerByIdAsync(trainer.Id)).ReturnsAsync((Trainer)null);
 
@@ -38,7 +38,7 @@ public class TrainerServiceUnitTests
     [Fact]
     public async Task CreateTrainer_ShouldThrowTrainerExistsException_WhenTrainerExists()
     {
-        var trainer = new Trainer(Guid.NewGuid(), Guid.NewGuid(), "Sample Trainer", "Sample Gender", "Sample Specialization", 2, 4);
+        var trainer = new Trainer(Guid.NewGuid(), "Sample Trainer", "Sample Gender", "Sample Specialization", 2, 4);
 
         _mockTrainerRepository.Setup(r => r.GetTrainerByIdAsync(trainer.Id)).ReturnsAsync(trainer);
 
@@ -48,7 +48,7 @@ public class TrainerServiceUnitTests
     [Fact]
     public async Task UpdateTrainer_ShouldCallUpdateTrainerAsync_WhenTrainerExists()
     {
-        var trainer = new Trainer(Guid.NewGuid(), Guid.NewGuid(), "Sample Trainer", "Sample Gender", "Sample Specialization", 2, 4);
+        var trainer = new Trainer(Guid.NewGuid(), "Sample Trainer", "Sample Gender", "Sample Specialization", 2, 4);
 
         _mockTrainerRepository.Setup(r => r.GetTrainerByIdAsync(trainer.Id)).ReturnsAsync(trainer);
 
@@ -60,7 +60,7 @@ public class TrainerServiceUnitTests
     [Fact]
     public async Task UpdateTrainer_ShouldThrowTrainerNotFoundException_WhenTrainerDoesNotExist()
     {
-        var trainer = new Trainer(Guid.NewGuid(), Guid.NewGuid(), "Sample Trainer", "Sample Gender", "Sample Specialization", 2, 4);
+        var trainer = new Trainer(Guid.NewGuid(), "Sample Trainer", "Sample Gender", "Sample Specialization", 2, 4);
 
         _mockTrainerRepository.Setup(r => r.GetTrainerByIdAsync(trainer.Id)).ReturnsAsync((Trainer)null);
 
@@ -72,7 +72,7 @@ public class TrainerServiceUnitTests
     {
         var trainerId = Guid.NewGuid();
 
-        _mockTrainerRepository.Setup(r => r.GetTrainerByIdAsync(trainerId)).ReturnsAsync(new Trainer(trainerId, Guid.NewGuid(), "Sample Trainer", "Sample Gender", "Sample Specialization", 2, 4));
+        _mockTrainerRepository.Setup(r => r.GetTrainerByIdAsync(trainerId)).ReturnsAsync(new Trainer(trainerId, "Sample Trainer", "Sample Gender", "Sample Specialization", 2, 4));
 
         await _trainerService.DeleteTrainer(trainerId);
 
@@ -93,7 +93,7 @@ public class TrainerServiceUnitTests
     public async Task GetTrainerById_ShouldReturnTrainer_WhenTrainerExists()
     {
         var trainerId = Guid.NewGuid();
-        var trainer = new Trainer(trainerId, Guid.NewGuid(), "Sample Trainer", "Sample Gender", "Sample Specialization", 2, 4);
+        var trainer = new Trainer(trainerId, "Sample Trainer", "Sample Gender", "Sample Specialization", 2, 4);
 
         _mockTrainerRepository.Setup(r => r.GetTrainerByIdAsync(trainerId)).ReturnsAsync(trainer);
 
@@ -117,9 +117,9 @@ public class TrainerServiceUnitTests
     {
         var trainers = new List<Trainer>
         {
-            new Trainer(Guid.NewGuid(), Guid.NewGuid(), "Sample Trainer 1", "Sample Gender 1", "Sample Specialization 1", 2, 4),
-            new Trainer(Guid.NewGuid(), Guid.NewGuid(), "Sample Trainer 2", "Sample Gender 2", "Sample Specialization 2", 3, 5),
-            new Trainer(Guid.NewGuid(), Guid.NewGuid(), "Sample Trainer 3", "Sample Gender 3", "Sample Specialization 3", 4, 6)
+            new Trainer(Guid.NewGuid(), "Sample Trainer 1", "Sample Gender 1", "Sample Specialization 1", 2, 4),
+            new Trainer(Guid.NewGuid(), "Sample Trainer 2", "Sample Gender 2", "Sample Specialization 2", 3, 5),
+            new Trainer(Guid.NewGuid(), "Sample Trainer 3", "Sample Gender 3", "Sample Specialization 3", 4, 6)
         };
 
         _mockTrainerRepository.Setup(r => r.GetTrainersAsync(2, 1)).ReturnsAsync(trainers);

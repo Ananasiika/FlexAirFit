@@ -3,7 +3,6 @@
 public class Trainer
 {
     public Guid Id { get; set; }
-    public Guid IdUser { get; set; }
     public string Name { get; set; }
     public string Gender { get; set; }
     public string Specialization { get; set; }
@@ -11,7 +10,6 @@ public class Trainer
     public int Rating { get; set; }
 
     public Trainer(Guid id,
-        Guid idUser,
         string name,
         string gender,
         string specialization,
@@ -19,7 +17,6 @@ public class Trainer
         int rating)
     {
         Id = id;
-        IdUser = idUser;
         Name = name;
         Gender = gender;
         Specialization = specialization;

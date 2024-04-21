@@ -38,11 +38,6 @@ public class ClientService(IClientRepository clientRepository,
         }
         await _clientRepository.DeleteClientAsync(idClient);
     }
-
-    public async Task<Client> GetClientByIdUser(Guid id)
-    {
-        return await _clientRepository.GetClientByIdUserAsync(id) ?? throw new ClientUserNotFoundException(id);
-    }
     
     public async Task<Client> GetClientById(Guid idClient)
     {

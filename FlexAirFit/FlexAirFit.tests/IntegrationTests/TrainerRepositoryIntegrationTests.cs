@@ -33,7 +33,7 @@ namespace FlexAirFit.Application.Services.Tests
             var experience = 5;
             var rating = 4;
 
-            var trainer = new Trainer(id, userId, name, gender, specialization, experience, rating);
+            var trainer = new Trainer(id, name, gender, specialization, experience, rating);
 
             // Act
             await _trainerService.CreateTrainer(trainer);
@@ -41,7 +41,6 @@ namespace FlexAirFit.Application.Services.Tests
             // Assert
             var trainerDbModel = await _dbContextFixture.Context.Trainers.FindAsync(trainer.Id);
             Assert.NotNull(trainerDbModel);
-            Assert.Equal(trainer.IdUser, trainerDbModel.IdUser);
             Assert.Equal(trainer.Name, trainerDbModel.Name);
             Assert.Equal(trainer.Gender, trainerDbModel.Gender);
             Assert.Equal(trainer.Specialization, trainerDbModel.Specialization);
@@ -61,7 +60,7 @@ namespace FlexAirFit.Application.Services.Tests
             var experience = 5;
             var rating = 4;
 
-            var trainer = new Trainer(id, userId, name, gender, specialization, experience, rating);
+            var trainer = new Trainer(id, name, gender, specialization, experience, rating);
 
             await _trainerService.CreateTrainer(trainer);
 
@@ -94,7 +93,7 @@ namespace FlexAirFit.Application.Services.Tests
             var experience = 5;
             var rating = 4;
 
-            var trainer = new Trainer(id, userId, name, gender, specialization, experience, rating);
+            var trainer = new Trainer(id, name, gender, specialization, experience, rating);
             await _trainerService.CreateTrainer(trainer);
 
             // Act
@@ -103,7 +102,6 @@ namespace FlexAirFit.Application.Services.Tests
             // Assert
             Assert.NotNull(retrievedTrainer);
             Assert.Equal(trainer.Id, retrievedTrainer.Id);
-            Assert.Equal(trainer.IdUser, retrievedTrainer.IdUser);
             Assert.Equal(trainer.Name, retrievedTrainer.Name);
             Assert.Equal(trainer.Gender, retrievedTrainer.Gender);
             Assert.Equal(trainer.Specialization, retrievedTrainer.Specialization);
@@ -119,9 +117,9 @@ namespace FlexAirFit.Application.Services.Tests
 
             var trainers = new List<Trainer>
             {
-                new Trainer(Guid.NewGuid(), Guid.NewGuid(), "John Doe", "Male", "Fitness", 5, 4),
-                new Trainer(Guid.NewGuid(), Guid.NewGuid(), "Jane Smith", "Female", "Yoga", 4, 5),
-                new Trainer(Guid.NewGuid(), Guid.NewGuid(), "Jack Brown", "Male", "CrossFit", 6, 3),
+                new Trainer(Guid.NewGuid(), "John Doe", "Male", "Fitness", 5, 4),
+                new Trainer(Guid.NewGuid(), "Jane Smith", "Female", "Yoga", 4, 5),
+                new Trainer(Guid.NewGuid(), "Jack Brown", "Male", "CrossFit", 6, 3),
             };
 
             await _trainerService.CreateTrainer(trainers[0]);

@@ -48,10 +48,6 @@ public class ProductService(IProductRepository productRepository) : IProductServ
     
     public async Task<bool> CheckIfProductExists(Guid idProduct)
     {
-        if (await _productRepository.GetProductByIdAsync(idProduct) is null)
-        {
-            return false;
-        }
-        return true;
+        return !(await _productRepository.GetProductByIdAsync(idProduct) is null);
     }
 }

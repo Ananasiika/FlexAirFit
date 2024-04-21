@@ -24,8 +24,8 @@ public class BuyClientProductCommand : Command
             Console.WriteLine("Ошибка: Введенное значение не true или false");
             return;
         }
-        Client client = await context.ClientService.GetClientByIdUser(context.CurrentUser.Id);
-        ClientProduct clientProduct = new(client.Id, productId);
+
+        ClientProduct clientProduct = new(context.CurrentUser.Id, productId);
         int cost;
         try
         {

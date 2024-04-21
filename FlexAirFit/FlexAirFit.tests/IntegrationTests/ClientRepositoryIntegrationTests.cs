@@ -36,7 +36,7 @@ namespace FlexAirFit.Application.Services.Tests
             var remainFreezing = (int?)null;
             var freezingIntervals = new List<Tuple<DateOnly, DateOnly>>();
 
-            var client = new Client(id, idUser, name, gender, dateOfBirth, idMembership, membershipEnd, remainFreezing, freezingIntervals);
+            var client = new Client(id, name, gender, dateOfBirth, idMembership, membershipEnd, remainFreezing, freezingIntervals);
 
             // Act
             await _clientService.CreateClient(client);
@@ -44,7 +44,6 @@ namespace FlexAirFit.Application.Services.Tests
             // Assert
             var clientDbModel = await _dbContextFixture.Context.Clients.FindAsync(client.Id);
             Assert.NotNull(clientDbModel);
-            Assert.Equal(client.IdUser, clientDbModel.IdUser);
             Assert.Equal(client.Name, clientDbModel.Name);
             Assert.Equal(client.Gender, clientDbModel.Gender);
             Assert.Equal(client.DateOfBirth, clientDbModel.DateOfBirth);
@@ -68,7 +67,7 @@ namespace FlexAirFit.Application.Services.Tests
             var remainFreezing = (int?)null;
             var freezingIntervals = new List<Tuple<DateOnly, DateOnly>>();
 
-            var client = new Client(id, idUser, name, gender, dateOfBirth, idMembership, membershipEnd, remainFreezing, freezingIntervals);
+            var client = new Client(id, name, gender, dateOfBirth, idMembership, membershipEnd, remainFreezing, freezingIntervals);
 
             await _clientService.CreateClient(client);
 
@@ -99,7 +98,7 @@ namespace FlexAirFit.Application.Services.Tests
             var remainFreezing = (int?)null;
             var freezingIntervals = new List<Tuple<DateOnly, DateOnly>>();
 
-            var client = new Client(id, idUser, name, gender, dateOfBirth, idMembership, membershipEnd, remainFreezing, freezingIntervals);
+            var client = new Client(id, name, gender, dateOfBirth, idMembership, membershipEnd, remainFreezing, freezingIntervals);
 
             await _clientService.CreateClient(client);
 
@@ -125,7 +124,7 @@ namespace FlexAirFit.Application.Services.Tests
             var remainFreezing = (int?)null;
             var freezingIntervals = new List<Tuple<DateOnly, DateOnly>>();
 
-            var client = new Client(id, idUser, name, gender, dateOfBirth, idMembership, membershipEnd, remainFreezing, freezingIntervals);
+            var client = new Client(id, name, gender, dateOfBirth, idMembership, membershipEnd, remainFreezing, freezingIntervals);
 
             await _clientService.CreateClient(client);
 
@@ -145,8 +144,8 @@ namespace FlexAirFit.Application.Services.Tests
             // Arrange
             var clients = new List<Client>
             {
-                new Client(Guid.NewGuid(), Guid.NewGuid(), "John Doe", "Male", new DateOnly(1985, 1, 1), Guid.NewGuid(), new DateOnly(2023, 12, 31), null, new List<Tuple<DateOnly, DateOnly>>()),
-                new Client(Guid.NewGuid(), Guid.NewGuid(), "Jane Smith", "Female", new DateOnly(1990, 5, 15), Guid.NewGuid(), new DateOnly(2022, 6, 30), null, new List<Tuple<DateOnly, DateOnly>>())
+                new Client(Guid.NewGuid(), "John Doe", "Male", new DateOnly(1985, 1, 1), Guid.NewGuid(), new DateOnly(2023, 12, 31), null, new List<Tuple<DateOnly, DateOnly>>()),
+                new Client(Guid.NewGuid(), "Jane Smith", "Female", new DateOnly(1990, 5, 15), Guid.NewGuid(), new DateOnly(2022, 6, 30), null, new List<Tuple<DateOnly, DateOnly>>())
             };
 
             await _clientService.CreateClient(clients[0]);

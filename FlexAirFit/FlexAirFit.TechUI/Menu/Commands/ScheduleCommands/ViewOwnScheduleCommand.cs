@@ -17,13 +17,11 @@ public class ViewOwnScheduleCommand : Command
         FilterSchedule filter;
         if (context.CurrentUser.Role == UserRole.Client)
         {
-            Client client = await context.ClientService.GetClientByIdUser(context.CurrentUser.Id);
-            filter = new(null, null, null, client.Id, null);
+            filter = new(null, null, null, context.CurrentUser.Id, null);
         }
         else
         {
-            Trainer trainer = await context.TrainerService.GetTrainerByIdUser(context.CurrentUser.Id);
-            filter = new(null, null, null, null, trainer.Id);
+            filter = new(null, null, null, null, context.CurrentUser.Id);
         }
         
         var schedules = await context.ScheduleService.GetScheduleByFilter(filter);

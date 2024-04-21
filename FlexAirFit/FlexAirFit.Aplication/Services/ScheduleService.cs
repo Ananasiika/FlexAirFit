@@ -55,10 +55,6 @@ public class ScheduleService(IScheduleRepository scheduleRepository,
     
     public async Task<bool> CheckIfScheduleExists(Guid idSchedule)
     {
-        if (await _scheduleRepository.GetScheduleByIdAsync(idSchedule) is null)
-        {
-            return false;
-        }
-        return true;
+        return !(await _scheduleRepository.GetScheduleByIdAsync(idSchedule) is null);
     }
 }

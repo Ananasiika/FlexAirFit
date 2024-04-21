@@ -24,7 +24,6 @@ public class ViewClientCommand : Command
             foreach (var client in clients)
             {
                 Console.WriteLine($"ID: {client.Id}");
-                Console.WriteLine($"ID пользователя: {client.IdUser}");
                 Console.WriteLine($"Имя: {client.Name}");
                 Console.WriteLine($"Пол: {client.Gender}");
                 Console.WriteLine($"Дата рождения: {client.DateOfBirth}");

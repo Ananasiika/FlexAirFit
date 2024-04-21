@@ -3,7 +3,6 @@
 public class Client
 {
     public Guid Id { get; set; }
-    public Guid IdUser { get; set; }
     public string Name { get; set; }
     public string Gender { get; set; }
     public DateOnly DateOfBirth { get; set; }
@@ -22,7 +21,6 @@ public class Client
 
 
     public Client(Guid id,
-        Guid idUser,
         string name,
         string gender,
         DateOnly dateOfBirth,
@@ -32,7 +30,6 @@ public class Client
         List<Tuple<DateOnly, DateOnly>> freezingIntervals)
     {
         Id = id;
-        IdUser = idUser;
         Name = name;
         Gender = gender;
         DateOfBirth = dateOfBirth;

@@ -52,12 +52,6 @@ public class ClientRepository : IClientRepository
         return ClientConverter.DbToCoreModel(clientDbModel);
     }
     
-    public async Task<Client> GetClientByIdUserAsync(Guid id)
-    {
-        var clientDbModel = await _context.Clients.FirstOrDefaultAsync(c => c.IdUser == id);
-        return ClientConverter.DbToCoreModel(clientDbModel);
-    }
-    
     public async Task<List<Client>> GetClientsAsync(int? limit, int? offset = null)
     {
         var query = _context.Clients.AsQueryable();

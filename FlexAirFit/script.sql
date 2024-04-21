@@ -21,8 +21,7 @@ CREATE TABLE IF NOT EXISTS "Users" (
 );
 
 CREATE TABLE IF NOT EXISTS "Trainers" (
-    id UUID PRIMARY KEY,
-    user_id UUID NOT NULL REFERENCES "Users" (id),
+    id UUID PRIMARY KEY NOT NULL REFERENCES "Users" (id),
     name VARCHAR(50) NOT NULL,
     gender VARCHAR(10) NOT NULL CHECK (gender IN ('male', 'female')),
     specialization VARCHAR(50) NOT NULL,
@@ -31,8 +30,7 @@ CREATE TABLE IF NOT EXISTS "Trainers" (
 );
 
 CREATE TABLE IF NOT EXISTS "Admins" (
-    id UUID PRIMARY KEY,
-    user_id UUID NOT NULL REFERENCES "Users" (id),
+    id UUID NOT NULL REFERENCES "Users" (id),
     name VARCHAR(50) NOT NULL,
 	date_of_birth DATE NOT NULL, 
     gender VARCHAR(10) NOT NULL CHECK (gender IN ('male', 'female'))
@@ -54,17 +52,14 @@ CREATE TABLE IF NOT EXISTS "Memberships" (
     price INT NOT NULL,
     freezing INT NOT NULL
 );
-
 CREATE TABLE IF NOT EXISTS "Clients" (
-    id UUID PRIMARY KEY,
-    user_id UUID NOT NULL REFERENCES "Users" (id),
+    id UUID PRIMARY KEY NOT NULL REFERENCES "Users" (id),
     name VARCHAR(50) NOT NULL,
     gender VARCHAR(10) NOT NULL CHECK (gender IN ('male', 'female')),
     date_of_birth DATE NOT NULL,
     membership_id UUID NOT NULL REFERENCES "Memberships" (id),
     membership_end DATE NOT NULL,
-    remain_freezing INT,
-    is_freezing INT NOT NULL
+    remain_freezing INT
 );
 
 CREATE TABLE IF NOT EXISTS "Schedules" (
@@ -81,14 +76,14 @@ CREATE TABLE IF NOT EXISTS "Products" (
     price INT NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS "ClientProduct" (
+CREATE TABLE IF NOT EXISTS "ClientProducts" (
     id_client UUID NOT NULL REFERENCES "Clients" (id),
     id_product UUID NOT NULL REFERENCES "Products" (id)
 );
 
-CREATE TABLE IF NOT EXISTS "Bonus" (
+CREATE TABLE IF NOT EXISTS "Bonuses" (
 	id UUID PRIMARY KEY,
-	id_client UUID NOT NULL REFERENCES "Clients" (id),
+	client_id UUID NOT NULL REFERENCES "Clients" (id),
 	count INT NOT NULL
 );
 

@@ -50,11 +50,7 @@ public class WorkoutService(IWorkoutRepository workoutRepository,
 
     public async Task<bool> CheckIfWorkoutExists(Guid idWorkout)
     {
-        if (await _workoutRepository.GetWorkoutByIdAsync(idWorkout) is null)
-        {
-            return false;
-        }
-        return true;
+        return !(await _workoutRepository.GetWorkoutByIdAsync(idWorkout) is null);
     }
     
     public async Task<List<Workout>> GetWorkouts(int? limit, int? offset)

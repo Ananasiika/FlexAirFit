@@ -13,7 +13,6 @@ public static class ClientConverter
         return model is not null
             ? new Client(
                 id: model.Id,
-                idUser: model.IdUser,
                 name: model.Name,
                 gender: model.Gender,
                 dateOfBirth: model.DateOfBirth,
@@ -30,7 +29,6 @@ public static class ClientConverter
         return model is not null
             ? new ClientDbModel(
                 id: model.Id,
-                idUser: model.IdUser,
                 name: model.Name,
                 gender: model.Gender,
                 dateOfBirth: model.DateOfBirth,

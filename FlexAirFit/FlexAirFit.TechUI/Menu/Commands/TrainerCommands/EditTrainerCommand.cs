@@ -45,7 +45,7 @@ public class EditTrainerCommand : Command
             }
         }
 
-        Trainer trainer = await context.TrainerService.GetTrainerByIdUser(context.CurrentUser.Id);
+        Trainer trainer = await context.TrainerService.GetTrainerById(context.CurrentUser.Id);
         
         trainer.Rating = (rating == 0) ? trainer.Rating : rating;
         trainer.Specialization = (string.IsNullOrEmpty(specialization)) ? trainer.Specialization : specialization;

@@ -8,7 +8,6 @@ public interface IClientRepository
     Task<Client> UpdateClientAsync(Client client);
     Task DeleteClientAsync(Guid id);
     Task<Client> GetClientByIdAsync(Guid id);
-    Task<Client> GetClientByIdUserAsync(Guid id);
     Task<List<Client>> GetClientsAsync(int? limit, int? offset);
     Task<DateOnly> GetMembershipEndDateAsync(Guid idClient);
 }

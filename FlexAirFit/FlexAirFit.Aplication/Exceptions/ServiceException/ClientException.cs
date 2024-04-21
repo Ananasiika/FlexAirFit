@@ -23,18 +23,6 @@ public class ClientNotFoundException : BaseException
     }
 }
 
-public class ClientUserNotFoundException : BaseException 
-{
-    public ClientUserNotFoundException() : base() { }
-    public ClientUserNotFoundException(Guid id) : base($"Client with UserID = {id} not found") { }
-    public ClientUserNotFoundException(string message) : base(message) { }
-    public ClientUserNotFoundException(string message, Exception innerException) : base(message, innerException) { }
-    public ClientUserNotFoundException(string message, int errorCode) : base(message)
-    {
-        ErrorCode = errorCode;
-    }
-}
-
 public class InvalidFreezingException : BaseException
 {
     public InvalidFreezingException() : base() { }

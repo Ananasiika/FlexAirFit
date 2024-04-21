@@ -18,7 +18,7 @@ public class AdminServiceTests : IDisposable
     public async Task CreateAdmin_Should_Add_Admin_To_Database()
     {
         // Arrange
-        var admin = new Admin(Guid.NewGuid(), Guid.NewGuid(), "John Doe", new DateTime(1990, 1, 1), "Male");
+        var admin = new Admin(Guid.NewGuid(), "John Doe", new DateTime(1990, 1, 1), "Male");
 
         // Act
         await _adminService.CreateAdmin(admin);
@@ -35,7 +35,7 @@ public class AdminServiceTests : IDisposable
     public async Task UpdateAdmin_Should_Update_Admin_In_Database()
     {
         // Arrange
-        var admin = new Admin(Guid.NewGuid(), Guid.NewGuid(), "John Doe", new DateTime(1990, 1, 1), "Male");
+        var admin = new Admin(Guid.NewGuid(), "John Doe", new DateTime(1990, 1, 1), "Male");
         await _adminService.CreateAdmin(admin);
 
         admin.Name = "Updated Name";
@@ -54,7 +54,7 @@ public class AdminServiceTests : IDisposable
     public async Task DeleteAdmin_Should_Delete_Admin_From_Database()
     {
         // Arrange
-        var admin = new Admin(Guid.NewGuid(), Guid.NewGuid(), "John Doe", new DateTime(1990, 1, 1), "Male");
+        var admin = new Admin(Guid.NewGuid(), "John Doe", new DateTime(1990, 1, 1), "Male");
         await _adminService.CreateAdmin(admin);
 
         // Act

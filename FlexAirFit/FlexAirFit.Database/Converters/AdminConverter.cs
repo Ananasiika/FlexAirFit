@@ -12,7 +12,6 @@ public static class AdminConverter
         return model is not null
             ? new Admin(
                 id: model.Id,
-                idUser: model.IdUser,
                 name: model.Name,
                 dateOfBirth: model.DateOfBirth,
                 gender: model.Gender)
@@ -25,7 +24,6 @@ public static class AdminConverter
         return model is not null
             ? new AdminDbModel(
                 id: model.Id,
-                idUser: model.IdUser,
                 name: model.Name,
                 dateOfBirth: model.DateOfBirth,
                 gender: model.Gender)

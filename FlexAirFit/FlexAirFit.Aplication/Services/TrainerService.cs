@@ -39,21 +39,12 @@ public class TrainerService(ITrainerRepository trainerRepository) : ITrainerServ
     
     public async Task<bool> CheckIfTrainerExists(Guid idTrainer)
     {
-        if (await _trainerRepository.GetTrainerByIdAsync(idTrainer) is null)
-        {
-            return false;
-        }
-        return true;
+        return !(await _trainerRepository.GetTrainerByIdAsync(idTrainer) is null);
     }
     
     public async Task<Trainer> GetTrainerById(Guid idTrainer)
     {
         return await _trainerRepository.GetTrainerByIdAsync(idTrainer) ?? throw new TrainerNotFoundException(idTrainer);
-    }
-    
-    public async Task<Trainer> GetTrainerByIdUser(Guid id)
-    {
-        return await _trainerRepository.GetTrainerByIdUserAsync(id) ?? throw new TrainerUserNotFoundException(id);
     }
     
     public async Task<List<Trainer>> GetTrainers(int? limit, int? offset)

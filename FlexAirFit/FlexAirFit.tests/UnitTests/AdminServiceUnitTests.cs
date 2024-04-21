@@ -21,7 +21,7 @@ public class AdminServiceUnitTests : IAdminService
     public async Task CreateAdmin_ShouldAddNewAdmin_WhenAdminDoesNotExist()
     {
         var adminId = Guid.NewGuid();
-        var admin = new Admin(adminId, Guid.NewGuid(), "John Doe", DateTime.Now, "Male");
+        var admin = new Admin(adminId, "John Doe", DateTime.Now, "Male");
 
         _mockAdminRepository
             .Setup(r => r.GetAdminByIdAsync(adminId))
@@ -39,7 +39,7 @@ public class AdminServiceUnitTests : IAdminService
     public async Task CreateAdmin_ShouldThrowException_WhenAdminAlreadyExists()
     {
         var adminId = Guid.NewGuid();
-        var admin = new Admin(adminId, Guid.NewGuid(), "Jane Smith", DateTime.Now, "Female");
+        var admin = new Admin(adminId, "Jane Smith", DateTime.Now, "Female");
 
         _mockAdminRepository
             .Setup(r => r.GetAdminByIdAsync(adminId))
@@ -52,7 +52,7 @@ public class AdminServiceUnitTests : IAdminService
     public async Task UpdateAdmin_ShouldUpdateExistingAdmin_WhenAdminExists()
     {
         var adminId = Guid.NewGuid();
-        var admin = new Admin(adminId, Guid.NewGuid(), "John Doe", DateTime.Now, "Male");
+        var admin = new Admin(adminId, "John Doe", DateTime.Now, "Male");
 
         _mockAdminRepository
             .Setup(r => r.GetAdminByIdAsync(adminId))
@@ -72,7 +72,7 @@ public class AdminServiceUnitTests : IAdminService
     public async Task UpdateAdmin_ShouldThrowException_WhenAdminDoesNotExist()
     {
         var adminId = Guid.NewGuid();
-        var admin = new Admin(adminId, Guid.NewGuid(), "Jane Smith", DateTime.Now, "Female");
+        var admin = new Admin(adminId, "Jane Smith", DateTime.Now, "Female");
 
         _mockAdminRepository
             .Setup(r => r.GetAdminByIdAsync(adminId))
@@ -85,7 +85,7 @@ public class AdminServiceUnitTests : IAdminService
     public async Task DeleteAdmin_ShouldDeleteExistingAdmin_WhenAdminExists()
     {
         var adminId = Guid.NewGuid();
-        var admin = new Admin(adminId, Guid.NewGuid(), "John Doe", DateTime.Now, "Male");
+        var admin = new Admin(adminId, "John Doe", DateTime.Now, "Male");
 
         _mockAdminRepository
             .Setup(r => r.GetAdminByIdAsync(adminId))

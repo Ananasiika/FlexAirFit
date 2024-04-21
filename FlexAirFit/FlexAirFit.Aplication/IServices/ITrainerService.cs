@@ -9,7 +9,6 @@ public interface ITrainerService
     Task<Trainer> UpdateTrainer(Trainer trainer);
     Task DeleteTrainer(Guid id);
     Task<Trainer> GetTrainerById(Guid id);
-    Task<Trainer> GetTrainerByIdUser(Guid id);
     Task<List<Trainer>> GetTrainers(int? limit, int? offset);
     Task<List<Trainer>> GetTrainerByFilter(FilterTrainer filter);
     Task<string> GetTrainerNameById(Guid id);

@@ -96,12 +96,6 @@ public class TrainerRepository : ITrainerRepository
         var trainerDbModel = await _context.Trainers.FindAsync(id);
         return TrainerConverter.DbToCoreModel(trainerDbModel);
     }
-    
-    public async Task<Trainer> GetTrainerByIdUserAsync(Guid id)
-    {
-        var trainerDbModel = await _context.Trainers.FirstOrDefaultAsync(c => c.IdUser == id);
-        return TrainerConverter.DbToCoreModel(trainerDbModel);
-    }
 
     public async Task<List<Trainer>> GetTrainersAsync(int? limit, int? offset = null)
     {

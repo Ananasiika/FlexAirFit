@@ -1,3 +1,4 @@
+using FlexAirFit.Core.Enums;
 using FlexAirFit.TechUI.BaseMenu;
 
 namespace FlexAirFit.TechUI.GuestMenu.AuthActions;
