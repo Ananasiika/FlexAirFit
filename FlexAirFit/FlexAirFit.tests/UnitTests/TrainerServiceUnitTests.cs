@@ -1,14 +1,6 @@
-﻿using FlexAirFit.Core.Models;
-using FlexAirFit.Application.IRepositories;
-using FlexAirFit.Application.IServices;
+﻿using FlexAirFit.Application.IServices;
 using FlexAirFit.Application.Exceptions.ServiceException;
-using FlexAirFit.Core.Filters;
-using Moq;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using FlexAirFit.Application.Services;
-using Xunit;
 
 namespace FlexAirFit.Tests;
 

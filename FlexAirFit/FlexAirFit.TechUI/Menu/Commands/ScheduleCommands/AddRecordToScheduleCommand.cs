@@ -1,4 +1,5 @@
 ﻿using FlexAirFit.Core;
+using FlexAirFit.Core.Enums;
 using FlexAirFit.Core.Models;
 using FlexAirFit.TechUI.BaseMenu;
 
@@ -25,6 +26,16 @@ public class AddRecordToScheduleCommand : Command
             Console.WriteLine("Ошибка: Тренировки с таким id не существует");
             return;
         }
+        
+        if (context.CurrentUser.Role == UserRole.Trainer)
+        {
+            Workout workout = await context.WorkoutService.GetWorkoutById(workoutId);
+            if (workout.IdTrainer != context.CurrentUser.Id)
+            {
+                Console.WriteLine("Ошибка: Тренировка не принадлежит текущему тренеру");
+                return;
+            }
+        }
 
         Console.Write("Введите дату и время в формате (гггг-мм-дд чч:мм): ");
         if (!DateTime.TryParse(Console.ReadLine(), out DateTime dateAndTime))
@@ -40,29 +51,44 @@ public class AddRecordToScheduleCommand : Command
         }
         DateTime utcDateTime = dateAndTime.ToUniversalTime();
 
-        Console.Write("Введите id клиента (если тренировка групповая, нажмите Enter): ");
-        string clientIdInput = Console.ReadLine();
         Guid? clientId = null;
-        if (!string.IsNullOrWhiteSpace(clientIdInput))
+        if (context.CurrentUser.Role != UserRole.Client)
         {
-            if (!Guid.TryParse(clientIdInput, out Guid tempClientId))
+            Console.Write("Введите id клиента (если тренировка групповая, нажмите Enter): ");
+            string clientIdInput = Console.ReadLine();
+            if (!string.IsNullOrWhiteSpace(clientIdInput))
             {
-                Console.WriteLine("Ошибка: Введенное значение имеет некорректный формат для id клиента");
-                return;
-            }
+                if (!Guid.TryParse(clientIdInput, out Guid tempClientId))
+                {
+                    Console.WriteLine("Ошибка: Введенное значение имеет некорректный формат для id клиента");
+                    return;
+                }
 
-            if (!context.ClientService.CheckIfClientExists(tempClientId).Result)
-            {
-                Console.WriteLine("Ошибка: Клиента с таким id не существует");
-                return;
-            }
+                if (!context.ClientService.CheckIfClientExists(tempClientId).Result)
+                {
+                    Console.WriteLine("Ошибка: Клиента с таким id не существует");
+                    return;
+                }
 
-            clientId = tempClientId;
+                clientId = tempClientId;
+            }
+        }
+        else
+        {
+            clientId = context.CurrentUser.Id;
         }
 
         Schedule newScheduleItem = new Schedule(Guid.NewGuid(), workoutId, utcDateTime, clientId);
 
-        await context.ScheduleService.CreateSchedule(newScheduleItem);
+        try
+        {
+            await context.ScheduleService.CreateSchedule(newScheduleItem);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"Произошла ошибка при добавлении записи в расписание.");;
+            return;
+        }
         Console.WriteLine("Запись успешно добавлена в расписание.");
     }
 }

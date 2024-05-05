@@ -33,9 +33,9 @@ public class FreezeMembershipByAdminCommand : Command
             Console.WriteLine("Ошибка: Неверный формат количества дней для заморозки.");
             return;
         }
-        DateOnly dateStartFreezing;
+        DateTime dateStartFreezing;
         Console.WriteLine("Введите дату начала заморозки YYYY-MM-DD:");
-        if (!DateOnly.TryParse(Console.ReadLine(), out dateStartFreezing))
+        if (!DateTime.TryParse(Console.ReadLine(), out dateStartFreezing))
         {
             Console.WriteLine("Ошибка: Неверный формат даты начала заморозки");
             return;

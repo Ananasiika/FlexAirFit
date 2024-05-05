@@ -35,6 +35,10 @@ public class TrainerMenuBuilder : MenuBuilder
         [
             new EditTrainerCommand()
         ]));
+        menu.AddLabel(new MenuLabel("Просмотр личной информации",
+        [
+            new ViewTrainerInformationCommand()
+        ]));
         menu.AddLabel(new("Выйти из аккаунта",
         [
             new SignOutUserCommand()

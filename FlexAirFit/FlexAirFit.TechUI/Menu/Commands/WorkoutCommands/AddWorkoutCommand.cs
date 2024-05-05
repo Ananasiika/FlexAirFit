@@ -1,5 +1,6 @@
 ﻿using FlexAirFit.TechUI.BaseMenu;
 using FlexAirFit.Core.Models;
+using FlexAirFit.Core.Enums;
 
 namespace FlexAirFit.TechUI.Commands.WorkoutCommands;
 
@@ -18,19 +19,26 @@ public class AddWorkoutCommand : Command
         Console.WriteLine("Введите описание тренировки:");
         string description = Console.ReadLine();
 
-        Console.WriteLine("Введите ID тренера:");
         Guid idTrainer;
-        if (!Guid.TryParse(Console.ReadLine(), out idTrainer))
+        if (context.CurrentUser.Role != UserRole.Trainer)
         {
-            Console.WriteLine("Ошибка: Неверный формат ID тренера.");
-            return;
+            Console.WriteLine("Введите ID тренера:");
+            if (!Guid.TryParse(Console.ReadLine(), out idTrainer))
+            {
+                Console.WriteLine("Ошибка: Неверный формат ID тренера.");
+                return;
+            }
+            if (!context.TrainerService.CheckIfTrainerExists(idTrainer).Result)
+            {
+                Console.WriteLine("Ошибка: Тренера с таким id не существует");
+                return;
+            }
         }
-        if (!context.TrainerService.CheckIfTrainerExists(idTrainer).Result)
+        else
         {
-            Console.WriteLine("Ошибка: Тренера с таким id не существует");
-            return;
+            idTrainer = context.CurrentUser.Id;
         }
-
+        
         Console.WriteLine("Введите продолжительность тренировки в формате (чч:мм:сс):");
         TimeSpan duration;
         if (!TimeSpan.TryParse(Console.ReadLine(), out duration))

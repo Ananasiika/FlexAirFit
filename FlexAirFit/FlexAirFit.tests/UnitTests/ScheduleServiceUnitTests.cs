@@ -1,14 +1,6 @@
-﻿using FlexAirFit.Core.Models;
-using FlexAirFit.Application.IRepositories;
-using FlexAirFit.Application.IServices;
+﻿using FlexAirFit.Application.IServices;
 using FlexAirFit.Application.Exceptions.ServiceException;
-using FlexAirFit.Core.Filters;
-using Moq;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using FlexAirFit.Application.Services;
-using Xunit;
 
 namespace FlexAirFit.Tests;
 
@@ -16,25 +8,15 @@ public class ScheduleServiceUnitTests
 {
     private readonly Mock<IScheduleRepository> _mockScheduleRepository;
     private readonly Mock<IWorkoutRepository> _mockWorkoutRepository;
+    private readonly Mock<IClientRepository> _mockClientRepository;
     private readonly IScheduleService _scheduleService;
 
     public ScheduleServiceUnitTests()
     {
         _mockScheduleRepository = new Mock<IScheduleRepository>();
+        _mockClientRepository = new Mock<IClientRepository>();
         _mockWorkoutRepository = new Mock<IWorkoutRepository>();
-        _scheduleService = new ScheduleService(_mockScheduleRepository.Object, _mockWorkoutRepository.Object);
-    }
-
-    [Fact]
-    public async Task CreateSchedule_ShouldCallAddScheduleAsync_WhenScheduleDoesNotExist()
-    {
-        var schedule = new Schedule(Guid.NewGuid(), Guid.NewGuid(), DateTime.Now, Guid.NewGuid());
-
-        _mockScheduleRepository.Setup(r => r.GetScheduleByIdAsync(schedule.Id)).ReturnsAsync((Schedule)null);
-
-        await _scheduleService.CreateSchedule(schedule);
-
-        _mockScheduleRepository.Verify(r => r.AddScheduleAsync(schedule), Times.Once);
+        _scheduleService = new ScheduleService(_mockScheduleRepository.Object, _mockWorkoutRepository.Object, _mockClientRepository.Object);
     }
 
     [Fact]
@@ -46,7 +28,101 @@ public class ScheduleServiceUnitTests
 
         await Assert.ThrowsAsync<ScheduleExistsException>(() => _scheduleService.CreateSchedule(schedule));
     }
+    
+    [Fact]
+    public async Task CreateSchedule_ShouldThrowWorkoutNotFoundException_WhenWorkoutDoesNotExist()
+    {
+        // Arrange
+        var schedule = new Schedule(Guid.NewGuid(), Guid.NewGuid(), DateTime.Now, Guid.NewGuid());
+        _mockScheduleRepository.Setup(r => r.GetScheduleByIdAsync(schedule.Id)).ReturnsAsync((Schedule)null);
+        _mockWorkoutRepository.Setup(r => r.GetWorkoutByIdAsync(schedule.IdWorkout)).ReturnsAsync((Workout)null);
 
+        // Act & Assert
+        await Assert.ThrowsAsync<WorkoutNotFoundException>(() => _scheduleService.CreateSchedule(schedule));
+    }
+    
+    [Fact]
+    public async Task CreateSchedule_ShouldThrowClientNotFoundException_WhenClientDoesNotExist()
+    {
+        // Arrange
+        var schedule = new Schedule(Guid.NewGuid(), Guid.NewGuid(), DateTime.Now, Guid.NewGuid());
+        var workout = new Workout(schedule.IdWorkout, "Workout 1", "Description 1", Guid.NewGuid(), TimeSpan.FromMinutes(60), 5);
+        _mockScheduleRepository.Setup(r => r.GetScheduleByIdAsync(schedule.Id)).ReturnsAsync((Schedule)null);
+        _mockWorkoutRepository.Setup(r => r.GetWorkoutByIdAsync(schedule.IdWorkout)).ReturnsAsync(workout);
+        _mockClientRepository.Setup(r => r.GetClientByIdAsync((Guid)schedule.IdClient)).ReturnsAsync((Client)null);
+
+        // Act & Assert
+        await Assert.ThrowsAsync<ClientNotFoundException>(() => _scheduleService.CreateSchedule(schedule));
+    }
+
+    [Fact]
+    public async Task CreateSchedule_ShouldThrowScheduleTimeIncorrectedException_WhenScheduleTimeIsIncorrect()
+    {
+        // Arrange
+        var schedule = new Schedule(Guid.NewGuid(), Guid.NewGuid(), DateTime.Parse("2023-04-21 23:00:00"), Guid.NewGuid());
+        var workout = new Workout(schedule.IdWorkout, "Workout 1", "Description 1", Guid.NewGuid(), TimeSpan.FromMinutes(60), 5);
+        var client = new Client((Guid)schedule.IdClient, "John Doe", "Male", DateTime.Today, Guid.NewGuid(), DateTime.Today, 10, null);
+        _mockScheduleRepository.Setup(r => r.GetScheduleByIdAsync(schedule.Id)).ReturnsAsync((Schedule)null);
+        _mockWorkoutRepository.Setup(r => r.GetWorkoutByIdAsync(schedule.IdWorkout)).ReturnsAsync(workout);
+        _mockClientRepository.Setup(r => r.GetClientByIdAsync((Guid)schedule.IdClient)).ReturnsAsync(client);
+
+        // Act & Assert
+        await Assert.ThrowsAsync<ScheduleTimeIncorrectedException>(() => _scheduleService.CreateSchedule(schedule));
+    }
+    
+    [Fact]
+    public async Task CreateSchedule_ShouldCallAddScheduleAsync_WhenScheduleIsValid()
+    {
+        // Arrange
+        var schedule = new Schedule(Guid.NewGuid(), Guid.NewGuid(), DateTime.Parse("2024-06-06 21:00:00"), Guid.NewGuid());
+        var workout = new Workout(schedule.IdWorkout, "Workout 1", "Description 1", Guid.NewGuid(), TimeSpan.FromMinutes(60), 5);
+        var client = new Client((Guid)schedule.IdClient, "John Doe", "Male", DateTime.Today, Guid.NewGuid(), DateTime.Today, 10, null);
+        _mockScheduleRepository.Setup(r => r.GetScheduleByIdAsync(schedule.Id)).ReturnsAsync((Schedule)null);
+        _mockWorkoutRepository.Setup(r => r.GetWorkoutByIdAsync(schedule.IdWorkout)).ReturnsAsync(workout);
+        _mockClientRepository.Setup(r => r.GetClientByIdAsync((Guid)schedule.IdClient)).ReturnsAsync(client);
+
+        // Act
+        await _scheduleService.CreateSchedule(schedule);
+
+        // Assert
+        _mockScheduleRepository.Verify(r => r.AddScheduleAsync(schedule), Times.Once);
+    }
+
+
+    [Fact]
+    public async Task CreateSchedule_ShouldThrowClientAlreadyHasScheduleException_WhenClientAlreadyHasSchedule()
+    {
+        // Arrange
+        var existingSchedule = new Schedule(Guid.NewGuid(), Guid.NewGuid(), DateTime.Parse("2024-06-06 21:00:00"), Guid.NewGuid());
+        var workout = new Workout(existingSchedule.IdWorkout, "Workout 1", "Description 1", Guid.NewGuid(), TimeSpan.FromMinutes(60), 5);
+        var client = new Client((Guid)existingSchedule.IdClient, "John Doe", "Male", DateTime.Today, Guid.NewGuid(), DateTime.Today, 10, null);
+        _mockScheduleRepository.Setup(r => r.GetScheduleByIdAsync(existingSchedule.Id)).ReturnsAsync((Schedule)null);
+        _mockWorkoutRepository.Setup(r => r.GetWorkoutByIdAsync(existingSchedule.IdWorkout)).ReturnsAsync(workout);
+        _mockClientRepository.Setup(r => r.GetClientByIdAsync((Guid)existingSchedule.IdClient)).ReturnsAsync(client);
+        
+        var schedule = new Schedule(Guid.NewGuid(), existingSchedule.IdWorkout, DateTime.Parse("2024-06-06 21:30:00"), client.Id);
+
+        // Act & Assert
+        await Assert.ThrowsAsync<ClientAlreadyHasScheduleException>(() => _scheduleService.CreateSchedule(schedule));
+    }
+
+    [Fact]
+    public async Task CreateSchedule_ShouldThrowTrainerAlreadyHasScheduleException_WhenTrainerAlreadyHasSchedule()
+    {
+        // Arrange
+        var existingSchedule = new Schedule(Guid.NewGuid(), Guid.NewGuid(), DateTime.Parse("2024-06-06 21:00:00"), Guid.NewGuid());
+        var workout = new Workout(existingSchedule.IdWorkout, "Workout 1", "Description 1", Guid.NewGuid(), TimeSpan.FromMinutes(60), 5);
+        var client = new Client((Guid)existingSchedule.IdClient, "John Doe", "Male", DateTime.Today, Guid.NewGuid(), DateTime.Today, 10, null);
+        _mockScheduleRepository.Setup(r => r.GetScheduleByIdAsync(existingSchedule.Id)).ReturnsAsync((Schedule)null);
+        _mockWorkoutRepository.Setup(r => r.GetWorkoutByIdAsync(existingSchedule.IdWorkout)).ReturnsAsync(workout);
+        _mockClientRepository.Setup(r => r.GetClientByIdAsync((Guid)existingSchedule.IdClient)).ReturnsAsync(client);
+        
+        var schedule = new Schedule(Guid.NewGuid(), existingSchedule.IdWorkout, DateTime.Parse("2024-06-06 21:30:00"), null);
+
+        // Act & Assert
+        await Assert.ThrowsAsync<TrainerAlreadyHasScheduleException>(() => _scheduleService.CreateSchedule(schedule));
+    }
+    
     [Fact]
     public async Task UpdateSchedule_ShouldCallUpdateScheduleAsync_WhenScheduleExists()
     {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json;
 
 namespace FlexAirFit.Database.Models;
 public class ClientDbModel
@@ -20,7 +21,7 @@ public class ClientDbModel
 
     [Required]
     [Column("date_of_birth", TypeName = "date")]
-    public DateOnly DateOfBirth { get; set; }
+    public DateTime DateOfBirth { get; set; }
 
     [Required]
     [Column("membership_id")]
@@ -28,7 +29,7 @@ public class ClientDbModel
 
     [Required]
     [Column("membership_end", TypeName = "date")]
-    public DateOnly MembershipEnd { get; set; }
+    public DateTime MembershipEnd { get; set; }
 
     [Column("remain_freezing")]
     public int? RemainFreezing { get; set; }
@@ -36,8 +37,12 @@ public class ClientDbModel
     [Required]
     [Column("is_membership_active")]
     public bool IsMembershipActive { get; }
-
-    public ClientDbModel(Guid id, string name, string gender, DateOnly dateOfBirth, Guid idMembership, DateOnly membershipEnd, int? remainFreezing)
+    
+    [Required]
+    [Column("freezing_intervals")]
+    public JsonDocument? FreezingIntervals { get; set; }
+    
+    public ClientDbModel(Guid id, string name, string gender, DateTime dateOfBirth, Guid idMembership, DateTime membershipEnd, int? remainFreezing)
     {
         Id = id;
         Name = name;
@@ -46,6 +51,12 @@ public class ClientDbModel
         IdMembership = idMembership;
         MembershipEnd = membershipEnd;
         RemainFreezing = remainFreezing;
+    }
+    
+    public ClientDbModel(Guid id, string name, string gender, DateTime dateOfBirth, Guid idMembership, DateTime membershipEnd, int? remainFreezing, JsonDocument? freezingIntervals)
+        : this(id, name, gender, dateOfBirth, idMembership, membershipEnd, remainFreezing)
+    {
+        FreezingIntervals = freezingIntervals;
     }
     
     public List<ProductDbModel> Products { get; } = [];

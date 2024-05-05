@@ -5,29 +5,28 @@ public class Client
     public Guid Id { get; set; }
     public string Name { get; set; }
     public string Gender { get; set; }
-    public DateOnly DateOfBirth { get; set; }
+    public DateTime DateOfBirth { get; set; }
     public Guid IdMembership { get; set; }
-    public DateOnly MembershipEnd { get; set; }
+    public DateTime MembershipEnd { get; set; }
     public int? RemainFreezing { get; set; }
-    public List<Tuple<DateOnly, DateOnly>>? FreezingIntervals { get; set; }
-
-    public bool IsMembershipActive(DateOnly currentDate = default) {
+    public DateTime?[][] FreezingIntervals { get; set; }
+    public bool IsMembershipActive(DateTime currentDate = default) {
         if (currentDate == default)
         {
-            currentDate = DateOnly.FromDateTime(DateTime.Today);
+            currentDate = DateTime.Today;
         }
-        return !FreezingIntervals.Any(interval => interval.Item1 <= currentDate && currentDate <= interval.Item2) && currentDate <= MembershipEnd;
+        return !FreezingIntervals.Any(interval => interval[0] <= currentDate && currentDate <= interval[1]) && currentDate <= MembershipEnd;
     }
 
 
     public Client(Guid id,
         string name,
         string gender,
-        DateOnly dateOfBirth,
+        DateTime dateOfBirth,
         Guid idMembership,
-        DateOnly membershipEnd,
+        DateTime membershipEnd,
         int? remainFreezing,
-        List<Tuple<DateOnly, DateOnly>> freezingIntervals)
+        DateTime?[][] freezingIntervals)
     {
         Id = id;
         Name = name;

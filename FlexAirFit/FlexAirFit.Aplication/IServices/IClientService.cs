@@ -9,8 +9,8 @@ public interface IClientService
     Task DeleteClient(Guid id);
     Task<Client> GetClientById(Guid id);
     Task<List<Client>> GetClients(int? limit, int? offset);
-    Task FreezeMembership(Guid idClient, DateOnly FreezingStart, int durationInDays);
-    Task<DateOnly> GetMembershipEndDate(Guid idClient);
+    Task FreezeMembership(Guid idClient, DateTime FreezingStart, int durationInDays);
+    Task<DateTime> GetMembershipEndDate(Guid idClient);
     Task<bool> CheckIfClientExists(Guid idClient);
     Task AddMembership(Guid idClient, Guid idMembership);
 }

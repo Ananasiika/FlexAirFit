@@ -22,3 +22,39 @@ public class ScheduleNotFoundException : BaseException
         ErrorCode = errorCode;
     }
 }
+
+public class ScheduleTimeIncorrectedException : BaseException 
+{
+    public ScheduleTimeIncorrectedException() : base() { }
+    public ScheduleTimeIncorrectedException(Guid id) : base($"Schedule ID = {id}, time is incorrect") { }
+    public ScheduleTimeIncorrectedException(string message) : base(message) { }
+    public ScheduleTimeIncorrectedException(string message, Exception innerException) : base(message, innerException) { }
+    public ScheduleTimeIncorrectedException(string message, int errorCode) : base(message)
+    {
+        ErrorCode = errorCode;
+    }
+}
+
+public class TrainerAlreadyHasScheduleException : BaseException 
+{
+    public TrainerAlreadyHasScheduleException() : base() { }
+    public TrainerAlreadyHasScheduleException(Guid id) : base($"Schedule ID = {id}, trainer already has schedule in this time") { }
+    public TrainerAlreadyHasScheduleException(string message) : base(message) { }
+    public TrainerAlreadyHasScheduleException(string message, Exception innerException) : base(message, innerException) { }
+    public TrainerAlreadyHasScheduleException(string message, int errorCode) : base(message)
+    {
+        ErrorCode = errorCode;
+    }
+}
+
+public class ClientAlreadyHasScheduleException : BaseException 
+{
+    public ClientAlreadyHasScheduleException() : base() { }
+    public ClientAlreadyHasScheduleException(Guid id) : base($"Schedule ID = {id}, client already has schedule in this time") { }
+    public ClientAlreadyHasScheduleException(string message) : base(message) { }
+    public ClientAlreadyHasScheduleException(string message, Exception innerException) : base(message, innerException) { }
+    public ClientAlreadyHasScheduleException(string message, int errorCode) : base(message)
+    {
+        ErrorCode = errorCode;
+    }
+}

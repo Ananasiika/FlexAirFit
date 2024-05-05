@@ -44,7 +44,7 @@ public class AdminMenuBuilder : MenuBuilder
             new EditClientBonusesCommand(),
             new ViewClientBonusesByAdminCommand()
         ]));
-        menu.AddLabel(new("Дейтствия с клиентами",
+        menu.AddLabel(new("Действия с клиентами",
         [
             new ViewClientCommand(),
             new AddMembershipToClientCommand(),

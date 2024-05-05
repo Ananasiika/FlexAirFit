@@ -30,13 +30,12 @@ namespace FlexAirFit.Application.Services.Tests
             var idUser = Guid.NewGuid();
             var name = "John Doe";
             var gender = "Male";
-            var dateOfBirth = new DateOnly(1985, 1, 1);
+            var dateOfBirth = new DateTime(1985, 1, 1);
             var idMembership = Guid.NewGuid();
-            var membershipEnd = new DateOnly(2023, 12, 31);
+            var membershipEnd = new DateTime(2023, 12, 31);
             var remainFreezing = (int?)null;
-            var freezingIntervals = new List<Tuple<DateOnly, DateOnly>>();
 
-            var client = new Client(id, name, gender, dateOfBirth, idMembership, membershipEnd, remainFreezing, freezingIntervals);
+            var client = new Client(id, name, gender, dateOfBirth, idMembership, membershipEnd, remainFreezing, null);
 
             // Act
             await _clientService.CreateClient(client);
@@ -61,18 +60,17 @@ namespace FlexAirFit.Application.Services.Tests
             var idUser = Guid.NewGuid();
             var name = "John Doe";
             var gender = "Male";
-            var dateOfBirth = new DateOnly(1985, 1, 1);
+            var dateOfBirth = new DateTime(1985, 1, 1);
             var idMembership = Guid.NewGuid();
-            var membershipEnd = new DateOnly(2023, 12, 31);
+            var membershipEnd = new DateTime(2023, 12, 31);
             var remainFreezing = (int?)null;
-            var freezingIntervals = new List<Tuple<DateOnly, DateOnly>>();
 
-            var client = new Client(id, name, gender, dateOfBirth, idMembership, membershipEnd, remainFreezing, freezingIntervals);
+            var client = new Client(id, name, gender, dateOfBirth, idMembership, membershipEnd, remainFreezing, null);
 
             await _clientService.CreateClient(client);
 
             client.Name = "Jane Smith";
-            client.MembershipEnd = new DateOnly(2024, 12, 31);
+            client.MembershipEnd = new DateTime(2024, 12, 31);
 
             // Act
             await _clientService.UpdateClient(client);
@@ -92,13 +90,12 @@ namespace FlexAirFit.Application.Services.Tests
             var idUser = Guid.NewGuid();
             var name = "John Doe";
             var gender = "Male";
-            var dateOfBirth = new DateOnly(1985, 1, 1);
+            var dateOfBirth = new DateTime(1985, 1, 1);
             var idMembership = Guid.NewGuid();
-            var membershipEnd = new DateOnly(2023, 12, 31);
+            var membershipEnd = new DateTime(2023, 12, 31);
             var remainFreezing = (int?)null;
-            var freezingIntervals = new List<Tuple<DateOnly, DateOnly>>();
 
-            var client = new Client(id, name, gender, dateOfBirth, idMembership, membershipEnd, remainFreezing, freezingIntervals);
+            var client = new Client(id, name, gender, dateOfBirth, idMembership, membershipEnd, remainFreezing, null);
 
             await _clientService.CreateClient(client);
 
@@ -118,13 +115,12 @@ namespace FlexAirFit.Application.Services.Tests
             var idUser = Guid.NewGuid();
             var name = "John Doe";
             var gender = "Male";
-            var dateOfBirth = new DateOnly(1985, 1, 1);
+            var dateOfBirth = new DateTime(1985, 1, 1);
             var idMembership = Guid.NewGuid();
-            var membershipEnd = new DateOnly(2023, 12, 31);
+            var membershipEnd = new DateTime(2023, 12, 31);
             var remainFreezing = (int?)null;
-            var freezingIntervals = new List<Tuple<DateOnly, DateOnly>>();
 
-            var client = new Client(id, name, gender, dateOfBirth, idMembership, membershipEnd, remainFreezing, freezingIntervals);
+            var client = new Client(id, name, gender, dateOfBirth, idMembership, membershipEnd, remainFreezing, null);
 
             await _clientService.CreateClient(client);
 
@@ -144,8 +140,8 @@ namespace FlexAirFit.Application.Services.Tests
             // Arrange
             var clients = new List<Client>
             {
-                new Client(Guid.NewGuid(), "John Doe", "Male", new DateOnly(1985, 1, 1), Guid.NewGuid(), new DateOnly(2023, 12, 31), null, new List<Tuple<DateOnly, DateOnly>>()),
-                new Client(Guid.NewGuid(), "Jane Smith", "Female", new DateOnly(1990, 5, 15), Guid.NewGuid(), new DateOnly(2022, 6, 30), null, new List<Tuple<DateOnly, DateOnly>>())
+                new Client(Guid.NewGuid(), "John Doe", "Male", new DateTime(1985, 1, 1), Guid.NewGuid(), new DateTime(2023, 12, 31), null, null),
+                new Client(Guid.NewGuid(), "Jane Smith", "Female", new DateTime(1990, 5, 15), Guid.NewGuid(), new DateTime(2022, 6, 30), null, null)
             };
 
             await _clientService.CreateClient(clients[0]);

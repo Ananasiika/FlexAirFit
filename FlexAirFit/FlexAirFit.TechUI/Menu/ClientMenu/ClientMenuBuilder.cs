@@ -37,9 +37,9 @@ public class ClientMenuBuilder : MenuBuilder
         [
             new ViewClientBonusesCommand()
         ]));
-        menu.AddLabel(new("Посмотреть информацию об абонементе",
+        menu.AddLabel(new("Посмотреть личную информацию",
         [
-            new ViewInformationAboutClientMembershipCommand()
+            new ViewInformationAboutClientCommand()
         ]));
         menu.AddLabel(new("Заморозить абонемент",
         [

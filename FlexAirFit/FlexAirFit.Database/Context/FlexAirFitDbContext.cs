@@ -22,7 +22,7 @@ public class FlexAirFitDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<ClientProductDbModel>()
-            .HasKey(cp => new { cp.IdClient, cp.IdProduct });
+            .HasKey(cp => new { cp.Id, cp.IdClient, cp.IdProduct });
 
         modelBuilder.Entity<ClientProductDbModel>()
             .HasOne(cp => cp.Client)

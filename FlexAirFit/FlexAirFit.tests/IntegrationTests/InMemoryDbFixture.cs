@@ -112,14 +112,14 @@ public class InMemoryDbFixture() : IDisposable
     {
         var clients = new List<Client>
         {
-            new Client(Guid.NewGuid(), "John Doe", "Male", new DateOnly(1990, 1, 1),
-                Guid.NewGuid(), new DateOnly(2023, 12, 31), 2, null),
+            new Client(Guid.NewGuid(), "John Doe", "Male", new DateTime(1990, 1, 1),
+                Guid.NewGuid(), new DateTime(2023, 12, 31), 2, null),
         
-            new Client(Guid.NewGuid(), "Jane Smith", "Female", new DateOnly(1995, 5, 10),
-                Guid.NewGuid(), new DateOnly(2022, 8, 31), null, null),
+            new Client(Guid.NewGuid(), "Jane Smith", "Female", new DateTime(1995, 5, 10),
+                Guid.NewGuid(), new DateTime(2022, 8, 31), null, null),
         
-            new Client(Guid.NewGuid(), "Mike Johnson", "Male", new DateOnly(1985, 7, 20),
-                Guid.NewGuid(), new DateOnly(2022, 12, 31), 0, null)
+            new Client(Guid.NewGuid(), "Mike Johnson", "Male", new DateTime(1985, 7, 20),
+                Guid.NewGuid(), new DateTime(2022, 12, 31), 0, null)
         };
 
         return clients;

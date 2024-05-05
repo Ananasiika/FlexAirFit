@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Text.Json;
 using FlexAirFit.Core.Models;
 using FlexAirFit.Database.Models;
 
@@ -19,7 +20,18 @@ public static class ClientConverter
                 idMembership: model.IdMembership,
                 membershipEnd: model.MembershipEnd,
                 remainFreezing: model.RemainFreezing,
-                freezingIntervals: null)
+                freezingIntervals: model.FreezingIntervals != null ? model.FreezingIntervals.RootElement
+                    .EnumerateArray()
+                    .Select(interval => new DateTime?[]
+                    {
+                        interval.TryGetProperty("start_date", out var startDate) && startDate.ValueKind != JsonValueKind.Null
+                            ? DateTime.Parse(startDate.GetString())
+                            : null,
+                        interval.TryGetProperty("end_date", out var endDate) && endDate.ValueKind != JsonValueKind.Null
+                            ? DateTime.Parse(endDate.GetString())
+                            : null
+                    })
+                    .ToArray() : null)
             : default;
     }
 
@@ -34,7 +46,16 @@ public static class ClientConverter
                 dateOfBirth: model.DateOfBirth,
                 idMembership: model.IdMembership,
                 membershipEnd: model.MembershipEnd,
-                remainFreezing: model.RemainFreezing)
+                remainFreezing: model.RemainFreezing,
+                freezingIntervals: model.FreezingIntervals != null && model.FreezingIntervals.Length != 0 ? JsonDocument.Parse(
+                    JsonSerializer.Serialize(
+                        model.FreezingIntervals.Select(interval => new
+                        {
+                            start_date = interval[0]?.ToString("yyyy-MM-dd"),
+                            end_date = interval[1]?.ToString("yyyy-MM-dd")
+                        })
+                    )
+                ) : null)
             : default;
     }
 }

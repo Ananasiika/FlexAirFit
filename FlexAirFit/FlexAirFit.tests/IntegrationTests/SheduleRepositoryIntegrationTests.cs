@@ -19,7 +19,8 @@ namespace FlexAirFit.Application.Services.Tests
         public ScheduleServiceTests()
         {
             _scheduleService = new ScheduleService(new ScheduleRepository(_dbContextFixture.Context),
-                                                   new WorkoutRepository(_dbContextFixture.Context));
+                                                   new WorkoutRepository(_dbContextFixture.Context),
+                                                   new ClientRepository(_dbContextFixture.Context));
         }
 
         [Fact]

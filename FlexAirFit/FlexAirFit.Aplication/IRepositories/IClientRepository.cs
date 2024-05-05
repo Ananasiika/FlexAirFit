@@ -9,5 +9,5 @@ public interface IClientRepository
     Task DeleteClientAsync(Guid id);
     Task<Client> GetClientByIdAsync(Guid id);
     Task<List<Client>> GetClientsAsync(int? limit, int? offset);
-    Task<DateOnly> GetMembershipEndDateAsync(Guid idClient);
+    Task<DateTime> GetMembershipEndDateAsync(Guid idClient);
 }

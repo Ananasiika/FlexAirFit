@@ -16,7 +16,7 @@ public class ClientProductService : IClientProductService
     private readonly IProductRepository _productRepository;
     private readonly IBonusRepository _bonusRepository;
     private readonly IClientRepository _clientRepository;
-
+    
     public ClientProductService(IClientProductRepository clientProductRepository,
         IProductRepository productRepository,
         IBonusRepository bonusRepository,

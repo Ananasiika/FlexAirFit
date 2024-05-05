@@ -26,12 +26,12 @@ public class FreezeMembershipCommand : Command
         }
         
         Console.WriteLine("Введите дату начала заморозки YYYY-MM-DD:");
-        if (!DateOnly.TryParse(Console.ReadLine(), out DateOnly dateStartFreezing))
+        if (!DateTime.TryParse(Console.ReadLine(), out DateTime dateStartFreezing))
         {
             Console.WriteLine("Ошибка: Неверный формат даты начала заморозки");
             return;
         }
-        if (dateStartFreezing <= DateOnly.FromDateTime(DateTime.Today))
+        if (dateStartFreezing <= DateTime.Today)
         {
             Console.WriteLine("Ошибка: Дата начала заморозки не может быть ранее, чем сегодня.");
             return;

@@ -33,7 +33,7 @@ public class Menu
         }
         if (0 > no || no > _labels.Count)
         {
-            Console.WriteLine("[!] Error");
+            Console.WriteLine("[!] Команды с таким номером нет");
             return -1;
         }
         await _labels[no - 1].Execute(context);

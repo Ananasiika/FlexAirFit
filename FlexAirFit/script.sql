@@ -59,7 +59,8 @@ CREATE TABLE IF NOT EXISTS "Clients" (
     date_of_birth DATE NOT NULL,
     membership_id UUID NOT NULL REFERENCES "Memberships" (id),
     membership_end DATE NOT NULL,
-    remain_freezing INT
+    remain_freezing INT,
+    freezing_intervals DATERANGE[]
 );
 
 CREATE TABLE IF NOT EXISTS "Schedules" (

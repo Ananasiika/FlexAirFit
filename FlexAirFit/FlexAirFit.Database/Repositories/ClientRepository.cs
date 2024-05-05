@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using FlexAirFit.Application.IRepositories;
 using FlexAirFit.Core.Models;
 using FlexAirFit.Database.Converters;
 using FlexAirFit.Database.Context;
-using FlexAirFit.Database.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace FlexAirFit.Database.Repositories;
@@ -29,12 +29,20 @@ public class ClientRepository : IClientRepository
     public async Task<Client> UpdateClientAsync(Client client)
     {
         var clientDbModel = await _context.Clients.FindAsync(client.Id);
-        clientDbModel.Name = client.Name;
+        clientDbModel.MembershipEnd = client.MembershipEnd;
+        clientDbModel.FreezingIntervals = JsonDocument.Parse(
+            JsonSerializer.Serialize(
+                client.FreezingIntervals.Select(interval => new
+                {
+                    start_date = interval[0]?.ToString("yyyy-MM-dd"),
+                    end_date = interval[1]?.ToString("yyyy-MM-dd")
+                })));
+        clientDbModel.IdMembership = client.IdMembership;
+        clientDbModel.RemainFreezing = client.RemainFreezing;
         clientDbModel.Gender = client.Gender;
         clientDbModel.DateOfBirth = client.DateOfBirth;
-        clientDbModel.MembershipEnd = client.MembershipEnd;
-        clientDbModel.RemainFreezing = client.RemainFreezing;
-
+        clientDbModel.Name = client.Name;
+        
         await _context.SaveChangesAsync();
         return ClientConverter.DbToCoreModel(clientDbModel);
     }
@@ -49,6 +57,7 @@ public class ClientRepository : IClientRepository
     public async Task<Client> GetClientByIdAsync(Guid id)
     {
         var clientDbModel = await _context.Clients.FindAsync(id);
+        
         return ClientConverter.DbToCoreModel(clientDbModel);
     }
     
@@ -70,7 +79,7 @@ public class ClientRepository : IClientRepository
         return clientsDbModels.Select(ClientConverter.DbToCoreModel).ToList();
     }
 
-    public async Task<DateOnly> GetMembershipEndDateAsync(Guid idClient)
+    public async Task<DateTime> GetMembershipEndDateAsync(Guid idClient)
     {
         var clientDbModel = await _context.Clients.FindAsync(idClient);
         return clientDbModel.MembershipEnd;

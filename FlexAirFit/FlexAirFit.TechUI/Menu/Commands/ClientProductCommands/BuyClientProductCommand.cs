@@ -31,9 +31,16 @@ public class BuyClientProductCommand : Command
         {
             cost = await context.ClientProductService.AddClientProductAndReturnCost(clientProduct, writeOff);
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            Console.WriteLine(e);
+            if (ex.InnerException != null)
+            {
+                Console.WriteLine("Inner Exception: " + ex.InnerException.Message);
+            }
+            else
+            {
+                Console.WriteLine("Exception: " + ex.Message);
+            }
             throw;
         }
         Console.WriteLine($"К оплате {cost} рублей");

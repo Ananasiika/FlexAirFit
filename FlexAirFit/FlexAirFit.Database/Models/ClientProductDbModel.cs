@@ -17,8 +17,9 @@ public class ClientProductDbModel
     [Column("id_product")]
     public Guid IdProduct { get; set; }
     
-    public ClientProductDbModel(Guid idClient, Guid idProduct)
+    public ClientProductDbModel(Guid id, Guid idClient, Guid idProduct)
     {
+        Id = id;
         IdClient = idClient;
         IdProduct = idProduct;
     }

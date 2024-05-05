@@ -49,7 +49,7 @@ public class ClientService(IClientRepository clientRepository,
         return await _clientRepository.GetClientsAsync(limit, offset);
     }
     
-    public async Task FreezeMembership(Guid idClient, DateOnly FreezingStart, int durationInDays)
+    public async Task FreezeMembership(Guid idClient, DateTime FreezingStart, int durationInDays)
     {
         var configuration = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
@@ -72,39 +72,46 @@ public class ClientService(IClientRepository clientRepository,
             throw new InvalidFreezingException("Duration exceeds remaining freezing days.");
         }
         
-        if (DateOnly.FromDateTime(DateTime.Today) > FreezingStart)
+        if (DateTime.Today > FreezingStart)
         {
             throw new InvalidFreezingException("The start date of freezing must be no earlier than today.");
         }
-        
-        var dateToCheck = new Tuple<DateOnly, DateOnly>(FreezingStart, FreezingStart.AddDays(durationInDays));
-        if (client.FreezingIntervals != null)
+
+        DateTime?[] dateToCheck = { FreezingStart, FreezingStart.AddDays(durationInDays) };
+        if (client.FreezingIntervals != null && client.FreezingIntervals.Length != 0)
         {
             if (client.FreezingIntervals.Any(interval => CheckOverlap(interval, dateToCheck)))
             {
                 throw new InvalidFreezingException("Requested freezing period overlaps with existing intervals.");
             } 
         }
-        
+
         client.RemainFreezing -= durationInDays;
-        if (client.FreezingIntervals == null)
+
+        if (client.FreezingIntervals == null || client.FreezingIntervals.Length == 0)
         {
-            client.FreezingIntervals = new List<Tuple<DateOnly, DateOnly>>();
+            client.FreezingIntervals = new DateTime?[][] { dateToCheck };
         }
+        else
+        {
+            DateTime?[][] newIntervals = new DateTime?[client.FreezingIntervals.Length + 1][];
+            Array.Copy(client.FreezingIntervals, newIntervals, client.FreezingIntervals.Length);
+            newIntervals[newIntervals.Length - 1] = dateToCheck;
+            client.FreezingIntervals = newIntervals;
+        }
+
         client.MembershipEnd = client.MembershipEnd.AddDays(durationInDays);
         await _clientRepository.UpdateClientAsync(client);
     }
 
-    private bool CheckOverlap(Tuple<DateOnly, DateOnly> existingInterval, Tuple<DateOnly, DateOnly> newInterval)
+    private bool CheckOverlap(DateTime?[] existingInterval, DateTime?[] newInterval)
     {
-        if (existingInterval == null)
-            return false;
-        return (existingInterval.Item1 <= newInterval.Item1 && newInterval.Item1 <= existingInterval.Item2) ||
-               (existingInterval.Item1 <= newInterval.Item2 && newInterval.Item2 <= existingInterval.Item2) ||
-               (newInterval.Item1 <= existingInterval.Item1 && existingInterval.Item2 <= newInterval.Item2);
+        return (existingInterval[0] < newInterval[0] && newInterval[0] < existingInterval[1]) ||
+               (existingInterval[0] < newInterval[1] && newInterval[1] < existingInterval[1]) ||
+               (newInterval[0] <= existingInterval[0] && existingInterval[1] <= newInterval[1]);
     }
 
-    public async Task<DateOnly> GetMembershipEndDate(Guid idClient)
+    public async Task<DateTime> GetMembershipEndDate(Guid idClient)
     {
         return await _clientRepository.GetMembershipEndDateAsync(idClient);
     }

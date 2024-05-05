@@ -56,6 +56,7 @@ public class RegisterUserCommand : Command
             passwordVerify = Console.ReadLine();
         } while (password != passwordVerify);
         
+        
         do
         {
             Console.Write("Введите номер роли (1 - клиент, 2 - админ, 3 - тренер): ");
@@ -79,12 +80,23 @@ public class RegisterUserCommand : Command
                 Console.WriteLine("Ошибка: Введено не число");
             }
         } while (isIncorrect);
-        
+
         var userId = Guid.NewGuid();
         var user = new User(userId,
             role,
             email,
             password);
+        
+        try
+        {
+            await context.UserService.CreateUser(user, password, role);
+            context.CurrentUser = user;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"\nОшибка: {ex.Message}\n");
+            return;
+        }
 
         if (role == UserRole.Client)
         {
@@ -94,11 +106,11 @@ public class RegisterUserCommand : Command
             Console.WriteLine("Выберите ваш пол (male, female):");
             string gender = Console.ReadLine();
             
-            DateOnly dateOfBirth;
+            DateTime dateOfBirth;
             do
             {
                 Console.WriteLine("Введите вашу дату рождения в формате YYYY-MM-DD:");
-                if (!DateOnly.TryParse(Console.ReadLine(), out dateOfBirth))
+                if (!DateTime.TryParse(Console.ReadLine(), out dateOfBirth))
                 {
                     isIncorrect = true;
                     Console.WriteLine("Ошибка: Неверный формат даты рождения");
@@ -130,20 +142,17 @@ public class RegisterUserCommand : Command
             } while (isIncorrect);
 
             Membership membership = context.MembershipService.GetMembershipById(idMembership).Result;
-            Client client = new(userId, name, gender, dateOfBirth, idMembership, DateOnly.FromDateTime(DateTime.Today.Add(membership.Duration)), membership.Freezing, new List<Tuple<DateOnly, DateOnly>>());
+            Client client = new(userId, name, gender, dateOfBirth, idMembership, DateTime.Today.Add(membership.Duration), membership.Freezing, null);
             Bonus bonus = new(Guid.NewGuid(), userId, 0);
             try
             {
-                await context.UserService.CreateUser(user, password, role);
                 await context.ClientService.CreateClient(client);
                 await context.BonusService.CreateBonus(bonus);
-                context.CurrentUser = user;
                 Console.WriteLine("Регистрация прошла успешно");
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"\nОшибка: {ex.Message}\n");
-                Console.WriteLine("Inner Exception: " + ex.InnerException.Message);
                 return;
             }
         }
@@ -191,10 +200,7 @@ public class RegisterUserCommand : Command
             Trainer trainer = new(userId, name, gender, specialization, experience, rating);
             try
             {
-                await context.UserService.CreateUser(user, password, role);
                 await context.TrainerService.CreateTrainer(trainer);
-                context.CurrentUser = user;
-                
                 Console.WriteLine("Регистрация прошла успешно");
             }
             catch (Exception ex)
@@ -229,9 +235,7 @@ public class RegisterUserCommand : Command
             Admin admin = new(userId, name, dateOfBirth.ToUniversalTime(), gender);
             try
             {
-                await context.UserService.CreateUser(user, password, role);
                 await context.AdminService.CreateAdmin(admin);
-                context.CurrentUser = user;
                 Console.WriteLine("Регистрация прошла успешно");
             }
             catch (Exception ex)

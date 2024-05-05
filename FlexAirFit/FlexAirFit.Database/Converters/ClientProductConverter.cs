@@ -22,6 +22,7 @@ public static class ClientProductConverter
     {
         return model is not null
             ? new ClientProductDbModel(
+                id: Guid.NewGuid(),
                 idClient: model.IdClient,
                 idProduct: model.IdProduct)
             : default;
