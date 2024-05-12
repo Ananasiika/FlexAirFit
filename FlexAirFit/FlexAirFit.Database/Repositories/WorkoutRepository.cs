@@ -48,20 +48,21 @@ public class WorkoutRepository : IWorkoutRepository
         await _context.SaveChangesAsync();
     }
 
-    public async Task<List<Workout>> GetWorkoutByFilterAsync(FilterWorkout filter)
+    public async Task<List<Workout>> GetWorkoutByFilterAsync(FilterWorkout filter, int? limit, int? offset)
     {
         var query = _context.Workouts.AsQueryable();
 
         if (!string.IsNullOrEmpty(filter.Name))
         {
-            query = query.Where(w => w.Name.Contains(filter.Name, StringComparison.InvariantCultureIgnoreCase));
+            query = query.Where(w => EF.Functions.Like(w.Name, $"%{filter.Name}%"));
         }
 
         if (!string.IsNullOrEmpty(filter.NameTrainer))
         {
             query = query.Include(w => w.Trainer)
-                .Where(w => w.Trainer.Name.Contains(filter.NameTrainer, StringComparison.InvariantCultureIgnoreCase));
+                .Where(w => EF.Functions.Like(w.Trainer.Name, $"%{filter.NameTrainer}%"));
         }
+
 
         if (filter.MinDuration.HasValue)
         {
@@ -81,6 +82,16 @@ public class WorkoutRepository : IWorkoutRepository
         if (filter.MaxLevel.HasValue)
         {
             query = query.Where(w => w.Level <= filter.MaxLevel.Value);
+        }
+        
+        if (offset.HasValue)
+        {
+            query = query.Skip(offset.Value);
+        }
+
+        if (limit.HasValue)
+        {
+            query = query.Take(limit.Value);
         }
 
         var workoutDbModels = await query.ToListAsync();

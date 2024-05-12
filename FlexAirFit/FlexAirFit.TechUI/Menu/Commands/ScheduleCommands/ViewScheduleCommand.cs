@@ -1,4 +1,6 @@
-﻿using FlexAirFit.TechUI.BaseMenu;
+﻿using FlexAirFit.Core.Enums;
+using FlexAirFit.Core.Filters;
+using FlexAirFit.TechUI.BaseMenu;
 
 namespace FlexAirFit.TechUI.Commands.ScheduleCommands;
 
@@ -17,7 +19,7 @@ public class ViewScheduleCommand : Command
             Console.WriteLine("Записей в расписании нет");
             return;
         }
-        
+
         Console.WriteLine("Расписание:");
         int page = 1;
         while (schedules.Count != 0)
@@ -36,22 +38,27 @@ public class ViewScheduleCommand : Command
                     return;
                 }
             }
+
             foreach (var schedule in schedules)
             {
                 Console.WriteLine($"ID: {schedule.Id}");
                 Console.WriteLine($"ID тренировки: {schedule.IdWorkout}");
-                Console.WriteLine($"Дата и время: {schedule.DateAndTime}");
-        
+                Console.WriteLine(
+                    $"Название тренировки: {await context.WorkoutService.GetWorkoutNameById(schedule.IdWorkout)}");
+                Console.WriteLine($"Дата и время: {schedule.DateAndTime.ToLocalTime()}");
+
                 if (schedule.IdClient.HasValue && schedule.IdClient.Value != Guid.Empty)
                 {
                     Console.WriteLine($"ID клиента: {schedule.IdClient}");
                 }
-                else 
+                else
                 {
                     Console.WriteLine("Групповая тренировка");
                 }
+
                 Console.WriteLine();
             }
+
             schedules = await context.ScheduleService.GetSchedules(10, 10 * page++);
         }
     }

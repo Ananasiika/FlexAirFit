@@ -41,24 +41,23 @@ public class ScheduleService(IScheduleRepository scheduleRepository,
         }
 
         if (schedule.DateAndTime < DateTime.Now || schedule.DateAndTime.Hour < int.Parse(configuration["ClubOpeningTime"]) ||
-            (schedule.DateAndTime - workout.Duration).Hour > int.Parse(configuration["ClubClosingTime"]))
+            (schedule.DateAndTime.ToLocalTime() + workout.Duration).Hour > int.Parse(configuration["ClubClosingTime"]))
         {
             throw new ScheduleTimeIncorrectedException(schedule.Id);
         }
-
         if (schedule.IdClient is not null)
         {
-            FilterSchedule filter_client = new FilterSchedule(null, schedule.DateAndTime, schedule.DateAndTime + workout.Duration - TimeSpan.FromMinutes(1), schedule.IdClient, null);
-            List<Schedule> schedules_client = await GetScheduleByFilter(filter_client);
+            FilterSchedule filter_client = new FilterSchedule(null, schedule.DateAndTime - workout.Duration + TimeSpan.FromMinutes(1), schedule.DateAndTime + workout.Duration - TimeSpan.FromMinutes(1), null, schedule.IdClient, null);
+            List<Schedule> schedules_client = await GetScheduleByFilter(filter_client, null, null);
             if (schedules_client is not null && schedules_client.Count != 0)
             {
                 throw new ClientAlreadyHasScheduleException(schedule.Id);
             }
         }
 
-        FilterSchedule filter_trainer = new FilterSchedule(null, schedule.DateAndTime,
-            schedule.DateAndTime + workout.Duration - TimeSpan.FromMinutes(1), null, workout.IdTrainer);
-        List<Schedule> schedules_trainer = await GetScheduleByFilter(filter_trainer);
+        FilterSchedule filter_trainer = new FilterSchedule(null, schedule.DateAndTime - workout.Duration + TimeSpan.FromMinutes(1),
+            schedule.DateAndTime + workout.Duration - TimeSpan.FromMinutes(1), null, null, workout.IdTrainer);
+        List<Schedule> schedules_trainer = await GetScheduleByFilter(filter_trainer, null, null);
         if (schedules_trainer is not null && schedules_trainer.Count != 0)
         {
             throw new TrainerAlreadyHasScheduleException(workout.IdTrainer);
@@ -85,9 +84,9 @@ public class ScheduleService(IScheduleRepository scheduleRepository,
         await _scheduleRepository.DeleteScheduleAsync(idSchedule);
     }
 
-    public async Task<List<Schedule>> GetScheduleByFilter(FilterSchedule filter)
+    public async Task<List<Schedule>> GetScheduleByFilter(FilterSchedule filter, int? limit, int? offset)
     {
-        return await _scheduleRepository.GetScheduleByFilterAsync(filter);
+        return await _scheduleRepository.GetScheduleByFilterAsync(filter, limit, offset);
     }
     
     public async Task<Schedule> GetScheduleById(Guid idSchedule)

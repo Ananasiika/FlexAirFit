@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FlexAirFit.Application.IRepositories;
+using FlexAirFit.Core.Enums;
 using FlexAirFit.Core.Models;
 using FlexAirFit.Core.Filters;
 using FlexAirFit.Database.Converters;
@@ -45,13 +46,13 @@ public class ScheduleRepository : IScheduleRepository
         await _context.SaveChangesAsync();
     }
 
-    public async Task<List<Schedule>> GetScheduleByFilterAsync(FilterSchedule filter)
+    public async Task<List<Schedule>> GetScheduleByFilterAsync(FilterSchedule filter, int? limit, int? offset)
     {
         var query = _context.Schedules
             .Include(s => s.Workout)
             .Include(s => s.Client)
             .AsQueryable();
-
+        
         if (filter?.NameWorkout != null)
         {
             query = query.Where(s => s.Workout.Name.Contains(filter.NameWorkout));
@@ -70,9 +71,23 @@ public class ScheduleRepository : IScheduleRepository
         {
             query = query.Where(s => s.IdClient == filter.ClientId);
         }
+        if (filter?.WorkoutType == WorkoutType.GroupWorkout)
+        {
+            query = query.Where(s => s.IdClient == Guid.Empty);
+        }
         if (filter?.TrainerId != null)
         {
             query = query.Where(s => s.Workout.IdTrainer == filter.TrainerId);
+        }
+        
+        if (offset.HasValue)
+        {
+            query = query.Skip(offset.Value);
+        }
+
+        if (limit.HasValue)
+        {
+            query = query.Take(limit.Value);
         }
         
         var scheduleDbModels = await query.ToListAsync();

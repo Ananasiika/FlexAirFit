@@ -79,7 +79,7 @@ public class AddRecordToScheduleCommand : Command
         }
 
         Schedule newScheduleItem = new Schedule(Guid.NewGuid(), workoutId, utcDateTime, clientId);
-
+        
         try
         {
             await context.ScheduleService.CreateSchedule(newScheduleItem);

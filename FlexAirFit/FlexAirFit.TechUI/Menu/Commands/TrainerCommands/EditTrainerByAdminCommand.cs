@@ -39,7 +39,7 @@ public class EditTrainerByAdminCommand : Command
         string experienceInput = Console.ReadLine();
         if (!string.IsNullOrEmpty(experienceInput))
         {
-            if (!int.TryParse(Console.ReadLine(), out experience))
+            if (!int.TryParse(experienceInput, out experience))
             {
                 Console.WriteLine("Ошибка: Неверный формат количества лет опыта");
                 return;

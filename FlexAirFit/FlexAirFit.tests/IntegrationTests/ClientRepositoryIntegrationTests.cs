@@ -64,7 +64,6 @@ namespace FlexAirFit.Application.Services.Tests
             var idMembership = Guid.NewGuid();
             var membershipEnd = new DateTime(2023, 12, 31);
             var remainFreezing = (int?)null;
-
             var client = new Client(id, name, gender, dateOfBirth, idMembership, membershipEnd, remainFreezing, null);
 
             await _clientService.CreateClient(client);
@@ -166,3 +165,4 @@ namespace FlexAirFit.Application.Services.Tests
         }
     }
 }
+

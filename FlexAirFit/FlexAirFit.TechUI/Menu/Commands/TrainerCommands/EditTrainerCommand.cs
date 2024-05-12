@@ -21,35 +21,9 @@ public class EditTrainerCommand : Command
         Console.WriteLine("Введите вашу новую специализацию (или нажмите Enter, чтобы пропустить):");
         string specialization = Console.ReadLine();
 
-        int experience = 0;
-        Console.WriteLine("Введите ваш новый опыт (или нажмите Enter, чтобы пропустить):");
-        string experienceInput = Console.ReadLine();
-        if (!string.IsNullOrEmpty(experienceInput))
-        {
-            if (!int.TryParse(Console.ReadLine(), out experience))
-            {
-                Console.WriteLine("Ошибка: Неверный формат количества лет опыта");
-                return;
-            }
-        }
-        
-        int rating = 0;
-        Console.WriteLine("Введите ваш новый рейтинг (от 1 до 5):");
-        string ratingInput = Console.ReadLine();
-        if (!string.IsNullOrEmpty(ratingInput))
-        {
-            if (!int.TryParse(Console.ReadLine(), out rating))
-            {
-                Console.WriteLine("Ошибка: Неверный формат рейтинга");
-                return;
-            }
-        }
-
         Trainer trainer = await context.TrainerService.GetTrainerById(context.CurrentUser.Id);
         
-        trainer.Rating = (rating == 0) ? trainer.Rating : rating;
         trainer.Specialization = (string.IsNullOrEmpty(specialization)) ? trainer.Specialization : specialization;
-        trainer.Experience = (experience == 0) ? trainer.Experience : experience;
         trainer.Gender = (string.IsNullOrEmpty(gender)) ? trainer.Gender : gender;
         trainer.Name = (string.IsNullOrEmpty(name)) ? trainer.Name : name;
 

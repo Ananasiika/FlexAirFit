@@ -52,9 +52,9 @@ public class TrainerService(ITrainerRepository trainerRepository) : ITrainerServ
         return await _trainerRepository.GetTrainersAsync(limit, offset);
     }
     
-    public async Task<List<Trainer>> GetTrainerByFilter(FilterTrainer filter)
+    public async Task<List<Trainer>> GetTrainerByFilter(FilterTrainer filter, int? limit, int? offset)
     {
-        return await _trainerRepository.GetTrainerByFilterAsync(filter);
+        return await _trainerRepository.GetTrainerByFilterAsync(filter, limit, offset);
     }
 
     public async Task<string> GetTrainerNameById(Guid id)

@@ -126,7 +126,7 @@ namespace FlexAirFit.Application.Services.Tests
             await _trainerService.CreateTrainer(trainers[1]);
             await _trainerService.CreateTrainer(trainers[2]);
             // Act
-            var result = await _trainerService.GetTrainerByFilter(filter);
+            var result = await _trainerService.GetTrainerByFilter(filter, null, null);
 
             // Assert
             Assert.Single(result); // Only one trainer should match the filter criteria

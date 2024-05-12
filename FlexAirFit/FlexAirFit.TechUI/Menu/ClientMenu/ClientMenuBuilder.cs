@@ -20,7 +20,7 @@ public class ClientMenuBuilder : MenuBuilder
         menu.AddLabel(new("Действия с расписанием",
         [
             new AddRecordToScheduleCommand(),
-            new ViewScheduleCommand(),
+            new ViewScheduleByClientCommand(),
             new ViewScheduleWithFilterCommand(),
             new ViewOwnScheduleCommand()
         ]));

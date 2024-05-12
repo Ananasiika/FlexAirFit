@@ -89,9 +89,9 @@ public class WorkoutServiceUnitTests
             new Workout(Guid.NewGuid(), "Workout 2", "Workout Description 2", Guid.NewGuid(), TimeSpan.FromMinutes(45), 2)
         };
 
-        _mockWorkoutRepository.Setup(r => r.GetWorkoutByFilterAsync(filter)).ReturnsAsync(workouts);
+        _mockWorkoutRepository.Setup(r => r.GetWorkoutByFilterAsync(filter, null, null)).ReturnsAsync(workouts);
 
-        var result = await _workoutService.GetWorkoutByFilter(filter);
+        var result = await _workoutService.GetWorkoutByFilter(filter, null, null);
 
         Assert.Equal(workouts, result);
     }

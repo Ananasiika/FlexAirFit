@@ -100,7 +100,7 @@ public class ScheduleServiceUnitTests
         _mockWorkoutRepository.Setup(r => r.GetWorkoutByIdAsync(existingSchedule.IdWorkout)).ReturnsAsync(workout);
         _mockClientRepository.Setup(r => r.GetClientByIdAsync((Guid)existingSchedule.IdClient)).ReturnsAsync(client);
         
-        var schedule = new Schedule(Guid.NewGuid(), existingSchedule.IdWorkout, DateTime.Parse("2024-06-06 21:30:00"), client.Id);
+        var schedule = new Schedule(Guid.NewGuid(), existingSchedule.IdWorkout, DateTime.Parse("2024-06-06 21:00:00"), client.Id);
 
         // Act & Assert
         await Assert.ThrowsAsync<ClientAlreadyHasScheduleException>(() => _scheduleService.CreateSchedule(schedule));
@@ -207,4 +207,3 @@ public class ScheduleServiceUnitTests
         Assert.Equal(schedules, result);
     }
 }
-

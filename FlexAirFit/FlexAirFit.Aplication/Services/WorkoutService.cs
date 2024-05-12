@@ -38,9 +38,9 @@ public class WorkoutService(IWorkoutRepository workoutRepository,
         await _workoutRepository.DeleteWorkoutAsync(idWorkout);
     }
     
-    public async Task<List<Workout>> GetWorkoutByFilter(FilterWorkout filter)
+    public async Task<List<Workout>> GetWorkoutByFilter(FilterWorkout filter, int? limit, int? offset)
     {
-        return await _workoutRepository.GetWorkoutByFilterAsync(filter);
+        return await _workoutRepository.GetWorkoutByFilterAsync(filter, limit, offset);
     }
     
     public async Task<Workout> GetWorkoutById(Guid idWorkout)

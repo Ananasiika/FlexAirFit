@@ -17,28 +17,44 @@ public class ViewOwnScheduleCommand : Command
         FilterSchedule filter;
         if (context.CurrentUser.Role == UserRole.Client)
         {
-            filter = new(null, null, null, context.CurrentUser.Id, null);
+            filter = new(null, null, null, null, context.CurrentUser.Id, null);
         }
         else
         {
-            filter = new(null, null, null, null, context.CurrentUser.Id);
+            filter = new(null, null, null, null, null, context.CurrentUser.Id);
         }
         
-        var schedules = await context.ScheduleService.GetScheduleByFilter(filter);
-        
+        var schedules = await context.ScheduleService.GetScheduleByFilter(filter, 10, null);
         if (schedules.Count == 0)
         {
             Console.WriteLine("Записей в расписании нет");
+            return;
         }
-        else
+        
+        Console.WriteLine("Расписание:");
+        int page = 1;
+        while (schedules.Count != 0)
         {
-            Console.WriteLine("Расписание:");
+            if (page != 1)
+            {
+                Console.WriteLine("Введите 0, чтобы закончить или Enter, чтобы продолжить:");
+                string nextInput = Console.ReadLine();
+                if (!int.TryParse(nextInput, out int next))
+                {
+                    next = 1;
+                }
 
+                if (next == 0)
+                {
+                    return;
+                }
+            }
             foreach (var schedule in schedules)
             {
                 Console.WriteLine($"ID: {schedule.Id}");
                 Console.WriteLine($"ID тренировки: {schedule.IdWorkout}");
-                Console.WriteLine($"Дата и время: {schedule.DateAndTime}");
+                Console.WriteLine($"Название тренировки: {await context.WorkoutService.GetWorkoutNameById(schedule.IdWorkout)}");
+                Console.WriteLine($"Дата и время: {schedule.DateAndTime.ToLocalTime()}");
         
                 if (schedule.IdClient.HasValue && schedule.IdClient.Value != Guid.Empty)
                 {
@@ -50,6 +66,7 @@ public class ViewOwnScheduleCommand : Command
                 }
                 Console.WriteLine();
             }
+            schedules = await context.ScheduleService.GetScheduleByFilter(filter, 10, 10 * page++);
         }
     }
 }

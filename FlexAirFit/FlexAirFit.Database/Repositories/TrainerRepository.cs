@@ -48,7 +48,7 @@ public class TrainerRepository : ITrainerRepository
         await _context.SaveChangesAsync();
     }
 
-    public async Task<List<Trainer>> GetTrainerByFilterAsync(FilterTrainer filter)
+    public async Task<List<Trainer>> GetTrainerByFilterAsync(FilterTrainer filter, int? limit, int? offset)
     {
         var query = _context.Trainers.AsQueryable();
 
@@ -85,6 +85,16 @@ public class TrainerRepository : ITrainerRepository
         if (filter.MaxRating.HasValue)
         {
             query = query.Where(t => t.Rating <= filter.MaxRating.Value);
+        }
+        
+        if (offset.HasValue)
+        {
+            query = query.Skip(offset.Value);
+        }
+
+        if (limit.HasValue)
+        {
+            query = query.Take(limit.Value);
         }
 
         var trainerDbModels = await query.ToListAsync();
