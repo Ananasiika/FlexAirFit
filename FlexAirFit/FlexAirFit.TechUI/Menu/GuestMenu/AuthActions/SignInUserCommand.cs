@@ -1,10 +1,12 @@
 using FlexAirFit.Core.Enums;
 using FlexAirFit.TechUI.BaseMenu;
+using Serilog;
 
 namespace FlexAirFit.TechUI.GuestMenu.AuthActions;
 
 public class SignInUserCommand : Command
 {
+    private readonly ILogger _logger = Log.ForContext<SignInUserCommand>();
     public override string? Description()
     {
         return "Авторизоваться";
@@ -16,12 +18,15 @@ public class SignInUserCommand : Command
 
         Console.Write("Введите адрес электронной почты: ");
         var email = Console.ReadLine();
+        _logger.Information($"Entered email: {email}");
 
         Console.Write("Введите пароль: ");
         var password = Console.ReadLine();
+        _logger.Information($"Entered password");
 
         if (email is null && password is null)
         {
+            _logger.Error("Invalid input");
             Console.WriteLine("Ошибка: Неверный ввод\n");
             return;
         }
@@ -34,6 +39,7 @@ public class SignInUserCommand : Command
         }
         catch (Exception ex)
         {
+            _logger.Error(ex.Message);
             Console.WriteLine($"\nОшибка: {ex.Message}\n");
         }
     }

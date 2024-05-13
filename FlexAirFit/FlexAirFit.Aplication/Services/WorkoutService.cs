@@ -3,6 +3,7 @@ using FlexAirFit.Application.IRepositories;
 using FlexAirFit.Application.IServices;
 using FlexAirFit.Application.Exceptions.ServiceException;
 using FlexAirFit.Core.Filters;
+using Serilog;
 
 namespace FlexAirFit.Application.Services;
 
@@ -10,11 +11,13 @@ public class WorkoutService(IWorkoutRepository workoutRepository,
                             ITrainerRepository trainerRepository) : IWorkoutService
 {
     private readonly IWorkoutRepository _workoutRepository = workoutRepository;
+    private readonly ILogger _logger = Log.ForContext<WorkoutService>();
     
     public async Task CreateWorkout(Workout workout)
     {
         if (await _workoutRepository.GetWorkoutByIdAsync(workout.Id) is not null)
         {
+            _logger.Warning($"Workout with ID {workout.Id} already exists in the database. Skipping creation.");
             throw new WorkoutExistsException(workout.Id);
         }
         await _workoutRepository.AddWorkoutAsync(workout);
@@ -24,6 +27,7 @@ public class WorkoutService(IWorkoutRepository workoutRepository,
     {
         if (await _workoutRepository.GetWorkoutByIdAsync(workout.Id) is null)
         {
+            _logger.Warning($"Workout with ID {workout.Id} does not exist in the database. Skipping update.");
             throw new WorkoutNotFoundException(workout.Id);
         }
         return await _workoutRepository.UpdateWorkoutAsync(workout);
@@ -33,6 +37,7 @@ public class WorkoutService(IWorkoutRepository workoutRepository,
     {
         if (await _workoutRepository.GetWorkoutByIdAsync(idWorkout) is null)
         {
+            _logger.Warning($"Workout with ID {idWorkout} does not exist in the database. Skipping deletion.");
             throw new WorkoutNotFoundException(idWorkout);
         }
         await _workoutRepository.DeleteWorkoutAsync(idWorkout);
@@ -45,7 +50,15 @@ public class WorkoutService(IWorkoutRepository workoutRepository,
     
     public async Task<Workout> GetWorkoutById(Guid idWorkout)
     {
-        return await _workoutRepository.GetWorkoutByIdAsync(idWorkout) ?? throw new WorkoutNotFoundException(idWorkout);
+        var workout = await _workoutRepository.GetWorkoutByIdAsync(idWorkout);
+        if (workout is null)
+        {
+            _logger.Error($"Workout with ID {idWorkout} does not exist in the database.");
+            throw new WorkoutNotFoundException(idWorkout);
+        }
+
+        _logger.Information($"Workout with ID {idWorkout} was successfully retrieved.");
+        return workout;
     }
 
     public async Task<bool> CheckIfWorkoutExists(Guid idWorkout)

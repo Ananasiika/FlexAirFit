@@ -1,19 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json;
-using System.Threading.Tasks;
+﻿using System.Text.Json;
 using FlexAirFit.Application.IRepositories;
 using FlexAirFit.Core.Models;
 using FlexAirFit.Database.Converters;
 using FlexAirFit.Database.Context;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 namespace FlexAirFit.Database.Repositories;
 
 public class ClientRepository : IClientRepository
 {
     private readonly FlexAirFitDbContext _context;
+    private readonly ILogger _logger = Log.ForContext<ClientRepository>();
 
     public ClientRepository(FlexAirFitDbContext context)
     {
@@ -22,67 +20,125 @@ public class ClientRepository : IClientRepository
 
     public async Task AddClientAsync(Client client)
     {
-        await _context.Clients.AddAsync(ClientConverter.CoreToDbModel(client));
-        await _context.SaveChangesAsync();
+        try
+        {
+            await _context.Clients.AddAsync(ClientConverter.CoreToDbModel(client));
+            await _context.SaveChangesAsync();
+            _logger.Information($"Client with ID {client.Id} was successfully added.");
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, $"An error occurred while adding client with ID {client.Id}.");
+        }
     }
 
     public async Task<Client> UpdateClientAsync(Client client)
     {
-        var clientDbModel = await _context.Clients.FindAsync(client.Id);
-        clientDbModel.MembershipEnd = client.MembershipEnd;
-        clientDbModel.FreezingIntervals = JsonDocument.Parse(
-            JsonSerializer.Serialize(
-                client.FreezingIntervals.Select(interval => new
-                {
-                    start_date = interval[0]?.ToString("yyyy-MM-dd"),
-                    end_date = interval[1]?.ToString("yyyy-MM-dd")
-                })));
-        clientDbModel.IdMembership = client.IdMembership;
-        clientDbModel.RemainFreezing = client.RemainFreezing;
-        clientDbModel.Gender = client.Gender;
-        clientDbModel.DateOfBirth = client.DateOfBirth;
-        clientDbModel.Name = client.Name;
-        
-        await _context.SaveChangesAsync();
-        return ClientConverter.DbToCoreModel(clientDbModel);
+        try
+        {
+            var clientDbModel = await _context.Clients.FindAsync(client.Id);
+            clientDbModel.MembershipEnd = client.MembershipEnd;
+            clientDbModel.FreezingIntervals = JsonDocument.Parse(
+                JsonSerializer.Serialize(
+                    client.FreezingIntervals.Select(interval => new
+                    {
+                        start_date = interval[0]?.ToString("yyyy-MM-dd"),
+                        end_date = interval[1]?.ToString("yyyy-MM-dd")
+                    })));
+            clientDbModel.IdMembership = client.IdMembership;
+            clientDbModel.RemainFreezing = client.RemainFreezing;
+            clientDbModel.Gender = client.Gender;
+            clientDbModel.DateOfBirth = client.DateOfBirth;
+            clientDbModel.Name = client.Name;
+
+            await _context.SaveChangesAsync();
+            _logger.Information($"Client with ID {client.Id} was successfully updated.");
+            return ClientConverter.DbToCoreModel(clientDbModel);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, $"An error occurred while updating client with ID {client.Id}.");
+            throw;
+        }
     }
 
     public async Task DeleteClientAsync(Guid id)
     {
-        var clientDbModel = await _context.Clients.FindAsync(id);
-        _context.Clients.Remove(clientDbModel);
-        await _context.SaveChangesAsync();
+        try
+        {
+            var clientDbModel = await _context.Clients.FindAsync(id);
+            if (clientDbModel != null)
+            {
+                _context.Clients.Remove(clientDbModel);
+                await _context.SaveChangesAsync();
+                _logger.Information($"Client with ID {id} was successfully deleted.");
+            }
+            else
+            {
+                _logger.Error($"Client with ID {id} not found in the database.");
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, $"An error occurred while deleting client with ID {id}.");
+        }
     }
 
     public async Task<Client> GetClientByIdAsync(Guid id)
     {
         var clientDbModel = await _context.Clients.FindAsync(id);
-        
         return ClientConverter.DbToCoreModel(clientDbModel);
     }
-    
+
     public async Task<List<Client>> GetClientsAsync(int? limit, int? offset = null)
     {
-        var query = _context.Clients.AsQueryable();
-
-        if (offset.HasValue)
+        try
         {
-            query = query.Skip(offset.Value);
-        }
+            var query = _context.Clients.AsQueryable();
 
-        if (limit.HasValue)
+            if (offset.HasValue)
+            {
+                query = query.Skip(offset.Value);
+            }
+
+            if (limit.HasValue)
+            {
+                query = query.Take(limit.Value);
+            }
+
+            var clientsDbModels = await query.ToListAsync();
+            var clients = clientsDbModels.Select(ClientConverter.DbToCoreModel).ToList();
+
+            _logger.Information($"Retrieved {clients.Count} clients" + (limit.HasValue ? $" with limit {limit.Value}" : "") + (offset.HasValue ? $" and offset {offset.Value}" : ""));
+
+            return clients;
+        }
+        catch (Exception ex)
         {
-            query = query.Take(limit.Value);
+            _logger.Error(ex, "An error occurred while retrieving clients.");
+            throw;
         }
-
-        var clientsDbModels = await query.ToListAsync();
-        return clientsDbModels.Select(ClientConverter.DbToCoreModel).ToList();
     }
 
     public async Task<DateTime> GetMembershipEndDateAsync(Guid idClient)
     {
-        var clientDbModel = await _context.Clients.FindAsync(idClient);
-        return clientDbModel.MembershipEnd;
+        try
+        {
+            var clientDbModel = await _context.Clients.FindAsync(idClient);
+            if (clientDbModel == null)
+            {
+                _logger.Error($"Client with ID {idClient} not found in the database.");
+                return default;
+            }
+
+            var membershipEndDate = clientDbModel.MembershipEnd;
+            _logger.Information($"Membership end date {membershipEndDate} for client with ID {idClient} was successfully retrieved.");
+            return membershipEndDate;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, $"An error occurred while retrieving membership end date for client with ID {idClient}.");
+            throw;
+        }
     }
 }
-

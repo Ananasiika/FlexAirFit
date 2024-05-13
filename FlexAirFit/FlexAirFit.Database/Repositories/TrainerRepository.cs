@@ -1,20 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using FlexAirFit.Application.IRepositories;
+﻿using FlexAirFit.Application.IRepositories;
 using FlexAirFit.Core.Models;
 using FlexAirFit.Core.Filters;
 using FlexAirFit.Database.Converters;
 using FlexAirFit.Database.Context;
-using FlexAirFit.Database.Models;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 namespace FlexAirFit.Database.Repositories;
 
 public class TrainerRepository : ITrainerRepository
 {
     private readonly FlexAirFitDbContext _context;
+    private readonly ILogger _logger = Log.ForContext<TrainerRepository>();
 
     public TrainerRepository(FlexAirFitDbContext context)
     {
@@ -23,82 +20,124 @@ public class TrainerRepository : ITrainerRepository
 
     public async Task AddTrainerAsync(Trainer trainer)
     {
-        await _context.Trainers.AddAsync(TrainerConverter.CoreToDbModel(trainer));
-        await _context.SaveChangesAsync();
-        
+        try
+        {
+            await _context.Trainers.AddAsync(TrainerConverter.CoreToDbModel(trainer));
+            await _context.SaveChangesAsync();
+            _logger.Information($"Trainer with ID {trainer.Id} was successfully added.");
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, $"An error occurred while adding trainer with ID {trainer.Id}.");
+        }
     }
 
     public async Task<Trainer> UpdateTrainerAsync(Trainer trainer)
     {
-        var trainerDbModel = await _context.Trainers.FindAsync(trainer.Id);
-        trainerDbModel.Name = trainer.Name;
-        trainerDbModel.Gender = trainer.Gender;
-        trainerDbModel.Specialization = trainer.Specialization;
-        trainerDbModel.Experience = trainer.Experience;
-        trainerDbModel.Rating = trainer.Rating;
+        try
+        {
+            var trainerDbModel = await _context.Trainers.FindAsync(trainer.Id);
+            
+            trainerDbModel.Name = trainer.Name;
+            trainerDbModel.Gender = trainer.Gender;
+            trainerDbModel.Specialization = trainer.Specialization;
+            trainerDbModel.Experience = trainer.Experience;
+            trainerDbModel.Rating = trainer.Rating;
 
-        await _context.SaveChangesAsync();
-        return TrainerConverter.DbToCoreModel(trainerDbModel);
+            await _context.SaveChangesAsync();
+            _logger.Information($"Trainer with ID {trainer.Id} was successfully updated.");
+            return TrainerConverter.DbToCoreModel(trainerDbModel);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, $"An error occurred while updating trainer with ID {trainer.Id}.");
+            throw;
+        }
     }
 
     public async Task DeleteTrainerAsync(Guid id)
     {
-        var trainerDbModel = await _context.Trainers.FindAsync(id);
-        _context.Trainers.Remove(trainerDbModel);
-        await _context.SaveChangesAsync();
+        try
+        {
+            var trainerDbModel = await _context.Trainers.FindAsync(id);
+            _context.Trainers.Remove(trainerDbModel);
+            await _context.SaveChangesAsync();
+            _logger.Information($"Trainer with ID {id} was successfully deleted.");
+            
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, $"An error occurred while deleting trainer with ID {id}.");
+        }
     }
 
     public async Task<List<Trainer>> GetTrainerByFilterAsync(FilterTrainer filter, int? limit, int? offset)
     {
-        var query = _context.Trainers.AsQueryable();
-
-        if (!string.IsNullOrEmpty(filter.Name))
+        try
         {
-            query = query.Where(t => t.Name.Contains(filter.Name, StringComparison.InvariantCultureIgnoreCase));
-        }
+            var query = _context.Trainers.AsQueryable();
 
-        if (!string.IsNullOrEmpty(filter.Gender))
-        {
-            query = query.Where(t => t.Gender.Equals(filter.Gender, StringComparison.InvariantCultureIgnoreCase));
-        }
+            if (!string.IsNullOrEmpty(filter.Name))
+            {
+                query = query.Where(t => t.Name.Contains(filter.Name, StringComparison.InvariantCultureIgnoreCase));
+            }
 
-        if (!string.IsNullOrEmpty(filter.Specialization))
-        {
-            query = query.Where(t => t.Specialization.Contains(filter.Specialization, StringComparison.InvariantCultureIgnoreCase));
-        }
+            if (!string.IsNullOrEmpty(filter.Gender))
+            {
+                query = query.Where(t => t.Gender.Equals(filter.Gender, StringComparison.InvariantCultureIgnoreCase));
+            }
 
-        if (filter.MinExperience.HasValue)
-        {
-            query = query.Where(t => t.Experience >= filter.MinExperience.Value);
-        }
+            if (!string.IsNullOrEmpty(filter.Specialization))
+            {
 
-        if (filter.MaxExperience.HasValue)
-        {
-            query = query.Where(t => t.Experience <= filter.MaxExperience.Value);
-        }
+                query = query.Where(t => t.Specialization.Contains(filter.Specialization, StringComparison.InvariantCultureIgnoreCase));
+            }
 
-        if (filter.MinRating.HasValue)
-        {
-            query = query.Where(t => t.Rating >= filter.MinRating.Value);
-        }
+            if (filter.MinExperience.HasValue)
+            {
+                query = query.Where(t => t.Experience >= filter.MinExperience.Value);
+            }
 
-        if (filter.MaxRating.HasValue)
-        {
-            query = query.Where(t => t.Rating <= filter.MaxRating.Value);
-        }
-        
-        if (offset.HasValue)
-        {
-            query = query.Skip(offset.Value);
-        }
+            if (filter.MaxExperience.HasValue)
+            {
+                query = query.Where(t => t.Experience <= filter.MaxExperience.Value);
+            }
 
-        if (limit.HasValue)
-        {
-            query = query.Take(limit.Value);
-        }
+            if (filter.MinRating.HasValue)
+            {
+                query = query.Where(t => t.Rating >= filter.MinRating.Value);
+            }
 
-        var trainerDbModels = await query.ToListAsync();
-        return trainerDbModels.Select(TrainerConverter.DbToCoreModel).ToList();
+            if (filter.MaxRating.HasValue)
+            {
+                query = query.Where(t => t.Rating <= filter.MaxRating.Value);
+            }
+
+            if (offset.HasValue)
+            {
+                query = query.Skip(offset.Value);
+            }
+
+            if (limit.HasValue)
+            {
+                query = query.Take(limit.Value);
+            }
+
+            var trainerDbModels = await query.ToListAsync();
+            var trainers = trainerDbModels.Select(TrainerConverter.DbToCoreModel).ToList();
+
+            _logger.Information($"Retrieved {trainers.Count} trainers with filter: " +
+                                $"Name - {filter.Name}, Gender - {filter.Gender}, Specialization - {filter.Specialization}, " +
+                                $"Min Experience - {filter.MinExperience}, Max Experience - {filter.MaxExperience}, " +
+                                $"Min Rating - {filter.MinRating}, Max Rating - {filter.MaxRating}, Limit - {limit.Value}, Offset - {offset.Value}");
+
+            return trainers;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "An error occurred while retrieving trainers by filter.");
+            throw;
+        }
     }
 
     public async Task<Trainer> GetTrainerByIdAsync(Guid id)
@@ -109,25 +148,53 @@ public class TrainerRepository : ITrainerRepository
 
     public async Task<List<Trainer>> GetTrainersAsync(int? limit, int? offset = null)
     {
-        var query = _context.Trainers.AsQueryable();
-
-        if (offset.HasValue)
+        try
         {
-            query = query.Skip(offset.Value);
-        }
+            var query = _context.Trainers.AsQueryable();
 
-        if (limit.HasValue)
+            if (offset.HasValue)
+            {
+                query = query.Skip(offset.Value);
+            }
+
+            if (limit.HasValue)
+            {
+                query = query.Take(limit.Value);
+            }
+
+            var trainersDbModels = await query.ToListAsync();
+            var trainers = trainersDbModels.Select(TrainerConverter.DbToCoreModel).ToList();
+
+            _logger.Information($"Retrieved {trainers.Count} trainers" + (limit.HasValue ? $" with limit {limit.Value}" : "") + (offset.HasValue ? $" and offset {offset.Value}" : ""));
+
+            return trainers;
+        }
+        catch (Exception ex)
         {
-            query = query.Take(limit.Value);
+            _logger.Error(ex, "An error occurred while retrieving trainers.");
+            throw;
         }
-
-        var trainersDbModels = await query.ToListAsync();
-        return trainersDbModels.Select(TrainerConverter.DbToCoreModel).ToList();
     }
 
     public async Task<string> GetTrainerNameByIdAsync(Guid id)
     {
-        var trainerDbModel = await _context.Trainers.FindAsync(id);
-        return trainerDbModel?.Name;
+        try
+        {
+            var trainerDbModel = await _context.Trainers.FindAsync(id);
+            if (trainerDbModel == null)
+            {
+                _logger.Error($"Trainer with ID {id} not found in the database.");
+                return null;
+            }
+
+            _logger.Information($"Trainer name with ID {id} was successfully retrieved.");
+            return trainerDbModel.Name;
+        }
+        catch (Exception ex)
+
+        {
+            _logger.Error(ex, $"An error occurred while retrieving trainer name with ID {id}.");
+            throw;
+        }
     }
 }

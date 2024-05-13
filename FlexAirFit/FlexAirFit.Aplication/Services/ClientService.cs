@@ -3,6 +3,7 @@ using FlexAirFit.Application.IRepositories;
 using FlexAirFit.Application.IServices;
 using FlexAirFit.Application.Exceptions.ServiceException;
 using Microsoft.Extensions.Configuration;
+using Serilog;
 
 namespace FlexAirFit.Application.Services;
 
@@ -11,11 +12,13 @@ public class ClientService(IClientRepository clientRepository,
 {
     private readonly IClientRepository _clientRepository = clientRepository;
     private readonly IMembershipRepository _membershipRepository = membershipRepository;
+    private readonly ILogger _logger = Log.ForContext<ClientService>();
 
     public async Task CreateClient(Client client)
     {
         if (await _clientRepository.GetClientByIdAsync(client.Id) is not null)
         {
+            _logger.Warning($"Client with ID {client.Id} already exists in the database. Skipping addition of Client.");
             throw new ClientExistsException(client.Id);
         }
         await _clientRepository.AddClientAsync(client);
@@ -25,6 +28,7 @@ public class ClientService(IClientRepository clientRepository,
     {
         if (await _clientRepository.GetClientByIdAsync(client.Id) is null)
         {
+            _logger.Warning($"Client with ID {client.Id} does not exist in the database. Skipping update of Client.");
             throw new ClientNotFoundException(client.Id);
         }
         return await _clientRepository.UpdateClientAsync(client);
@@ -34,6 +38,7 @@ public class ClientService(IClientRepository clientRepository,
     {
         if (await _clientRepository.GetClientByIdAsync(idClient) is null)
         {
+            _logger.Warning($"Client with ID {idClient} does not exist in the database. Skipping deletion of Client.");
             throw new ClientNotFoundException(idClient);
         }
         await _clientRepository.DeleteClientAsync(idClient);
@@ -41,7 +46,15 @@ public class ClientService(IClientRepository clientRepository,
     
     public async Task<Client> GetClientById(Guid idClient)
     {
-        return await _clientRepository.GetClientByIdAsync(idClient) ?? throw new ClientNotFoundException(idClient);
+        var client = await _clientRepository.GetClientByIdAsync(idClient);
+        if (client is null)
+        {
+            _logger.Warning($"Client with ID {idClient} does not exist in the database.");
+            throw new ClientNotFoundException(idClient);
+        }
+
+        _logger.Information($"Client with ID {idClient} was successfully retrieved.");
+        return client;
     }
     
     public async Task<List<Client>> GetClients(int? limit, int? offset)
@@ -59,21 +72,25 @@ public class ClientService(IClientRepository clientRepository,
         var client = await  _clientRepository.GetClientByIdAsync(idClient);
         if (client is null)
         {
+            _logger.Warning($"Client with ID {idClient} does not exist in the database. Skipping freezing of membership.");
             throw new ClientNotFoundException(idClient);
         }
 
         if (durationInDays < int.Parse(configuration["MinFreezing"]))
         {
-            throw new InvalidFreezingException("Duration should be at least 7 days.");
+            _logger.Warning($"Duration should be at least {configuration["MinFreezing"]} days. Skipping freezing of membership.");
+            throw new InvalidFreezingException("Duration should be at least " + configuration["MinFreezing"] + " days.");
         }
 
         if (durationInDays > client.RemainFreezing)
         {
+            _logger.Warning($"Duration exceeds remaining freezing days. Skipping freezing of membership.");
             throw new InvalidFreezingException("Duration exceeds remaining freezing days.");
         }
         
         if (DateTime.Today > FreezingStart)
         {
+            _logger.Warning($"The start date of freezing must be no earlier than today. Skipping freezing of membership.");
             throw new InvalidFreezingException("The start date of freezing must be no earlier than today.");
         }
 
@@ -82,6 +99,7 @@ public class ClientService(IClientRepository clientRepository,
         {
             if (client.FreezingIntervals.Any(interval => CheckOverlap(interval, dateToCheck)))
             {
+                _logger.Warning($"Requested freezing period overlaps with existing intervals. Skipping freezing of membership.");
                 throw new InvalidFreezingException("Requested freezing period overlaps with existing intervals.");
             } 
         }
@@ -102,6 +120,7 @@ public class ClientService(IClientRepository clientRepository,
 
         client.MembershipEnd = client.MembershipEnd.AddDays(durationInDays);
         await _clientRepository.UpdateClientAsync(client);
+        _logger.Information($"Client with ID {idClient} was successfully frozen for {durationInDays} days.");
     }
 
     private bool CheckOverlap(DateTime?[] existingInterval, DateTime?[] newInterval)
@@ -120,19 +139,20 @@ public class ClientService(IClientRepository clientRepository,
     {
         return !(await _clientRepository.GetClientByIdAsync(idClient) is null);
     }
-
-
+    
     public async Task AddMembership(Guid idClient, Guid idMembership)
     {
         var client = await  _clientRepository.GetClientByIdAsync(idClient);
         if (client is null)
         {
+            _logger.Warning($"Client with ID {idClient} does not exist in the database. Skipping adding of membership.");
             throw new ClientNotFoundException(idClient);
         }
         
         var membership = await  _membershipRepository.GetMembershipByIdAsync(idMembership);
-        if (client is null)
+        if (membership is null)
         {
+            _logger.Warning($"Membership with ID {idMembership} does not exist in the database. Skipping adding of membership.");
             throw new MembershipNotFoundException(idMembership);
         }
 

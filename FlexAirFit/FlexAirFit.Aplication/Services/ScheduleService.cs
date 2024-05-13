@@ -4,6 +4,7 @@ using FlexAirFit.Application.IServices;
 using FlexAirFit.Application.Exceptions.ServiceException;
 using FlexAirFit.Core.Filters;
 using Microsoft.Extensions.Configuration;
+using Serilog;
 
 namespace FlexAirFit.Application.Services;
 
@@ -14,6 +15,7 @@ public class ScheduleService(IScheduleRepository scheduleRepository,
     private readonly IScheduleRepository _scheduleRepository = scheduleRepository;
     private readonly IWorkoutRepository _workoutRepository = workoutRepository;
     private readonly IClientRepository _clientRepository = clientRepository;
+    private readonly ILogger _logger = Log.ForContext<ScheduleService>();
 
     public async Task CreateSchedule(Schedule schedule)
     {
@@ -23,19 +25,22 @@ public class ScheduleService(IScheduleRepository scheduleRepository,
             .Build();
         if (await _scheduleRepository.GetScheduleByIdAsync(schedule.Id) is not null)
         {
+            _logger.Warning($"Schedule with ID {schedule.Id} already exists in the database. Skipping creation.");
             throw new ScheduleExistsException(schedule.Id);
         }
 
         var workout = await _workoutRepository.GetWorkoutByIdAsync(schedule.IdWorkout);
         if (workout is null)
-        {
+        {  
+            _logger.Warning($"Workout with ID {schedule.IdWorkout} does not exist in the database. Skipping creation.");
             throw new WorkoutNotFoundException(schedule.IdWorkout);
         }
 
-        if (schedule.IdClient is not null)
+        if (schedule.IdClient is not null && schedule.IdClient != Guid.Empty)
         {
             if (await _clientRepository.GetClientByIdAsync((Guid)schedule.IdClient) is null)
             {
+                _logger.Warning($"Client with ID {schedule.IdClient} does not exist in the database. Skipping creation.");
                 throw new ClientNotFoundException((Guid)schedule.IdClient);
             }
         }
@@ -43,6 +48,7 @@ public class ScheduleService(IScheduleRepository scheduleRepository,
         if (schedule.DateAndTime < DateTime.Now || schedule.DateAndTime.Hour < int.Parse(configuration["ClubOpeningTime"]) ||
             (schedule.DateAndTime.ToLocalTime() + workout.Duration).Hour > int.Parse(configuration["ClubClosingTime"]))
         {
+            _logger.Warning($"Schedule time is incorrect. Skipping creation.");
             throw new ScheduleTimeIncorrectedException(schedule.Id);
         }
         if (schedule.IdClient is not null)
@@ -51,6 +57,7 @@ public class ScheduleService(IScheduleRepository scheduleRepository,
             List<Schedule> schedules_client = await GetScheduleByFilter(filter_client, null, null);
             if (schedules_client is not null && schedules_client.Count != 0)
             {
+                _logger.Warning($"Client with ID {schedule.IdClient} already has schedule. Skipping creation.");
                 throw new ClientAlreadyHasScheduleException(schedule.Id);
             }
         }
@@ -60,6 +67,7 @@ public class ScheduleService(IScheduleRepository scheduleRepository,
         List<Schedule> schedules_trainer = await GetScheduleByFilter(filter_trainer, null, null);
         if (schedules_trainer is not null && schedules_trainer.Count != 0)
         {
+            _logger.Warning($"Trainer with ID {workout.IdTrainer} already has schedule. Skipping creation.");
             throw new TrainerAlreadyHasScheduleException(workout.IdTrainer);
         }
         
@@ -70,6 +78,7 @@ public class ScheduleService(IScheduleRepository scheduleRepository,
     {
         if (await _scheduleRepository.GetScheduleByIdAsync(schedule.Id) is null)
         {
+            _logger.Warning($"Schedule with ID {schedule.Id} does not exist in the database. Skipping update.");
             throw new ScheduleNotFoundException(schedule.Id);
         }
         return await _scheduleRepository.UpdateScheduleAsync(schedule);
@@ -79,6 +88,7 @@ public class ScheduleService(IScheduleRepository scheduleRepository,
     {
         if (await _scheduleRepository.GetScheduleByIdAsync(idSchedule) is null)
         {
+            _logger.Warning($"Schedule with ID {idSchedule} does not exist in the database. Skipping deletion.");
             throw new ScheduleNotFoundException(idSchedule);
         }
         await _scheduleRepository.DeleteScheduleAsync(idSchedule);
@@ -91,7 +101,15 @@ public class ScheduleService(IScheduleRepository scheduleRepository,
     
     public async Task<Schedule> GetScheduleById(Guid idSchedule)
     {
-        return await _scheduleRepository.GetScheduleByIdAsync(idSchedule) ?? throw new ScheduleNotFoundException(idSchedule);
+        var schedule = await _scheduleRepository.GetScheduleByIdAsync(idSchedule);
+        if (schedule is null)
+        {
+            _logger.Warning($"Schedule with ID {idSchedule} does not exist in the database.");
+            throw new ScheduleNotFoundException(idSchedule);
+        }
+        
+        _logger.Information($"Schedule with ID {idSchedule} was successfully retrieved.");
+        return schedule;
     }
     
     public async Task<List<Schedule>> GetSchedules(int? limit, int? offset)

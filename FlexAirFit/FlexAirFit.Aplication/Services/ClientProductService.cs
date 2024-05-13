@@ -1,12 +1,11 @@
-﻿using System.Data;
-using System.Transactions;
+﻿using System.Transactions;
 using FlexAirFit.Core.Models;
 using FlexAirFit.Core.Enums;
 using FlexAirFit.Application.IRepositories;
 using FlexAirFit.Application.IServices;
 using FlexAirFit.Application.Exceptions.ServiceException;
 using Microsoft.Extensions.Configuration;
-using FlexAirFit.Application.Utils;
+using Serilog;
 
 namespace FlexAirFit.Application.Services;
 
@@ -28,6 +27,7 @@ public class ClientProductService : IClientProductService
         _bonusRepository = bonusRepository;
     }
 
+    private readonly ILogger _logger = Log.ForContext<ClientProductService>();
     private async Task<int> CalcCostClientProduct(ClientProduct clientProduct, bool writeOff)
     {
         var configuration = new ConfigurationBuilder()
@@ -63,11 +63,13 @@ public class ClientProductService : IClientProductService
     {
         if (await _clientRepository.GetClientByIdAsync(clientProduct.IdClient) is null)
         {
+            _logger.Warning($"Client with ID {clientProduct.IdClient} not found in the database. Skipping addition of ClientProduct.");
             throw new ClientNotFoundException(clientProduct.IdClient);
         }
 
         if (await _productRepository.GetProductByIdAsync(clientProduct.IdProduct) is null)
         {
+            _logger.Warning($"Product with ID {clientProduct.IdProduct} not found in the database. Skipping addition of ClientProduct.");
             throw new ProductNotFoundException(clientProduct.IdProduct);
         }
         
@@ -83,8 +85,6 @@ public class ClientProductService : IClientProductService
             catch (Exception ex)
             {
                 throw new ClientProductException("Error while processing ClientProduct", ex);
-                scope.Dispose();
-                throw; 
             }
         }
         
