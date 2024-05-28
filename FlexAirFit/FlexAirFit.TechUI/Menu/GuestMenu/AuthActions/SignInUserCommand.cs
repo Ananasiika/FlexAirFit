@@ -1,6 +1,7 @@
 using FlexAirFit.Core.Enums;
 using FlexAirFit.TechUI.BaseMenu;
 using Serilog;
+using Serilog.Context;
 
 namespace FlexAirFit.TechUI.GuestMenu.AuthActions;
 
@@ -35,6 +36,8 @@ public class SignInUserCommand : Command
         {
             var user = await context.UserService.SignInUser(email!, password!);
             context.CurrentUser = user;
+            LogContext.PushProperty("UserRole", context.CurrentUser.Role.ToString());
+            LogContext.PushProperty("UserId", context.CurrentUser.Id);
             Console.WriteLine("Авторизация прошла успешно");
         }
         catch (Exception ex)

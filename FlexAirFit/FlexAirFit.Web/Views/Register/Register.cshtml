@@ -1,0 +1,68 @@
+﻿@model FlexAirFit.Web.Models.UserModel
+
+@{
+ViewData["Title"] = "Регистрация";
+}
+
+<h1>Регистрация</h1>
+
+<form asp-action="Register" asp-controller="Register" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-group">
+        <label asp-for="Email" class="control-label"></label>
+        <input asp-for="Email" class="form-control" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Password" class="control-label"></label>
+        <input asp-for="Password" class="form-control" type="password" />
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="PasswordVerify" class="control-label">Подтвердите пароль</label>
+        <input asp-for="PasswordVerify" class="form-control" type="password" />
+        <span asp-validation-for="PasswordVerify" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="RoleNumber" class="control-label">Номер роли (1 - клиент, 2 - админ, 3 - тренер)</label>
+        <input asp-for="RoleNumber" class="form-control" />
+        <span asp-validation-for="RoleNumber" class="text-danger"></span>
+    </div>
+
+    <!-- Поля для клиента -->
+    <div id="clientFields" style="display: none;">
+        @Html.Partial("ClientRegister", new ClientModel())
+    </div>
+
+    <!-- Поля для администратора -->
+    <div id="adminFields" style="display: none;">
+        @Html.Partial("AdminRegister", new AdminModel())
+    </div>
+
+    <!-- Поля для тренера -->
+    <div id="trainerFields" style="display: none;">
+        @Html.Partial("TrainerRegister", new TrainerModel())
+    </div>
+
+    <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+</form>
+
+@section Scripts {
+<script>
+    $(function () {
+        // Обработчик события для выбора роли
+        $('input[name="RoleNumber"]').change(function () {
+            var roleNumber = $(this).val();
+            $('#clientFields, #adminFields, #trainerFields').hide();
+
+            if (roleNumber == '1') {
+                $('#clientFields').show();
+            } else if (roleNumber == '2') {
+                $('#adminFields').show();
+            } else if (roleNumber == '3') {
+                $('#trainerFields').show();
+            }
+        });
+    });
+</script>
+}

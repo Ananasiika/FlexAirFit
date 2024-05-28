@@ -1,0 +1,47 @@
+﻿@model FlexAirFit.Web.Models.WorkoutModel
+
+<h1>Создание тренировки</h1>
+@{
+var cookies = ViewContext.HttpContext.Request.Cookies;
+var userRole = cookies["UserRole"].ToString();
+var isAdminPage = userRole == "Admin";
+}
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="CreateWorkout" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            @if (isAdminPage)
+            {
+                <div class="form-group">
+                    <label asp-for="IdTrainer" class="control-label"></label>
+                    <textarea asp-for="IdTrainer" class="form-control" rows="3"></textarea>
+                    <span asp-validation-for="IdTrainer" class="text-danger"></span>
+                </div>
+            }
+            <div class="form-group">
+                <label asp-for="Duration" class="control-label"></label>
+                <input asp-for="Duration" class="form-control" type="time" />
+                <span asp-validation-for="Duration" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Level" class="control-label"></label>
+                <input asp-for="Level" class="form-control" />
+                <span asp-validation-for="Level" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Сохранить" class="btn btn-primary" />
+                <a asp-action="ViewWorkout" class="btn btn-secondary">Отмена</a>
+            </div>
+        </form>
+    </div>
+</div>

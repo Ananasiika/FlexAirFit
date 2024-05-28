@@ -1,0 +1,30 @@
+﻿@using FlexAirFit.Core.Enums
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model FlexAirFit.Web.Models.ProductModel
+
+<h1>Создание товара</h1>
+
+<form asp-action="CreateProduct" asp-controller="Product" method="post">
+    <div class="form-group">
+        <label asp-for="Type">Тип товара</label>
+        <select asp-for="Type" class="form-control">
+            @foreach (var productType in Enum.GetValues(typeof(ProductType)))
+            {
+                <option value="@productType">@productType</option>
+            }
+        </select>
+        <span asp-validation-for="Type" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Name">Название товара</label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Price">Цена товара</label>
+        <input asp-for="Price" class="form-control" />
+        <span asp-validation-for="Price" class="text-danger"></span>
+    </div>
+    <input type="submit" value="Сохранить" class="btn btn-primary" />
+</form>

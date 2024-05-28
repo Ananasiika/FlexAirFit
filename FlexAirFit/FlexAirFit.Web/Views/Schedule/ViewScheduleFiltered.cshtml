@@ -1,0 +1,104 @@
+﻿@using FlexAirFit.Core.Enums
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model FlexAirFit.Web.Models.ScheduleFilterModelResult
+@{
+    var filterModel = Model.Filter;
+}
+
+<form asp-action="ViewScheduleFiltered" asp-controller="Schedule" method="get" class="form-row">
+    <div class="row">
+        <div class="form-group col-md-6 col-lg-4">
+            <label for="NameWorkout" class="sr-only">Название тренировки</label>
+            <input type="text" class="form-control form-control-sm" id="NameWorkout" name="NameWorkout" placeholder="Название тренировки" value="@(Model.Filter.NameWorkout)">
+        </div>
+        <div class="form-group col-md-6 col-lg-4">
+            <label for="MinDateAndTime" class="sr-only">Мин. дата и время</label>
+            <input type="datetime-local" class="form-control form-control-sm" id="MinDateAndTime" name="MinDateAndTime" value="@(Model.Filter.MinDateAndTime?.ToUniversalTime())">
+        </div>
+        <div class="form-group col-md-6 col-lg-4">
+            <label for="MaxDateAndTime" class="sr-only">Макс. дата и время</label>
+            <input type="datetime-local" class="form-control form-control-sm" id="MaxDateAndTime" name="MaxDateAndTime" value="@(Model.Filter.MaxDateAndTime?.ToUniversalTime())">
+        </div>
+        <div class="form-group col-md-4 col-lg-2">
+            <label for="WorkoutType" class="sr-only">Тип тренировки</label>
+            <select asp-for="Filter.WorkoutType"
+                    class="form-control form-control-sm"
+                    asp-items="@(new SelectList(Model.WorkoutTypes))">
+                <option value="">Все типы</option>
+            </select>
+        </div>
+        <div class="form-group col-md-4 col-lg-2">
+        <label for="ClientId" class="sr-only">ID клиента</label>
+            <input type="text" class="form-control form-control-sm" id="ClientId" name="ClientId" placeholder="ID клиента" value="@(Model.Filter.ClientId)">
+        </div>
+        <div class="form-group col-md-4 col-lg-2">
+            <label for="TrainerId" class="sr-only">ID тренера</label>
+            <input type="text" class="form-control form-control-sm" id="TrainerId" name="TrainerId" placeholder="ID тренера" value="@(Model.Filter.TrainerId)">
+        </div>
+        <div class="form-group col-md-4 col-lg-2">
+            <label for="NameTrainer" class="sr-only">Имя тренера</label>
+            <input type="text" class="form-control form-control-sm" id="NameTrainer" name="NameTrainer" placeholder="Имя тренера" value="@(Model.Filter.NameTrainer)">
+        </div>
+        <div class="form-group col-md-4 col-lg-2">
+            <label for="NameClient" class="sr-only">Имя клиента</label>
+            <input type="text" class="form-control form-control-sm" id="NameClient" name="NameClient" placeholder="Имя клиента" value="@(Model.Filter.NameClient)">
+        </div>
+    </div>
+    <div class="col-12 d-flex justify-content-end">
+        <button type="submit" class="btn btn-primary btn-sm">Фильтровать</button>
+    </div>
+</form>
+
+<h1>Расписание</h1>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Название тренировки</th>
+        <th>Имя тренера</th>
+        <th>Дата и время</th>
+        <th>Имя клиента</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var schedule in Model.Schedules)
+    {
+    <tr>
+        <td>@schedule.NameWorkout</td>
+        <td>@schedule.NameTrainer</td>
+        <td>@schedule.DateAndTime</td>
+        <td>@schedule.NameClient</td>
+    </tr>
+    }
+    </tbody>
+</table>
+
+<div>
+    @if (Model.Schedules.Count() != 0 && Model.Schedules.First().PageCurrent > 1)
+    {
+    <a asp-action="ViewScheduleFiltered" asp-controller="Schedule" asp-route-NameWorkout="@(Model.Filter.NameWorkout)"
+       asp-route-MinDateAndTime="@(Model.Filter.MinDateAndTime)"
+       asp-route-MaxDateAndTime="@(Model.Filter.MaxDateAndTime)"
+       asp-route-WorkoutType="@(Model.Filter.WorkoutType)"
+       asp-route-ClientId="@(Model.Filter.ClientId)"
+       asp-route-TrainerId="@(Model.Filter.TrainerId)"
+       asp-route-NameTrainer="@(Model.Filter.NameTrainer)"
+       asp-route-NameClient="@(Model.Filter.NameClient)"
+       asp-route-page="@(Model.Schedules.First().PageCurrent - 1)"
+       class="btn btn-primary">Предыдущая страница</a>
+    }
+    @if (Model.Schedules.Count() == 10)
+    {
+        <a asp-action="ViewScheduleFiltered" asp-controller="Schedule" 
+           asp-route-NameWorkout="@(Model.Filter.NameWorkout)"
+           asp-route-MinDateAndTime="@(Model.Filter.MinDateAndTime))"
+           asp-route-MaxDateAndTime="@(Model.Filter.MaxDateAndTime))"
+           asp-route-WorkoutType="@(Model.Filter.WorkoutType)"
+           asp-route-ClientId="@(Model.Filter.ClientId)" 
+           asp-route-TrainerId="@(Model.Filter.TrainerId)" 
+           asp-route-NameTrainer="@(Model.Filter.NameTrainer)" 
+           asp-route-NameClient="@(Model.Filter.NameClient)" 
+           asp-route-page="@(Model.Schedules.First().PageCurrent + 1)" 
+           class="btn btn-primary">Следующая страница</a>
+    }
+</div>

@@ -112,7 +112,7 @@ public class ClientService(IClientRepository clientRepository,
         }
         else
         {
-            DateTime?[][] newIntervals = new DateTime?[client.FreezingIntervals.Length + 1][];
+            DateTime?[][]? newIntervals = new DateTime?[client.FreezingIntervals.Length + 1][];
             Array.Copy(client.FreezingIntervals, newIntervals, client.FreezingIntervals.Length);
             newIntervals[newIntervals.Length - 1] = dateToCheck;
             client.FreezingIntervals = newIntervals;

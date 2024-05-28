@@ -12,10 +12,11 @@ public class WorkoutService(IWorkoutRepository workoutRepository,
 {
     private readonly IWorkoutRepository _workoutRepository = workoutRepository;
     private readonly ILogger _logger = Log.ForContext<WorkoutService>();
-    
+    private readonly ITrainerRepository _trainerRepository = trainerRepository;
+
     public async Task CreateWorkout(Workout workout)
     {
-        if (await _workoutRepository.GetWorkoutByIdAsync(workout.Id) is not null)
+        if (await _workoutRepository.GetWorkoutByIdAsync(workout.Id) is not null || await _trainerRepository.GetTrainerByIdAsync(workout.IdTrainer) is null)
         {
             _logger.Warning($"Workout with ID {workout.Id} already exists in the database. Skipping creation.");
             throw new WorkoutExistsException(workout.Id);

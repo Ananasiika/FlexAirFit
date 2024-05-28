@@ -1,0 +1,25 @@
+﻿@model BuyProductModel
+
+<h1>Покупка товара</h1>
+
+<form asp-controller="Product" asp-action="BuyProductByClient" asp-route-UseBonus="@Model.UseBonus" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div>
+        <label for="product-name">Название товара:</label>
+        <input type="text" id="product-name" value="@Model.Name" readonly>
+    </div>
+    <div>
+        <label for="product-price">Цена товара:</label>
+        <input type="text" id="product-price" value="@Model.Price" readonly>
+    </div>
+    <div>
+        <label for="UseBonus">Списать бонусы:</label>
+        <select id="UseBonus" name="UseBonus">
+            <option value="true">Да</option>
+            <option value="false">Нет</option>
+        </select>
+    </div>
+
+    <input type="hidden" name="IdProduct" value="@Model.IdProduct" />
+    <button type="submit" class="btn btn-primary">Купить</button>
+</form>

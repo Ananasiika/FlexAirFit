@@ -1,0 +1,39 @@
+﻿@using FlexAirFit.Core.Enums
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model IEnumerable<ScheduleModel>
+
+
+<h1>Ваше расписание</h1>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Название тренировки</th>
+        <th>Имя тренера</th>
+        <th>Дата и время</th>
+        <th>Имя клиента</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var schedule in Model)
+    {
+        <tr>
+            <td>@schedule.NameWorkout</td>
+            <td>@schedule.NameTrainer</td>
+            <td>@schedule.DateAndTime</td>
+            <td>@schedule.NameClient</td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<div>
+    @if (Model.Count() != 0 && Model.First().PageCurrent > 1)
+    {
+        <a asp-action="ViewSchedule" asp-controller="Schedule" asp-route-page="@(Model.First().PageCurrent - 1)" class="btn btn-primary">Предыдущая страница</a>
+    }
+    @if (Model.Count() == 10)
+    {
+        <a asp-action="ViewSchedule" asp-controller="Schedule" asp-route-page="@(Model.First().PageCurrent + 1)" class="btn btn-primary">Следующая страница</a>
+    }
+</div>

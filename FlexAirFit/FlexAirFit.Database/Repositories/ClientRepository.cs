@@ -38,13 +38,16 @@ public class ClientRepository : IClientRepository
         {
             var clientDbModel = await _context.Clients.FindAsync(client.Id);
             clientDbModel.MembershipEnd = client.MembershipEnd;
-            clientDbModel.FreezingIntervals = JsonDocument.Parse(
-                JsonSerializer.Serialize(
-                    client.FreezingIntervals.Select(interval => new
-                    {
-                        start_date = interval[0]?.ToString("yyyy-MM-dd"),
-                        end_date = interval[1]?.ToString("yyyy-MM-dd")
-                    })));
+            if (client.FreezingIntervals != null)
+            {
+                clientDbModel.FreezingIntervals = JsonDocument.Parse(
+                    JsonSerializer.Serialize(
+                        client.FreezingIntervals.Select(interval => new
+                        {
+                            start_date = interval[0]?.ToString("yyyy-MM-dd"),
+                            end_date = interval[1]?.ToString("yyyy-MM-dd")
+                        })));
+            }
             clientDbModel.IdMembership = client.IdMembership;
             clientDbModel.RemainFreezing = client.RemainFreezing;
             clientDbModel.Gender = client.Gender;

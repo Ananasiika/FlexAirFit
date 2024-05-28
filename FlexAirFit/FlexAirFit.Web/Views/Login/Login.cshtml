@@ -1,0 +1,22 @@
+﻿@model FlexAirFit.Web.Models.UserModel
+
+@{
+ViewData["Title"] = "Вход в аккаунт";
+}
+
+<h1>Вход</h1>
+
+<form asp-action="Login" asp-controller="Login" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-group">
+        <label asp-for="Email" class="control-label"></label>
+        <input asp-for="Email" class="form-control" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Password" class="control-label"></label>
+        <input asp-for="Password" class="form-control" type="password" />
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Войти</button>
+</form>

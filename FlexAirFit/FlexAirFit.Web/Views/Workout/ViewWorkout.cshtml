@@ -1,0 +1,108 @@
+﻿@model FlexAirFit.Web.Models.WorkoutFilterModelResult
+@{
+    var filterModel = Model.Filter;
+}
+
+@{
+    var cookies = ViewContext.HttpContext.Request.Cookies;
+    var userRole = cookies["UserRole"].ToString();
+    var isAdminPage = userRole == "Admin";
+    var isClientPage = userRole == "Client";
+    var isTrainerPage = userRole == "Trainer";
+}
+
+<form asp-action="ViewWorkoutFiltered" asp-controller="Workout" method="get" class="form-row">
+    <div class="row">
+        <div class="form-group col-md-6 col-lg-4">
+            <label for="Name" class="sr-only">Название тренировки</label>
+            <input type="text" class="form-control form-control-sm" id="Name" name="Name" placeholder="Название тренировки" value="@(filterModel.Name)">
+        </div>
+        <div class="form-group col-md-6 col-lg-4">
+            <label for="NameTrainer" class="sr-only">Имя тренера</label>
+            <input type="text" class="form-control form-control-sm" id="NameTrainer" name="NameTrainer" placeholder="Имя тренера" value="@(filterModel.NameTrainer)">
+        </div>
+        <div class="form-group col-md-4 col-lg-2">
+            <label for="MinDuration" class="sr-only">Мин. длительность</label>
+            <input type="time" class="form-control form-control-sm" id="MinDuration" name="MinDuration" value="@(filterModel.MinDuration)">
+        </div>
+        <div class="form-group col-md-4 col-lg-2">
+            <label for="MaxDuration" class="sr-only">Макс. длительность</label>
+            <input type="time" class="form-control form-control-sm" id="MaxDuration" name="MaxDuration" value="@(filterModel.MaxDuration)">
+        </div>
+        <div class="form-group col-md-4 col-lg-2">
+            <label for="MinLevel" class="sr-only">Мин. уровень</label>
+            <input type="number" class="form-control form-control-sm" id="MinLevel" name="MinLevel" value="@(filterModel.MinLevel)">
+        </div>
+        <div class="form-group col-md-4 col-lg-2">
+            <label for="MaxLevel" class="sr-only">Макс. уровень</label>
+            <input type="number" class="form-control form-control-sm" id="MaxLevel" name="MaxLevel" value="@(filterModel.MaxLevel)">
+        </div>
+    </div>
+    <div class="col-12 d-flex justify-content-end">
+        <button type="submit" class="btn btn-primary btn-sm">Фильтровать</button>
+    </div>
+</form>
+
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>Расписание</h1>
+    @if (isTrainerPage || isAdminPage)
+    {
+    <a asp-action="CreateWorkout" asp-controller="Workout" class="btn btn-primary">Добавить тренировку</a>
+    }
+</div>
+
+<table class="table">
+    <thead>
+    <tr>
+        @if (isAdminPage)
+        {
+            <th>Id</th>
+        }
+        <th>Название</th>
+        <th>Описание</th>
+        <th>Тренер</th>
+        <th>Длительность</th>
+        <th>Уровень</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var workout in Model.Workouts)
+    {
+        <tr>
+            @if (isAdminPage)
+            {
+                <td>@workout.Id</td>
+            }
+            <td>@workout.Name</td>
+            <td>@workout.Description</td>
+            <td>@workout.NameTrainer</td>
+            <td>@workout.Duration</td>
+            <td>@workout.Level</td>
+            <td>
+                @if (isClientPage)
+                {
+                    <a asp-action="CreateScheduleByClient" asp-controller="Schedule" asp-route-workoutId="@workout.Id" class="btn btn-sm btn-primary" style="font-size: 12px;">Добавить в расписание</a>
+                }
+            </td>
+            @if (isAdminPage)
+            {
+            <td>
+                <a asp-action="DeleteWorkout" asp-controller="Workout" asp-route-workoutId="@workout.Id" class="btn btn-primary" onclick="return confirm('Вы действительно хотите удалить эту тренировку?')">Удалить тренировку</a>
+            </td>
+            }
+        </tr>
+    }
+    </tbody>
+</table>
+
+<div>
+@if (Model.Workouts.Count() != 0 && Model.Workouts.First().PageCurrent > 1)
+{
+    <a asp-action="ViewWorkout" asp-controller="Workout" asp-route-page="@(Model.Workouts.First().PageCurrent - 1)" class="btn btn-primary">Предыдущая страница</a>
+}
+@if (Model.Workouts.Count() == 10)
+{
+    <a asp-action="ViewWorkout" asp-controller="Workout" asp-route-page="@(Model.Workouts.First().PageCurrent + 1)" class="btn btn-primary">Следующая страница</a>
+}
+</div>

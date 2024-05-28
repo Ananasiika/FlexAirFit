@@ -60,7 +60,7 @@ CREATE TABLE IF NOT EXISTS "Clients" (
     membership_id UUID NOT NULL REFERENCES "Memberships" (id),
     membership_end DATE NOT NULL,
     remain_freezing INT,
-    freezing_intervals DATERANGE[]
+    freezing_intervals json
 );
 
 CREATE TABLE IF NOT EXISTS "Schedules" (

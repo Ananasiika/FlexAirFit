@@ -238,7 +238,7 @@ public class ClientServiceUnitTests
         var clientId = Guid.NewGuid();
         DateTime?[] dateIntervals = { DateTime.Today, DateTime.Today.AddDays(2) };
 
-        DateTime?[][] intervals = new []{dateIntervals};
+        DateTime?[][]? intervals = new []{dateIntervals};
         var client = new Client(clientId, "John Doe", "Male", DateTime.Today, Guid.NewGuid(), DateTime.Today, 10, intervals);
         DateTime freezingStart = DateTime.Today.AddDays(5);
         var durationInDays = 5;

@@ -15,7 +15,7 @@ public class MembershipDbModel
     public string Name { get; set; }
 
     [Required]
-    [Column("duration", TypeName = "time")]
+    [Column("duration", TypeName = "interval")]
     public TimeSpan Duration { get; set; }
 
     [Required]

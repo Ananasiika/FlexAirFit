@@ -1,0 +1,82 @@
+﻿@{
+ViewData["Title"] = "FlexAirFit - Фитнес клуб";
+}
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+        <a class="navbar-brand" href="#">FlexAirFit</a>
+        <div class="ml-auto">
+            <a asp-action="Register" asp-controller="Register" class="btn btn-light">Зарегистрироваться</a>
+            <a asp-action="Login" asp-controller="Login" class="btn btn-light">Войти</a>
+        </div>
+    </div>
+</nav>
+
+<div class="hero-section bg-light py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <h1 class="display-4 text-primary">FlexAirFit</h1>
+                <p class="lead text-muted">Твой путь к здоровому образу жизни</p>
+            </div>
+            <div class="col-md-6">
+                <img src="~/img/fit2.jpg" alt="Фитнес" class="img-fluid rounded">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <img src="~/img/schedule1.jpg" class="card-img-top" alt="Расписание">
+                <div class="card-body">
+                    <h5 class="card-title">Расписание</h5>
+                    <p class="card-text">Узнайте, какие занятия проходят в клубе и когда.</p>
+                    <a asp-action="ViewSchedule" asp-controller="Schedule" asp-route-page="1" class="btn btn-primary">Посмотреть</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <img src="~/img/workout.png" class="card-img-top" alt="Тренировки">
+                <div class="card-body">
+                    <h5 class="card-title">Тренировки</h5>
+                    <p class="card-text">Изучите подробную информацию о наших тренировках.</p>
+                    <a asp-action="ViewWorkout" asp-controller="Workout" class="btn btn-primary">Посмотреть</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <img src="~/img/trainer1.jpg" class="card-img-top" alt="Тренеры">
+                <div class="card-body">
+                    <h5 class="card-title">Тренеры</h5>
+                    <p class="card-text">Познакомьтесь с нашими опытными тренерами.</p>
+                    <a asp-action="ViewTrainer" asp-controller="Trainer" class="btn btn-primary">Посмотреть</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <img src="~/img/products2.jpg" class="card-img-top" alt="Товары">
+                <div class="card-body">
+                    <h5 class="card-title">Товары</h5>
+                    <p class="card-text">Ознакомьтесь с нашим ассортиментом товаров для фитнеса.</p>
+                    <a asp-action="ViewProduct" asp-controller="Product" asp-route-page="1" class="btn btn-primary">Посмотреть</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <img src="~/img/member.jpg" class="card-img-top" alt="Абонементы">
+                <div class="card-body">
+                    <h5 class="card-title">Абонементы</h5>
+                    <p class="card-text">Узнайте о наших вариантах абонементов.</p>
+                    <a asp-action="ViewMembership" asp-controller="Membership" asp-route-page="1" class="btn btn-primary">Посмотреть</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

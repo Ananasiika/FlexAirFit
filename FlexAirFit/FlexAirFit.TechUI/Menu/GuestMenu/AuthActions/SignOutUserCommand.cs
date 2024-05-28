@@ -1,5 +1,6 @@
 using FlexAirFit.TechUI.BaseMenu;
 using Serilog;
+using Serilog.Context;
 
 namespace FlexAirFit.TechnicalUI.GuestMenu.AuthActions;
 
@@ -15,6 +16,8 @@ public class SignOutUserCommand : Command
     {
         context.CurrentUser = null;
         context.UserObject = null;
+        LogContext.PushProperty("UserRole", "Guest");
+        LogContext.PushProperty("UserId", null);
         _logger.Information("User signed out successfully");
     }
 }

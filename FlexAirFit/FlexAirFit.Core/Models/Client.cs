@@ -1,4 +1,6 @@
-﻿namespace FlexAirFit.Core.Models;
+﻿using System.Text.Json;
+
+namespace FlexAirFit.Core.Models;
 
 public class Client
 {
@@ -9,7 +11,7 @@ public class Client
     public Guid IdMembership { get; set; }
     public DateTime MembershipEnd { get; set; }
     public int? RemainFreezing { get; set; }
-    public DateTime?[][] FreezingIntervals { get; set; }
+    public DateTime?[][]? FreezingIntervals { get; set; }
     public bool IsMembershipActive(DateTime currentDate = default) {
         if (currentDate == default)
         {
@@ -26,7 +28,7 @@ public class Client
         Guid idMembership,
         DateTime membershipEnd,
         int? remainFreezing,
-        DateTime?[][] freezingIntervals)
+        DateTime?[][]? freezingIntervals)
     {
         Id = id;
         Name = name;

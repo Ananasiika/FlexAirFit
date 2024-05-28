@@ -55,7 +55,7 @@ public static class ClientConverter
                             end_date = interval[1]?.ToString("yyyy-MM-dd")
                         })
                     )
-                ) : null)
+                ) : JsonDocument.Parse("[]"))
             : default;
     }
 }

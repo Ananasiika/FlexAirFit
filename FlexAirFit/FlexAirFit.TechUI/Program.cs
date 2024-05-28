@@ -68,25 +68,26 @@ internal static class Program
 
             services.AddSingleton<Startup>();
         });
-
-        var host = builder.Build();
-        await using var context = host.Services.GetRequiredService<FlexAirFitDbContext>();
-
-        await context.Database.MigrateAsync();
         
-        using (var serviceScope = host.Services.CreateAsyncScope())
+        try
         {
+            var host = builder.Build();
+            await using var context = host.Services.GetRequiredService<FlexAirFitDbContext>();
+
+            await context.Database.MigrateAsync();
+
+            var serviceScope = host.Services.CreateAsyncScope();
+
             var services = serviceScope.ServiceProvider;
-            try
-            {
-                Console.WriteLine("К базе данных подключились, запускаем приложение)");
-                var techUiApp = services.GetRequiredService<Startup>();
-                await techUiApp.Run();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("[!] " + ex.Message);
-            }
+            Console.WriteLine("К базе данных подключились, запускаем приложение)");
+            Log.Information("Connected to the database, starting the application");
+            var techUiApp = services.GetRequiredService<Startup>();
+            await techUiApp.Run();
+        }
+        catch (Exception ex)
+        { 
+            Log.Fatal("Error connecting to the database: {Message}", ex.Message);
+            Console.WriteLine("[!] " + ex.Message);
         }
     }
 }

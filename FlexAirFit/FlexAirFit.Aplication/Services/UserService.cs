@@ -5,6 +5,7 @@ using FlexAirFit.Application.Exceptions.ServiceException;
 using FlexAirFit.Application.Utils;
 using FlexAirFit.Core.Enums;
 using Serilog;
+using Serilog.Context;
 
 namespace FlexAirFit.Application.Services;
 

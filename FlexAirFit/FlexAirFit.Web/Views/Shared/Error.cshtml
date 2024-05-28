@@ -1,0 +1,13 @@
+﻿@model string
+
+@{
+ViewData["Title"] = "Error";
+}
+
+<div class="alert alert-danger">
+    <h4 class="alert-heading">Произошла ошибка</h4>
+    <p>@Model</p>
+    <p>
+        <a asp-action="Return" asp-controller="Shared" class="btn btn-primary">На главную</a>
+    </p>
+</div>

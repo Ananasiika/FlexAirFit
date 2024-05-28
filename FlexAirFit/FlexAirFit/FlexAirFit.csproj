@@ -14,4 +14,16 @@
 		<ProjectReference Include="..\FlexAirFit.Core\FlexAirFit.Core.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Controllers\" />
+	  <Folder Include="Models\" />
+	  <Folder Include="Views\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <_ContentIncludedByDefault Remove="Views\Shared\Error.cshtml" />
+	  <_ContentIncludedByDefault Remove="Views\Shared\_Layout.cshtml" />
+	  <_ContentIncludedByDefault Remove="Views\Shared\_ValidationScriptsPartial.cshtml" />
+	</ItemGroup>
+
 </Project>

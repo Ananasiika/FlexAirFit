@@ -1,0 +1,33 @@
+﻿@model FlexAirFit.Web.Models.MembershipModel
+
+<h1>Создание абонемента</h1>
+
+<form asp-action="CreateMembership" asp-controller="Membership" method="post">
+    <div class="form-group">
+        <label asp-for="Name">Название</label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="DurationInDays">Длительность</label>
+        <select asp-for="DurationInDays" class="form-control">
+            <option value="1">1 день</option>
+            <option value="7">7 дней</option>
+            <option value="30">30 дней</option>
+            <option value="60">60 дней</option>
+            <option value="365">365 дней</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Price">Цена</label>
+        <input asp-for="Price" class="form-control" />
+        <span asp-validation-for="Price" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Freezing">Дни для заморозки</label>
+        <input asp-for="Freezing" class="form-control" />
+        <span asp-validation-for="Freezing" class="text-danger"></span>
+    </div>
+    <input type="submit" value="Сохранить" class="btn btn-primary" />
+</form>

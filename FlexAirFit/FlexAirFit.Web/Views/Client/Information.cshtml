@@ -1,0 +1,70 @@
+﻿@using System.Globalization
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model FlexAirFit.Web.Models.ClientModel
+
+<h2>Личная информация</h2>
+
+<div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.DateOfBirth)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.DateOfBirth)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Gender)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Gender)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.NameMembership)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.NameMembership)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.MembershipEnd)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.MembershipEnd)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.RemainFreezing)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.RemainFreezing)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CountBonuses)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CountBonuses)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FreezingIntervals)
+        </dt>
+        <dd class="col-sm-10">
+            @if (Model.FreezingIntervals != null)
+            {
+            @foreach (var interval in Model.FreezingIntervals)
+            {
+            <span>@interval[0].ToString().Split(" ").First() - @interval[1].ToString().Split(" ").First()</span><br />
+            }
+            }
+        </dd>
+
+    </dl>
+    <div class="form-group">
+        <a asp-action="EditInformation" asp-controller="Client" class="btn btn-primary">Редактировать</a>
+        <a asp-action="FreezeMembershipView" asp-controller="Client" class="btn btn-success">Заморозить абонемент</a>
+    </div>
+</div>
