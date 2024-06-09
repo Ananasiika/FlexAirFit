@@ -1,0 +1,66 @@
+This is BibTeX, Version 0.99d (TeX Live 2022/dev/Debian)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: report.aux
+A level-1 auxiliary file: content_list.aux
+A level-1 auxiliary file: introduction.aux
+A level-1 auxiliary file: analytical.aux
+A level-1 auxiliary file: design.aux
+A level-1 auxiliary file: technological.aux
+A level-1 auxiliary file: research.aux
+A level-1 auxiliary file: sources.aux
+The style file: utf8gost705u.bst
+Database file #1: sources.bib
+Warning--empty journal in stat1
+Warning--empty journal in serg
+Too many commas in name 1 of "Б.Г. Трусов, И.В. Рудаков, Ю.И. Терентьев, С.С. Комалов, С.В. Горин, В.А. Крищенко" for entry ucheb
+while executing---line 3019 of file utf8gost705u.bst
+Too many commas in name 1 of "Б.Г. Трусов, И.В. Рудаков, Ю.И. Терентьев, С.С. Комалов, С.В. Горин, В.А. Крищенко" for entry ucheb
+while executing---line 3019 of file utf8gost705u.bst
+Too many commas in name 1 of "Б.Г. Трусов, И.В. Рудаков, Ю.И. Терентьев, С.С. Комалов, С.В. Горин, В.А. Крищенко" for entry ucheb
+while executing---line 3019 of file utf8gost705u.bst
+Warning--empty journal in ucheb
+Warning--empty journal in deit
+Warning--empty journal in gavr
+Warning--empty journal in rel2
+You've used 15 entries,
+            2958 wiz_defined-function locations,
+            727 strings with 8052 characters,
+and the built_in function-call counts, 2118 in all, are:
+= -- 233
+> -- 35
+< -- 5
++ -- 20
+- -- 5
+* -- 43
+:= -- 227
+add.period$ -- 36
+call.type$ -- 15
+change.case$ -- 0
+chr.to.int$ -- 0
+cite$ -- 21
+duplicate$ -- 128
+empty$ -- 281
+format.name$ -- 5
+if$ -- 544
+int.to.chr$ -- 0
+int.to.str$ -- 15
+missing$ -- 0
+newline$ -- 85
+num.names$ -- 15
+pop$ -- 106
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 0
+skip$ -- 45
+stack$ -- 0
+substring$ -- 0
+swap$ -- 45
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 0
+warning$ -- 6
+while$ -- 5
+width$ -- 17
+write$ -- 180
+(There were 3 error messages)

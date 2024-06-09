@@ -1,0 +1,107 @@
+\begin{thebibliography}{10}
+\def\selectlanguageifdefined#1{
+\expandafter\ifx\csname date#1\endcsname\relax
+\else\language\csname l@#1\endcsname\fi}
+\ifx\undefined\url\def\url#1{{\small #1}}\else\fi
+\ifx\undefined\BibUrl\def\BibUrl#1{\url{#1}}\else\fi
+\ifx\undefined\BibAnnote\long\def\BibAnnote#1{(#1)}\else\fi
+\ifx\undefined\BibEmph\def\BibEmph#1{\emph{#1}}\else\fi
+
+\bibitem{stat1}
+\selectlanguageifdefined{russian}
+Только 4\% населения России регулярно
+  занимаются в фитнес-клубах.
+\newblock 2023. URL:
+  https://www.forbes.ru/sport/500472-tol-ko-4-naselenia-rossii-regularno-zanimautsa-v-fitnes-klubah.
+
+\bibitem{xfit}
+\selectlanguageifdefined{russian}
+Фитнес-клуб XFit [Электронный ресурс].
+\newblock Режим доступа: \url{https://www.xfit.ru/} (дата
+  обращения: 10.03.2024).
+
+\bibitem{wegym}
+\selectlanguageifdefined{russian}
+Фитнес-клуб WeGym [Электронный ресурс].
+\newblock Режим доступа: \url{https://wegym.ru/} (дата
+  обращения: 10.03.2024).
+
+\bibitem{sssr}
+\selectlanguageifdefined{russian}
+Фитнес-клуб СССР [Электронный ресурс].
+\newblock Режим доступа: \url{https://fitness-cccp.ru/} (дата
+  обращения: 10.03.2024).
+
+\bibitem{serg}
+\selectlanguageifdefined{russian}
+Т.Е.Сергеева~М.Ю.Сергеев. Базы данных:
+  модели данных, проектирование, язык SQL.
+\newblock 2012.
+
+\bibitem{ucheb}
+\selectlanguageifdefined{russian}
+Б.Г.~Трусов~И.В.~Рудаков~Ю.И. Терентьев С.С.
+  Комалов С.В. Горин В.А.~Крищенко. учебник по
+  курсу <<Информатика>>.
+\newblock 2011.
+
+\bibitem{deit}
+\selectlanguageifdefined{russian}
+К.Дж.Дейт. Введение в базы данных.
+\newblock 2005.
+
+\bibitem{gavr}
+\selectlanguageifdefined{russian}
+Ю.М.~Гаврилова. Конспект лекций по
+  дисциплине <<Базы данных>>.
+\newblock 2023.
+
+\bibitem{rel2}
+\selectlanguageifdefined{russian}
+Васильева К.~Н.~Хусаинова Г.~Я. Реляционные
+  базы данных.
+\newblock 2020.
+
+\bibitem{rel}
+\selectlanguageifdefined{russian}
+What is a Relational Database (RDBMS)? [Электронный ресурс].
+\newblock Режим доступа:
+  \url{https://www.oracle.com/database/what-is-a-relational-database/}
+  (дата обращения: 17.03.2024).
+
+\bibitem{post}
+\selectlanguageifdefined{russian}
+Постреляционная модель: понятие,
+  достоинства и недостатки [Электронный
+  ресурс].
+\newblock Режим доступа:
+  \url{https://studfile.net/preview/5407090/page:4/} (дата
+  обращения: 17.03.2024).
+
+\bibitem{postgres}
+\selectlanguageifdefined{russian}
+PostrgeSQL [Электронный ресурс].
+\newblock Режим доступа: \url{https://www.postgresql.org/}
+  (дата обращения: 21.05.2024).
+
+\bibitem{csharp}
+\selectlanguageifdefined{russian}
+C\# [Электронный ресурс].
+\newblock Режим доступа:
+  \url{https://learn.microsoft.com/ru-ru/dotnet/csharp/} (дата
+  обращения: 21.05.2024).
+
+\bibitem{entity}
+\selectlanguageifdefined{russian}
+Entity Framework [Электронный ресурс].
+\newblock Режим доступа:
+  \url{https://learn.microsoft.com/ru-ru/ef/} (дата обращения:
+  21.05.2024).
+
+\bibitem{ubuntu}
+\selectlanguageifdefined{russian}
+Ubuntu 22.04.3 LTS (Jammy Jellyfish) [Электронный ресурс].
+\newblock Режим доступа: \url{https://releases.ubuntu.com/22.04/}
+  (дата обращения: 01.02.2024).
+
+\end{thebibliography}

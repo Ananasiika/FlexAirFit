@@ -1,0 +1,62 @@
+\section*{Приложение A}
+\addcontentsline{toc}{chapter}{Приложение A}
+В листинге \ref{lst:shtrassen} представлена реализация алгоритма Штрассена.
+\begin{center}
+	\captionsetup{justification=raggedright,singlelinecheck=off}
+	\begin{lstlisting}[label=lst:shtrassen,caption=Алгоритм Штрассена]
+def strassen_matrix_multiplication_alg(matrix1, matrix2):
+	rows1 = len(matrix1)
+	cols1 = len(matrix1[0])
+	rows2 = len(matrix2)
+	cols2 = len(matrix2[0])
+	size = max(rows1, cols1, rows2, cols2)
+	size = 2 ** (size - 1).bit_length()
+	A_padded = [[0] * size for _ in range(size)]
+	B_padded = [[0] * size for _ in range(size)]
+	for i in range(rows1):
+		for j in range(cols1):
+			A_padded[i][j] = matrix1[i][j]
+	for i in range(rows2):
+		for j in range(cols2):
+			B_padded[i][j] = matrix2[i][j]
+	C_padded = strassen_recursive(A_padded, B_padded)
+	C = []
+	for i in range(rows1):
+		C.append(C_padded[i][:cols2])
+	return C
+def strassen_recursive(matrix1, matrix2):
+	n = len(matrix1)
+	if n == 1:
+		return [[matrix1[0][0] * matrix2[0][0]]]
+	mid = n // 2
+	A11 = [matrix1[i][:mid] for i in range(mid)]
+	A12 = [matrix1[i][mid:] for i in range(mid)]
+	A21 = [matrix1[i][:mid] for i in range(mid, n)]
+	A22 = [matrix1[i][mid:] for i in range(mid, n)]
+	B11 = [matrix2[i][:mid] for i in range(mid)]
+	B12 = [matrix2[i][mid:] for i in range(mid)]
+	B21 = [matrix2[i][:mid] for i in range(mid, n)]
+	B22 = [matrix2[i][mid:] for i in range(mid, n)]
+	M1 = strassen_recursive(matrix_add(A11, A22), matrix_add(B11, B22))
+	M2 = strassen_recursive(matrix_add(A21, A22), B11)
+	M3 = strassen_recursive(A11, matrix_sub(B12, B22))
+	M4 = strassen_recursive(A22, matrix_sub(B21, B11))
+	M5 = strassen_recursive(matrix_add(A11, A12), B22)
+	M6 = strassen_recursive(matrix_sub(A11, A21), matrix_add(B11, B12))
+	M7 = strassen_recursive(matrix_sub(A12, A22), matrix_add(B21, B22))
+	C11 = matrix_add(matrix_sub(matrix_add(M1, M4), M5), M7)
+	C12 = matrix_add(M3, M5)
+	C21 = matrix_add(M2, M4)
+	C22 = matrix_sub(matrix_sub(matrix_add(M1, M3), M2), M6)
+	C = []
+	for i in range(mid):
+		C.append(C11[i] + C12[i])
+	for i in range(mid, n):
+		C.append(C21[i - mid] + C22[i - mid])
+	return C
+def matrix_add(matrix1, matrix2):
+	return [[matrix1[i][j] + matrix2[i][j] for j in range(len(matrix1[i]))] for i in range(len(matrix1))]
+def matrix_sub(matrix1, matrix2):
+	return [[matrix1[i][j] - matrix2[i][j] for j in range(len(matrix1[i]))] for i in range(len(matrix1))]
+	\end{lstlisting}
+\end{center}
