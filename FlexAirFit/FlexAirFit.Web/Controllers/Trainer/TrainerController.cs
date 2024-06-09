@@ -1,4 +1,5 @@
-﻿using FlexAirFit.Web.Models;
+﻿using FlexAirFit.Core.Models;
+using FlexAirFit.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 using Serilog.Context;
@@ -47,19 +48,27 @@ public class TrainerController : Controller
         
         if (userId != null && userId != Guid.Empty)
         {
-            var trainer = _context.TrainerService.GetTrainerById(userId).Result;
-
-            var trainerModel = new TrainerModel
+            try
             {
-                Id = trainer.Id,
-                Name = trainer.Name,
-                Gender = trainer.Gender,
-                Specialization = trainer.Specialization,
-                Experience = trainer.Experience,
-                Rating = trainer.Rating
-            };
-            
-            return View(trainerModel);
+                var trainer = _context.TrainerService.GetTrainerById(userId).Result;
+
+                var trainerModel = new TrainerModel
+                {
+                    Id = trainer.Id,
+                    Name = trainer.Name,
+                    Gender = trainer.Gender,
+                    Specialization = trainer.Specialization,
+                    Experience = trainer.Experience,
+                    Rating = trainer.Rating
+                };
+
+                return View(trainerModel);
+            }
+            catch (Exception e)
+            {
+                Response.Cookies.Append("errorType", e.GetType().Name);
+                return RedirectToAction("Error", "Shared");
+            }
         }
         return View();
     }
@@ -70,19 +79,27 @@ public class TrainerController : Controller
         
         if (userId != null && userId != Guid.Empty)
         {
-            var trainer = _context.TrainerService.GetTrainerById(userId).Result;
-
-            var trainerModel = new TrainerModel
+            try
             {
-                Id = trainer.Id,
-                Name = trainer.Name,
-                Gender = trainer.Gender,
-                Specialization = trainer.Specialization,
-                Experience = trainer.Experience,
-                Rating = trainer.Rating
-            };
-            
-            return View(trainerModel);
+                var trainer = _context.TrainerService.GetTrainerById(userId).Result;
+
+                var trainerModel = new TrainerModel
+                {
+                    Id = trainer.Id,
+                    Name = trainer.Name,
+                    Gender = trainer.Gender,
+                    Specialization = trainer.Specialization,
+                    Experience = trainer.Experience,
+                    Rating = trainer.Rating
+                };
+
+                return View(trainerModel);
+            }
+            catch (Exception e)
+            {
+                Response.Cookies.Append("errorType", e.GetType().Name);
+                return RedirectToAction("Error", "Shared");
+            }
         }
         return View();
     }
@@ -94,12 +111,77 @@ public class TrainerController : Controller
 
         if (userId != null && userId != Guid.Empty)
         {
-            var trainer = _context.TrainerService.GetTrainerById(userId).Result;
-            
-            trainer.Name = trainerModel.Name;
-            trainer.Gender = trainerModel.Gender;
-            _context.TrainerService.UpdateTrainer(trainer);
+            try
+            {
+                var trainer = _context.TrainerService.GetTrainerById(userId).Result;
+
+                trainer.Name = trainerModel.Name;
+                trainer.Gender = trainerModel.Gender;
+                _context.TrainerService.UpdateTrainer(trainer);
+            }
+            catch (Exception e)
+            {
+                Response.Cookies.Append("errorType", e.GetType().Name);
+                return RedirectToAction("Error", "Shared");
+            }
         }
         return RedirectToAction("Information", "Trainer");
+    }
+
+    public async Task<IActionResult> DeleteTrainer(Guid trainerId)
+    {
+        try
+        {
+            await _context.TrainerService.DeleteTrainer(trainerId);
+            return RedirectToAction("ViewTrainer");
+        }
+        catch (Exception e)
+        {
+            Response.Cookies.Append("errorType", e.GetType().Name);
+            return RedirectToAction("Error", "Shared");
+        }
+    }
+
+    public IActionResult UpdateTrainer(Guid trainerId)
+    {
+        try
+        {
+            var trainer = _context.TrainerService.GetTrainerById(trainerId).Result;
+
+            var trainerModel = new TrainerModel
+            {
+                Id = trainer.Id,
+                Name = trainer.Name,
+                Gender = trainer.Gender,
+                Specialization = trainer.Specialization,
+                Experience = trainer.Experience,
+                Rating = trainer.Rating
+            };
+
+            return View(trainerModel);
+        }
+        catch (Exception e)
+        {
+            Response.Cookies.Append("errorType", e.GetType().Name);
+            return RedirectToAction("Error", "Shared");
+        }
+    }
+    
+    [HttpPost]
+    public async Task<IActionResult> EditTrainer(TrainerModel trainerModel)
+    {
+        try
+        {
+            Console.WriteLine(trainerModel.Gender);
+            var trainer = new Trainer(trainerModel.Id, trainerModel.Name, trainerModel.Gender, trainerModel.Specialization, trainerModel.Experience, trainerModel.Rating);
+            await _context.TrainerService.UpdateTrainer(trainer);
+
+            return RedirectToAction("ViewTrainer");
+        }
+        catch (Exception e)
+        {
+            Response.Cookies.Append("errorType", e.GetType().Name);
+            return RedirectToAction("Error", "Shared");
+        }
     }
 }

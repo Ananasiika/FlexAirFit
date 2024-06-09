@@ -46,7 +46,8 @@
             @if (isAdminPage)
             {
                 <td>
-                    <a asp-action="DeleteProduct" asp-controller="Product" asp-route-productId="@product.Id" class="btn btn-primary" onclick="return confirm('Вы действительно хотите удалить этот товар?')">Удалить товар</a>
+                    <a asp-action="DeleteProduct" asp-controller="Product" asp-route-productId="@product.Id" class="btn btn-primary" onclick="return confirm('Вы действительно хотите удалить этот товар?')">Удалить</a>
+                    <a asp-action="UpdateProduct" asp-controller="Product" asp-route-productId="@product.Id" class="btn btn-primary">Изменить</a>
                 </td>
             }
         </tr>

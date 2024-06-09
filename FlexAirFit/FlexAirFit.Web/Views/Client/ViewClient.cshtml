@@ -3,15 +3,20 @@
 <h1>Список клиентов</h1>
 
 @{
-var isAdminPage = ViewContext.HttpContext.Request.Headers["Referer"].ToString().Contains("Admin");
+    var cookies = ViewContext.HttpContext.Request.Cookies;
+    var userRole = cookies["UserRole"].ToString();
+    var isAdminPage = userRole == "Admin";
+    var isClientPage = userRole == "Client";
+    var isTrainerPage = userRole == "Trainer";
 }
 
 <table class="table">
     <thead>
     <tr>
-        @if (isAdminPage)
+        @if (isAdminPage || isTrainerPage)
         {
-        <th>Id</th>
+            <th>Id</th>
+            <th>Активен абонемент</th>
         }
         <th>Имя</th>
         <th>Пол</th>
@@ -25,12 +30,22 @@ var isAdminPage = ViewContext.HttpContext.Request.Headers["Referer"].ToString().
     @foreach (var client in Model)
     {
         <tr>
-            @if (isAdminPage)
+            @if (isAdminPage || isTrainerPage)
             {
-            <th>@client.Id</th>
+                <th>@client.Id</th>
+                <th>@client.ActiveMembership</th>
             }
             <td>@client.Name</td>
-            <td>@client.Gender</td>
+            <td>
+                @if (client.Gender == "male")
+                {
+                <span>Мужской</span>
+                }
+                else
+                {
+                <span>Женский</span>
+                }
+            </td>
             <td>@client.DateOfBirth.ToShortDateString()</td>
             <td>@client.NameMembership</td>
             <td>@client.MembershipEnd.ToShortDateString()</td>
@@ -41,7 +56,14 @@ var isAdminPage = ViewContext.HttpContext.Request.Headers["Referer"].ToString().
                         <span>@interval[0].ToString().Split(" ").First() - @interval[1].ToString().Split(" ").First()</span>
                         <br/>
                     }
-                </dd></td>
+                </dd>
+            </td>
+            @if (isAdminPage)
+            {
+            <td>
+                <a asp-action="UpdateClient" asp-controller="Client" asp-route-clientId="@client.Id" class="btn btn-primary">Изменить</a>
+            </td>
+            }
         </tr>
     }
     </tbody>

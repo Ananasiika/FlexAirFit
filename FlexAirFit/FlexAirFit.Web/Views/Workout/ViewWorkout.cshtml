@@ -88,7 +88,8 @@
             @if (isAdminPage)
             {
             <td>
-                <a asp-action="DeleteWorkout" asp-controller="Workout" asp-route-workoutId="@workout.Id" class="btn btn-primary" onclick="return confirm('Вы действительно хотите удалить эту тренировку?')">Удалить тренировку</a>
+                <a asp-action="DeleteWorkout" asp-controller="Workout" asp-route-workoutId="@workout.Id" class="btn btn-primary" onclick="return confirm('Вы действительно хотите удалить эту тренировку?')">Удалить</a>
+                <a asp-action="UpdateWorkout" asp-controller="Workout" asp-route-workoutId="@workout.Id" class="btn btn-primary">Изменить</a>
             </td>
             }
         </tr>

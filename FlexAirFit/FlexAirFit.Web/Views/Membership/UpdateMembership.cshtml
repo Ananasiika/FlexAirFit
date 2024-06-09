@@ -1,0 +1,31 @@
+﻿@model FlexAirFit.Web.Models.MembershipModel
+
+<h1>Редактирование абонемента</h1>
+
+<form asp-action="EditMembership" asp-controller="Membership" method="post">
+    <input type="hidden" asp-for="Id" />
+    <div class="form-group">
+        <label asp-for="Name">Название абонемента</label>
+        <input asp-for="Name" class="form-control" value="@Model.Name" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Duration">Длительность абонемента (в месяцах)</label>
+        <input asp-for="Duration" class="form-control" value="@Model.Duration" />
+        <span asp-validation-for="Duration" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Price">Цена абонемента</label>
+        <input asp-for="Price" class="form-control" value="@Model.Price" />
+        <span asp-validation-for="Price" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Freezing">Возможность заморозки абонемента</label>
+        <select asp-for="Freezing" class="form-control">
+            <option value="true">Да</option>
+            <option value="false">Нет</option>
+        </select>
+        <span asp-validation-for="Freezing" class="text-danger"></span>
+    </div>
+    <input type="submit" value="Сохранить" class="btn btn-primary" />
+</form>

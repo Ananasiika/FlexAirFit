@@ -44,7 +44,8 @@ var isTrainerPage = userRole == "Trainer";
             @if (isAdminPage)
             {
             <td>
-                <a asp-action="DeleteMembership" asp-controller="Membership" asp-route-membershipId="@membership.Id" class="btn btn-primary" onclick="return confirm('Вы действительно хотите удалить этот абонемент?')">Удалить абонемент</a>
+                <a asp-action="DeleteMembership" asp-controller="Membership" asp-route-membershipId="@membership.Id" class="btn btn-primary" onclick="return confirm('Вы действительно хотите удалить этот абонемент?')">Удалить</a>
+                <a asp-action="UpdateMembership" asp-controller="Membership" asp-route-membershipId="@membership.Id" class="btn btn-primary">Изменить</a>
             </td>
             }
         </tr>

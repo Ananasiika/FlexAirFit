@@ -58,3 +58,14 @@ public class ClientAlreadyHasScheduleException : BaseException
         ErrorCode = errorCode;
     }
 }
+public class ClientNotActiveException : BaseException 
+{
+    public ClientNotActiveException() : base() { }
+    public ClientNotActiveException(Guid id) : base($"Schedule ID = {id}, client membership is not active") { }
+    public ClientNotActiveException(string message) : base(message) { }
+    public ClientNotActiveException(string message, Exception innerException) : base(message, innerException) { }
+    public ClientNotActiveException(string message, int errorCode) : base(message)
+    {
+        ErrorCode = errorCode;
+    }
+}

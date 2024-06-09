@@ -43,6 +43,11 @@ public class ScheduleService(IScheduleRepository scheduleRepository,
                 _logger.Warning($"Client with ID {schedule.IdClient} does not exist in the database. Skipping creation.");
                 throw new ClientNotFoundException((Guid)schedule.IdClient);
             }
+            if (_clientRepository.GetClientByIdAsync((Guid)schedule.IdClient).Result.IsMembershipActive(schedule.DateAndTime) is false)
+            {
+                _logger.Warning($"Client with ID {schedule.IdClient} is not active. Skipping creation.");
+                throw new ClientNotActiveException((Guid)schedule.IdClient);
+            }
         }
 
         if (schedule.DateAndTime < DateTime.Now || schedule.DateAndTime.Hour < int.Parse(configuration["ClubOpeningTime"]) ||

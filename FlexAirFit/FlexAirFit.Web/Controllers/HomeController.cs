@@ -16,6 +16,8 @@ namespace FlexAirFit.Web.Controllers
 
         public IActionResult Index()
         {
+            Response.Cookies.Append("UserId", Guid.Empty.ToString());
+            Response.Cookies.Append("UserRole", "Guest");
             return View();
         }
 

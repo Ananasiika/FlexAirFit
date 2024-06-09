@@ -1,4 +1,5 @@
-﻿using FlexAirFit.Core.Enums;
+﻿using FlexAirFit.Application.Exceptions.ServiceException;
+using FlexAirFit.Core.Enums;
 using FlexAirFit.Core.Filters;
 using FlexAirFit.Core.Models;
 using FlexAirFit.Web.Models;
@@ -19,11 +20,42 @@ public class ScheduleController : Controller
         _context = context;
     }
 
-    public async Task<IActionResult> ViewSchedule(int page = 1)
+    public async Task<IActionResult> ViewScheduleByAdmin(int page = 1)
     {
         _logger.Information("Executing ViewSchedule action with page {Page}", page);
 
         var schedules = await _context.ScheduleService.GetSchedules(10, 10 * (page - 1));
+
+        var schedulesModels = schedules.Select(s => new ScheduleModel
+        {
+            Id = s.Id,
+            IdWorkout = s.IdWorkout,
+            DateAndTime = s.DateAndTime.AddHours(3),
+            IdClient = s.IdClient,
+            NameClient = s.IdClient == null || s.IdClient == Guid.Empty ? null : _context.ClientService.GetClientById((Guid)s.IdClient).Result.Name,
+            IdTrainer = _context.WorkoutService.GetWorkoutById(s.IdWorkout).Result.IdTrainer,
+            NameTrainer = _context.TrainerService.GetTrainerNameById(_context.WorkoutService.GetWorkoutById(s.IdWorkout).Result.IdTrainer).Result,
+            NameWorkout = _context.WorkoutService.GetWorkoutNameById(s.IdWorkout).Result,
+            PageCurrent = page
+        });
+        var workoutTypes = Enum.GetValues(typeof(WorkoutType)).Cast<WorkoutType>().ToList();
+
+        var viewModel = new ScheduleFilterModelResult
+        {
+            Schedules = schedulesModels,
+            Filter = new ScheduleFilterModel(),
+            WorkoutTypes = workoutTypes
+        };
+
+        return View("ViewScheduleByAdmin", viewModel);
+    }
+    
+    public async Task<IActionResult> ViewSchedule(int page = 1)
+    {
+        _logger.Information("Executing ViewSchedule action with page {Page}", page);
+
+        FilterSchedule filter = new(null, null, null, WorkoutType.GroupWorkout, null, null);
+        var schedules = await _context.ScheduleService.GetScheduleByFilter(filter, 10, 10 * (page - 1));
 
         var schedulesModels = schedules.Select(s => new ScheduleModel
         {
@@ -60,48 +92,59 @@ public class ScheduleController : Controller
     {
         _logger.Information("Executing ViewScheduleFiltered action with page {PageNumber}", PageNumber);
         
-        var filter = new FilterSchedule(
-            NameWorkout,
-            MinDateAndTime == null ? null : ((DateTime)MinDateAndTime).ToUniversalTime(),
-            MaxDateAndTime == null  ? null : ((DateTime)MaxDateAndTime).ToUniversalTime(),
-            WorkoutType,
-            ClientId,
-            TrainerId
-        );
-        
-        var schedules = await _context.ScheduleService.GetScheduleByFilter(filter, 10, 10 * (PageNumber - 1));
+        try
+        {
+            var filter = new FilterSchedule(
+                NameWorkout,
+                MinDateAndTime == null ? null : ((DateTime)MinDateAndTime).ToUniversalTime(),
+                MaxDateAndTime == null ? null : ((DateTime)MaxDateAndTime).ToUniversalTime(),
+                WorkoutType,
+                ClientId,
+                TrainerId
+            );
 
-        var scheduleModels = schedules.Select(s => new ScheduleModel
-        {
-            Id = s.Id,
-            NameWorkout = _context.WorkoutService.GetWorkoutNameById(s.IdWorkout).Result,
-            DateAndTime = s.DateAndTime.AddHours(3),
-            IdClient = s.IdClient,
-            NameClient = s.IdClient == null || s.IdClient == Guid.Empty ? null : _context.ClientService.GetClientById((Guid) s.IdClient).Result.Name,
-            IdTrainer = _context.WorkoutService.GetWorkoutById(s.IdWorkout).Result.IdTrainer,
-            NameTrainer = _context.TrainerService.GetTrainerNameById(_context.WorkoutService.GetWorkoutById(s.IdWorkout).Result.IdTrainer).Result,
-            PageCurrent = PageNumber
-        });
-        var workoutTypes = Enum.GetValues(typeof(WorkoutType)).Cast<WorkoutType>().ToList();
-        
-        
-        var viewModel = new ScheduleFilterModelResult
-        {
-            Schedules = scheduleModels,
-            Filter = new ScheduleFilterModel
+            var schedules = await _context.ScheduleService.GetScheduleByFilter(filter, 10, 10 * (PageNumber - 1));
+
+            var scheduleModels = schedules.Select(s => new ScheduleModel
             {
-                NameWorkout = filter.NameWorkout,
-                MinDateAndTime = filter.MinDateAndTime,
-                MaxDateAndTime = filter.MaxDateAndTime,
-                WorkoutType = filter.WorkoutType,
-                ClientId = filter.ClientId,
-                TrainerId = filter.TrainerId,
-                PageNumber = PageNumber
-            },
-            WorkoutTypes = workoutTypes
-        };
+                Id = s.Id,
+                NameWorkout = _context.WorkoutService.GetWorkoutNameById(s.IdWorkout).Result,
+                DateAndTime = s.DateAndTime.AddHours(3),
+                IdClient = s.IdClient,
+                NameClient = s.IdClient == null || s.IdClient == Guid.Empty
+                    ? null
+                    : _context.ClientService.GetClientById((Guid)s.IdClient).Result.Name,
+                IdTrainer = _context.WorkoutService.GetWorkoutById(s.IdWorkout).Result.IdTrainer,
+                NameTrainer = _context.TrainerService
+                    .GetTrainerNameById(_context.WorkoutService.GetWorkoutById(s.IdWorkout).Result.IdTrainer).Result,
+                PageCurrent = PageNumber
+            });
+            var workoutTypes = Enum.GetValues(typeof(WorkoutType)).Cast<WorkoutType>().ToList();
 
-        return View("ViewScheduleFiltered", viewModel);
+
+            var viewModel = new ScheduleFilterModelResult
+            {
+                Schedules = scheduleModels,
+                Filter = new ScheduleFilterModel
+                {
+                    NameWorkout = filter.NameWorkout,
+                    MinDateAndTime = filter.MinDateAndTime,
+                    MaxDateAndTime = filter.MaxDateAndTime,
+                    WorkoutType = filter.WorkoutType,
+                    ClientId = filter.ClientId,
+                    TrainerId = filter.TrainerId,
+                    PageNumber = PageNumber
+                },
+                WorkoutTypes = workoutTypes
+            };
+
+            return View("ViewScheduleFiltered", viewModel);
+        }
+        catch (Exception e)
+        {
+            Response.Cookies.Append("errorType", e.GetType().Name);
+            return RedirectToAction("Error", "Shared");
+        }
     }
 
     public async Task<IActionResult> ViewScheduleByCLient(int page = 1)
@@ -109,48 +152,67 @@ public class ScheduleController : Controller
         var userId = Guid.Parse(Request.Cookies["UserId"]);
         var userRole = Request.Cookies["UserRole"];
 
-        FilterSchedule filter;
-
-        if (userRole == UserRole.Client.ToString())
+        try
         {
-            filter = new(null, null, null, null, userId, null);
+            FilterSchedule filter;
+
+            if (userRole == UserRole.Client.ToString())
+            {
+                filter = new(null, null, null, null, userId, null);
+            }
+            else
+            {
+                filter = new(null, null, null, null, null, userId);
+            }
+
+            var schedules = await _context.ScheduleService.GetScheduleByFilter(filter, 10, 10 * (page - 1));
+
+            var schedulesModels = schedules.Select(s => new ScheduleModel
+            {
+                Id = s.Id,
+                IdWorkout = s.IdWorkout,
+                DateAndTime = s.DateAndTime.AddHours(3),
+                IdClient = s.IdClient,
+                NameClient = s.IdClient == null || s.IdClient == Guid.Empty
+                    ? null
+                    : _context.ClientService.GetClientById((Guid)s.IdClient).Result.Name,
+                IdTrainer = _context.WorkoutService.GetWorkoutById(s.IdWorkout).Result.IdTrainer,
+                NameTrainer = _context.TrainerService
+                    .GetTrainerNameById(_context.WorkoutService.GetWorkoutById(s.IdWorkout).Result.IdTrainer).Result,
+                NameWorkout = _context.WorkoutService.GetWorkoutNameById(s.IdWorkout).Result,
+                PageCurrent = page
+            });
+
+            return View(schedulesModels);
         }
-        else 
+        catch (Exception e)
         {
-            filter = new(null, null, null, null, null, userId);
+            Response.Cookies.Append("errorType", e.GetType().Name);
+            return RedirectToAction("Error", "Shared");
         }
-        
-        var schedules = await _context.ScheduleService.GetScheduleByFilter(filter, 10, 10 * (page - 1));
-
-        var schedulesModels = schedules.Select(s => new ScheduleModel
-        {
-            Id = s.Id,
-            IdWorkout = s.IdWorkout,
-            DateAndTime = s.DateAndTime.AddHours(3),
-            IdClient = s.IdClient,
-            NameClient = s.IdClient == null || s.IdClient == Guid.Empty ? null : _context.ClientService.GetClientById((Guid)s.IdClient).Result.Name,
-            IdTrainer = _context.WorkoutService.GetWorkoutById(s.IdWorkout).Result.IdTrainer,
-            NameTrainer = _context.TrainerService.GetTrainerNameById(_context.WorkoutService.GetWorkoutById(s.IdWorkout).Result.IdTrainer).Result,
-            NameWorkout = _context.WorkoutService.GetWorkoutNameById(s.IdWorkout).Result,
-            PageCurrent = page
-        });
-
-        return View(schedulesModels);
     }
 
     [HttpGet]
     public async Task<IActionResult> CreateScheduleByClient(Guid workoutId)
     {
-        var workout = await _context.WorkoutService.GetWorkoutById(workoutId);
-
-        var model = new ScheduleModel
+        try
         {
-            IdWorkout = workoutId,
-            NameWorkout = workout.Name,
-            NameTrainer = _context.TrainerService.GetTrainerNameById(workout.IdTrainer).Result
-        };
+            var workout = await _context.WorkoutService.GetWorkoutById(workoutId);
 
-        return View("CreateSchedule", model);
+            var model = new ScheduleModel
+            {
+                IdWorkout = workoutId,
+                NameWorkout = workout.Name,
+                NameTrainer = _context.TrainerService.GetTrainerNameById(workout.IdTrainer).Result
+            };
+
+            return View("CreateSchedule", model);
+        }
+        catch (Exception e)
+        {
+            Response.Cookies.Append("errorType", e.GetType().Name);
+            return RedirectToAction("Error", "Shared");
+        }
     }
 
     [HttpPost]
@@ -177,7 +239,8 @@ public class ScheduleController : Controller
         }
         catch (Exception e)
         {
-            return View("Error", e.Message);
+            Response.Cookies.Append("errorType", e.GetType().Name);
+            return RedirectToAction("Error", "Shared");
         }
     }
 
@@ -190,6 +253,48 @@ public class ScheduleController : Controller
     public async Task<IActionResult> DeleteSchedule(Guid scheduleId)
     {
         await _context.ScheduleService.DeleteSchedule(scheduleId);
-        return RedirectToAction("ViewSchedule");
+        return RedirectToAction("ViewScheduleByAdmin");
+    }
+
+    public IActionResult UpdateSchedule(Guid scheduleId)
+    {
+        try
+        {
+            Schedule schedule = _context.ScheduleService.GetScheduleById(scheduleId).Result;
+            var model = new ScheduleModel
+            {
+                Id = schedule.Id,
+                IdWorkout = schedule.IdWorkout,
+                DateAndTime = schedule.DateAndTime.ToLocalTime(),
+                IdClient = schedule.IdClient,
+                NameWorkout = _context.WorkoutService.GetWorkoutNameById(schedule.IdWorkout).Result,
+                NameTrainer = _context.TrainerService
+                    .GetTrainerNameById(_context.WorkoutService.GetWorkoutById(schedule.IdWorkout).Result.IdTrainer)
+                    .Result
+            };
+            return View(model);
+        }
+        catch (Exception e)
+        {
+            Response.Cookies.Append("errorType", e.GetType().Name);
+            return RedirectToAction("Error", "Shared");
+        }
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> EditSchedule(ScheduleModel scheduleModel)
+    {
+        try
+        {
+            Schedule schedule = new Schedule(scheduleModel.Id, scheduleModel.IdWorkout, scheduleModel.DateAndTime.ToUniversalTime(),
+                     scheduleModel.IdClient);
+             await _context.ScheduleService.UpdateSchedule(schedule);
+             return RedirectToAction("ViewScheduleByAdmin");
+        }
+        catch (Exception e)
+        {
+            Response.Cookies.Append("errorType", e.GetType().Name);
+            return RedirectToAction("Error", "Shared");
+        }
     }
 }

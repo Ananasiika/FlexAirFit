@@ -33,7 +33,8 @@ public class FreezingModel
     [Required(ErrorMessage = "Пожалуйста, укажите длительность заморозки")]
     [Range(1, 365, ErrorMessage = "Длительность заморозки должна быть в диапазоне от 1 до 365 дней")]
     public int FreezeDuration { get; set; }
-    public string ErrorMessage { get; set; }
+
+    public Guid IdClient { get; set; }
 }
 
 

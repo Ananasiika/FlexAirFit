@@ -1,6 +1,4 @@
-﻿using System.Text.Json;
-
-namespace FlexAirFit.Core.Models;
+﻿namespace FlexAirFit.Core.Models;
 
 public class Client
 {

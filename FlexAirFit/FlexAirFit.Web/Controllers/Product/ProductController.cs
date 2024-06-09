@@ -36,15 +36,23 @@ public class ProductController : Controller
 
     public IActionResult BuyProduct()
     {
-        Guid id = Guid.Parse(ControllerContext.RouteData.Values["id"].ToString());
-        var product = _context.ProductService.GetProductById(id).Result;
-        var clientProductModel = new BuyProductModel
+        try
         {
-            IdProduct = product.Id,
-            Name = product.Name,
-            Price = product.Price
-        };
-        return View(clientProductModel);
+            Guid id = Guid.Parse(ControllerContext.RouteData.Values["id"].ToString());
+            var product = _context.ProductService.GetProductById(id).Result;
+            var clientProductModel = new BuyProductModel
+            {
+                IdProduct = product.Id,
+                Name = product.Name,
+                Price = product.Price
+            };
+            return View(clientProductModel);
+        }
+        catch (Exception e)
+        {
+            Response.Cookies.Append("errorType", e.GetType().Name);
+            return RedirectToAction("Error", "Shared");
+        }
     }
 
     [HttpPost]
@@ -66,7 +74,8 @@ public class ProductController : Controller
         }
         catch (Exception e)
         {
-            return View("Error", e.Message);
+            Response.Cookies.Append("errorType", e.GetType().Name);
+            return RedirectToAction("Error", "Shared");
         }
     }
 
@@ -85,7 +94,8 @@ public class ProductController : Controller
         }
         catch (Exception ex)
         {
-            return View("Error", ex.Message);
+            Response.Cookies.Append("errorType", ex.GetType().Name);
+            return RedirectToAction("Error", "Shared");
         }
 
         return RedirectToAction("ViewProduct");
@@ -100,7 +110,46 @@ public class ProductController : Controller
         }
         catch (Exception ex)
         {
-            return View("Error", ex.Message);
+            Response.Cookies.Append("errorType", ex.GetType().Name);
+            return RedirectToAction("Error", "Shared");
         }
     }
+
+    public IActionResult UpdateProduct(Guid productId)
+    {
+        try
+        {
+            var product = _context.ProductService.GetProductById(productId).Result;
+            var productModel = new ProductModel
+            {
+                Id = productId,
+                Name = product.Name,
+                Price = product.Price,
+                Type = product.Type
+            };
+            return View(productModel);
+        }
+        catch (Exception e)
+        {
+            Response.Cookies.Append("errorType", e.GetType().Name);
+            return RedirectToAction("Error", "Shared");
+        }
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> EditProduct(ProductModel productModel)
+    {
+        try
+        {
+            var product = new Product(productModel.Id, productModel.Type, productModel.Name, productModel.Price); 
+            await _context.ProductService.UpdateProduct(product);
+            return RedirectToAction("ViewProduct");
+        }
+        catch (Exception e)
+        {
+            Response.Cookies.Append("errorType", e.GetType().Name);
+            return RedirectToAction("Error", "Shared");
+        }
+    }
+
 }

@@ -53,7 +53,8 @@ public class MembershipController : Controller
         }
         catch (Exception ex)
         {
-            return View("Error", ex.Message);
+            Response.Cookies.Append("errorType", ex.GetType().Name);
+            return RedirectToAction("Error", "Shared");
         }
 
         return RedirectToAction("ViewMembership");
@@ -61,7 +62,53 @@ public class MembershipController : Controller
 
     public async Task<IActionResult> DeleteMembership(Guid membershipId)
     {
-        await _context.MembershipService.DeleteMembership(membershipId);
-        return RedirectToAction("ViewMembership");
+        try
+        {
+            await _context.MembershipService.DeleteMembership(membershipId);
+            return RedirectToAction("ViewMembership");
+        }
+        catch (Exception e)
+        {
+            Response.Cookies.Append("errorType", e.GetType().Name);
+            return RedirectToAction("Error", "Shared");
+        }
+    }
+
+    public IActionResult UpdateMembership(Guid membershipId)
+    {
+        try
+        {
+            Membership membership = _context.MembershipService.GetMembershipById(membershipId).Result;
+            var model = new MembershipModel
+            {
+                Id = membership.Id,
+                Name = membership.Name,
+                Duration = membership.Duration,
+                Price = membership.Price,
+                Freezing = membership.Freezing
+            };
+            return View(model);
+        }
+        catch (Exception e)
+        {
+            Response.Cookies.Append("errorType", e.GetType().Name);
+            return RedirectToAction("Error", "Shared");
+        }
+    }
+    
+    [HttpPost]
+    public async Task<IActionResult> EditMembership(MembershipModel membershipModel)
+    {
+        try
+        {
+            var membership = new Membership(membershipModel.Id, membershipModel.Name, TimeSpan.FromDays(membershipModel.DurationInDays), membershipModel.Price, membershipModel.Freezing);
+            await _context.MembershipService.UpdateMembership(membership);
+            return RedirectToAction("ViewMembership");
+        }
+        catch (Exception e)
+        {
+            Response.Cookies.Append("errorType", e.GetType().Name);
+            return RedirectToAction("Error", "Shared");
+        }
     }
 }

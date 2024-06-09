@@ -1,0 +1,35 @@
+﻿@using FlexAirFit.Web.Models
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model FlexAirFit.Web.Models.ScheduleModel
+
+<h1>Редактирование записи тренировки</h1>
+
+<form asp-action="EditSchedule" asp-controller="Schedule" method="post">
+    <input type="hidden" asp-for="Id" />
+    <div class="form-group">
+        <label asp-for="IdWorkout">Id тренировки</label>
+        <input asp-for="IdWorkout" class="form-control" readonly />
+        <span asp-validation-for="IdWorkout" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="IdClient">Id клиента</label>
+        <input asp-for="IdClient" class="form-control"/>
+        <span asp-validation-for="IdClient" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="NameWorkout">Название тренировки</label>
+        <input asp-for="NameWorkout" class="form-control" readonly />
+        <span asp-validation-for="NameWorkout" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="NameTrainer">Имя тренера</label>
+        <input asp-for="NameTrainer" class="form-control" readonly />
+        <span asp-validation-for="NameTrainer" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="DateAndTime">Дата и время</label>
+        <input asp-for="DateAndTime" class="form-control" />
+        <span asp-validation-for="DateAndTime" class="text-danger"></span>
+    </div>
+    <input type="submit" value="Сохранить" class="btn btn-primary" />
+</form>

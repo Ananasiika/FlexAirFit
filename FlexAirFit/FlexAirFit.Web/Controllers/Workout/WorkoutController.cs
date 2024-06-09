@@ -1,4 +1,5 @@
-﻿using FlexAirFit.Application.IRepositories;
+﻿using FlexAirFit.Application.Exceptions.ServiceException;
+using FlexAirFit.Application.IRepositories;
 using FlexAirFit.Core.Filters;
 using FlexAirFit.Core.Models;
 using FlexAirFit.Web;
@@ -119,13 +120,55 @@ public class WorkoutController : Controller
         }
         catch (Exception ex)
         {
-            return View("Error", ex.Message);
+            Response.Cookies.Append("errorType", ex.GetType().Name);
+            return RedirectToAction("Error", "Shared");
         }
     }
     
     public async Task<IActionResult> DeleteWorkout(Guid workoutId)
     {
-        await _context.WorkoutService.DeleteWorkout(workoutId);
-        return RedirectToAction("ViewWorkout");
+        try
+        {
+            await _context.WorkoutService.DeleteWorkout(workoutId);
+            return RedirectToAction("ViewWorkout");
+        }
+        catch (Exception e)
+        {
+            Response.Cookies.Append("errorType", e.GetType().Name);
+            return RedirectToAction("Error", "Shared");
+        }
+    }
+
+    public IActionResult UpdateWorkout(Guid workoutId)
+    {
+        Workout workout = _context.WorkoutService.GetWorkoutById(workoutId).Result;
+        var model = new WorkoutModel
+        {
+            Id = workout.Id,
+            Name = workout.Name,
+            Description = workout.Description,
+            IdTrainer = workout.IdTrainer,
+            NameTrainer = _context.TrainerService.GetTrainerNameById(workout.IdTrainer).Result,
+            Duration = workout.Duration,
+            Level = workout.Level
+        };
+        return View(model);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> EditWorkout(WorkoutModel model)
+    {
+        try
+        {
+            var workout = new Workout(model.Id, model.Name, model.Description, model.IdTrainer, model.Duration, model.Level);
+           
+            await _context.WorkoutService.UpdateWorkout(workout);
+            return RedirectToAction("ViewWorkout");
+        }
+        catch (Exception ex)
+        {
+            Response.Cookies.Append("errorType", ex.GetType().Name);
+            return RedirectToAction("Error", "Shared");
+        }
     }
 }

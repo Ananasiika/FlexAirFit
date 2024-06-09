@@ -32,10 +32,27 @@
             <th>@trainer.Id</th>
             }
             <td>@trainer.Name</td>
-            <td>@trainer.Gender</td>
+            <td>
+                @if (trainer.Gender == "male")
+                {
+                <span>Мужской</span>
+                }
+                else if (trainer.Gender == "female")
+                {
+                <span>Женский</span>
+                }
+            </td>
+
             <td>@trainer.Specialization</td>
             <td>@trainer.Experience</td>
             <td>@trainer.Rating</td>
+            @if (isAdminPage)
+            {
+            <td>
+                <a asp-action="DeleteTrainer" asp-controller="Trainer" asp-route-trainerId="@trainer.Id" class="btn btn-primary" onclick="return confirm('Вы действительно хотите удалить этого тренера?')">Удалить</a>
+                <a asp-action="UpdateTrainer" asp-controller="Trainer" asp-route-trainerId="@trainer.Id" class="btn btn-primary">Изменить</a>
+            </td>
+            }
         </tr>
     }
     </tbody>
