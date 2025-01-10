@@ -1,0 +1,8 @@
+﻿{
+  "CountBonusesPersonal": 100,
+  "MinFreezing": 7,
+  "BonusRedemptionLimitPercentage": 50,
+  "EarnedBonusPercentage": 10,
+  "ClubOpeningTime": 7,
+  "ClubClosingTime": 23
+}

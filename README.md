@@ -42,6 +42,10 @@ Frontend: HTML + CSS
 
 DB: PostgreSQL
 
+# Figma
+
+https://www.figma.com/design/6FMwjDYwpevAWNbOt7jNKw/FlexAirFit?m=auto&t=ERnkBDqN2weDA9i6-6
+
 # UML-диаграмма
 
 ![UML диаграмма компонента доступа к данным](./img/uml.png)
